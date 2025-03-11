@@ -7,8 +7,8 @@
             <div class="navbar-header d-flex align-items-center">
                 <a href="javascript:void:(0)" class="mobile-toggle"><i class="ti ti-align-right"></i></a>
                 <a class="navbar-brand" href="index.html">
-                    <img src="assets/img/logo.png" class="img-fluid logo-desktop" alt="logo" />
-                    <img src="assets/img/logo-icon.png" class="img-fluid logo-mobile" alt="logo" />
+                    <img src="{{asset('assets/img/logo.png')}}" class="img-fluid logo-desktop" alt="logo" />
+                    <img src="{{asset('assets/img/logo-icon.png')}}" class="img-fluid logo-mobile" alt="logo" />
                 </a>
             </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -161,7 +161,7 @@
                                                 <a href="javascript:void(0)">
                                                     <div class="notification d-flex flex-row align-items-center">
                                                         <div class="notify-icon bg-img align-self-center">
-                                                            <img class="img-fluid" src="assets/img/avtar/03.jpg" alt="user3">
+                                                            <img class="img-fluid" src="{{asset('assets/img/avtar/03.jpg')}}" alt="user3">
                                                         </div>
                                                         <div class="notify-message">
                                                             <p class="font-weight-bold">Brianing Leyon</p>
@@ -174,7 +174,7 @@
                                                 <a href="javascript:void(0)">
                                                     <div class="notification d-flex flex-row align-items-center">
                                                         <div class="notify-icon bg-img align-self-center">
-                                                            <img class="img-fluid" src="assets/img/avtar/01.jpg" alt="user">
+                                                            <img class="img-fluid" src="{{asset('assets/img/avtar/01.jpg')}}" alt="user">
                                                         </div>
                                                         <div class="notify-message">
                                                             <p class="font-weight-bold">Jimmyimg Leyon</p>
@@ -187,7 +187,7 @@
                                                 <a href="javascript:void(0)">
                                                     <div class="notification d-flex flex-row align-items-center">
                                                         <div class="notify-icon bg-img align-self-center">
-                                                            <img class="img-fluid" src="assets/img/avtar/02.jpg" alt="user2">
+                                                            <img class="img-fluid" src="{{asset('assets/img/avtar/02.jpg')}}" alt="user2">
                                                         </div>
                                                         <div class="notify-message">
                                                             <p class="font-weight-bold">Brainjon Leyon</p>
@@ -200,7 +200,7 @@
                                                 <a href="javascript:void(0)">
                                                     <div class="notification d-flex flex-row align-items-center">
                                                         <div class="notify-icon bg-img align-self-center">
-                                                            <img class="img-fluid" src="assets/img/avtar/04.jpg" alt="user4">
+                                                            <img class="img-fluid" src="{{asset('assets/img/avtar/04.jpg')}}" alt="user4">
                                                         </div>
                                                         <div class="notify-message">
                                                             <p class="font-weight-bold">Smithmin Leyon</p>
@@ -213,7 +213,7 @@
                                                 <a href="javascript:void(0)">
                                                     <div class="notification d-flex flex-row align-items-center">
                                                         <div class="notify-icon bg-img align-self-center">
-                                                            <img class="img-fluid" src="assets/img/avtar/05.jpg" alt="user5">
+                                                            <img class="img-fluid" src="{{asset('assets/img/avtar/05.jpg')}}" alt="user5">
                                                         </div>
                                                         <div class="notify-message">
                                                             <p class="font-weight-bold">Jennyns Leyon</p>
@@ -226,7 +226,7 @@
                                                 <a href="javascript:void(0)">
                                                     <div class="notification d-flex flex-row align-items-center">
                                                         <div class="notify-icon bg-img align-self-center">
-                                                            <img class="img-fluid" src="assets/img/avtar/06.jpg" alt="user6">
+                                                            <img class="img-fluid" src="{{asset('assets/img/avtar/06.jpg')}}" alt="user6">
                                                         </div>
                                                         <div class="notify-message">
                                                             <p class="font-weight-bold">Demian Leyon</p>
@@ -363,7 +363,7 @@
                         </li>
                         <li class="nav-item dropdown user-profile">
                             <a href="javascript:void(0)" class="nav-link dropdown-toggle " id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="assets/img/avtar/02.jpg" alt="avtar-img">
+                                <img src="{{asset('assets/img/avtar/02.jpg')}}" alt="avtar-img">
                                 <span class="bg-success user-status"></span>
                             </a>
                             <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">

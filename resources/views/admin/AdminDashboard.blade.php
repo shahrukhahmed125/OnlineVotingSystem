@@ -1,5 +1,5 @@
 @extends('masterpage')
-@section('js', 'Admin Dashboard')
+@section('title', 'Admin Dashboard')
 @section('css')
 
 

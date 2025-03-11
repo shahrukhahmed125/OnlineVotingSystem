@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,3 +14,7 @@ Route::get('/register', [AuthController::class, 'register'])->name('register');
 // ------- ADMIN DASHBOARD ROUTES ------- //
 
 Route::get('/home', [UserController::class, 'index'])->name('home');
+
+Route::get('/candidates/create',[CandidateController::class, 'create'])->name('candidates.create');
+
+Route::post('/candidates/store',[CandidateController::class, 'store'])->name('candidates.store');

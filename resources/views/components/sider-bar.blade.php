@@ -12,7 +12,7 @@
                     </a>
                     <ul aria-expanded="false">
                         <li class="active"> <a href='index.html'>Default</a> </li>
-                        <li> <a href='index-ecommerce.html'>Ecommerce</a> </li>
+                        <li> <a href="{{route('candidates.create')}}">Candidates</a> </li>
                         <li> <a href='index-car-dealer.html'>Car Dealer</a> </li>
                         <li> <a href='index-stock-market.html'>Stock Market</a> </li>
                         <li> <a href='index-dating.html'>Dating</a> </li>
