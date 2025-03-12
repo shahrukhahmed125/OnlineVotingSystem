@@ -13,7 +13,7 @@ Route::get('/register', [AuthController::class, 'register'])->name('register');
 
 // ------- ADMIN DASHBOARD ROUTES ------- //
 
-Route::get('/home', [UserController::class, 'index'])->name('home');
+Route::get('/dashboard', [UserController::class, 'index'])->name('home');
 
 Route::get('/candidates/create',[CandidateController::class, 'create'])->name('candidates.create');
 
