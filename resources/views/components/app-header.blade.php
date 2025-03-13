@@ -373,7 +373,7 @@
                                             <h4 class="text-white mb-0">Alice Williams</h4>
                                             <small class="text-white">Henry@example.com</small>
                                         </div>
-                                        <a href="#" class="text-white font-20 tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Logout"> <i
+                                        <a href="{{route('logout')}}" class="text-white font-20 tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Logout"> <i
                                                         class="zmdi zmdi-power"></i></a>
                                     </div>
                                 </div>

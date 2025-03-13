@@ -31,36 +31,43 @@
                                     <div class="register p-5">
                                         <h1 class="mb-2">We are Mentor</h1>
                                         <p>Welcome, Please create your account.</p>
-                                        <form action="http://themes.potenzaglobalsolutions.com/html/mentor-bootstrap-4-admin-dashboard-template/auth-register.html" class="mt-2 mt-sm-5">
+                                        <form action="{{route('register_auth')}}" method="POST" class="mt-2 mt-sm-5">
+                                            @csrf
                                             <div class="row">
-                                                <div class="col-12 col-sm-6">
+                                                <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="control-label">First Name*</label>
-                                                        <input type="text" class="form-control" placeholder="First Name" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Last Name*</label>
-                                                        <input type="text" class="form-control" placeholder="Last Name" />
+                                                        <label class="control-label">Full Name*</label>
+                                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Full Name" />
+                                                        @error('name')
+                                                            <p class="invalid-feedback">{{'*'.$message}}</p>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label class="control-label">Email*</label>
-                                                        <input type="email" class="form-control" placeholder="Email" />
+                                                        <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="john@example.com" name="email"/>
+                                                        @error('email')
+                                                            <p class="invalid-feedback">{{'*'.$message}}</p>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="control-label">Username*</label>
-                                                        <input type="text" class="form-control" placeholder="Username" />
+                                                        <label class="control-label">CNIC*</label>
+                                                        <input type="text" class="form-control @error('cnic') is-invalid @enderror" placeholder="xxxx-xxxxxxx-x" name="cnic"/>
+                                                        @error('cnic')
+                                                            <p class="invalid-feedback">{{'*'.$message}}</p>
+                                                        @enderror        
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label class="control-label">Password*</label>
-                                                        <input type="password" class="form-control" placeholder="Password" />
+                                                        <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" name="password"/>
+                                                        @error('password')
+                                                            <p class="invalid-feedback">{{'*'.$message}}</p>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
@@ -72,7 +79,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-12 mt-3">
-                                                    <a href="auth-login.html" class="btn btn-primary text-uppercase">Sign up</a>
+                                                    <button type="submit" class="btn btn-primary text-uppercase">Sign up</button>
                                                 </div>
                                                 <div class="col-12  mt-3">
                                                     <p>Already have an account ?<a href="{{route('login')}}"> Sign In</a></p>
