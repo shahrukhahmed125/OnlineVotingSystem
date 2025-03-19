@@ -1,5 +1,5 @@
 @extends('masterpage')
-@section('title', 'Add Candidate')
+@section('title', 'Edit Candidate')
 @section('css')
 
 
@@ -14,7 +14,7 @@
             <!-- begin page title -->
             <div class="d-block d-sm-flex flex-nowrap align-items-center">
                 <div class="page-title mb-2 mb-sm-0">
-                    <h1>Add Candidate</h1>
+                    <h1>Edit Candidate</h1>
                 </div>
                 <div class="ml-auto d-flex align-items-center">
                     <nav>
@@ -25,7 +25,7 @@
                             <li class="breadcrumb-item">
                                 Dashboard
                             </li>
-                            <li class="breadcrumb-item active text-primary" aria-current="page">Add Candidate</li>
+                            <li class="breadcrumb-item active text-primary" aria-current="page">Edit Candidate</li>
                         </ol>
                     </nav>
                 </div>
@@ -44,34 +44,34 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{route('candidates.store')}}" method="POST">
+                    <form action="{{route('candidates.update', $data->id)}}" method="POST">
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputName4">Name</label>
-                                <input type="text" class="form-control" id="inputName4" placeholder="Enter Name..." name="name">
+                                <input type="text" class="form-control" id="inputName4" placeholder="Enter Name..." name="name" value="{{$data->name}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputEmail4">Email</label>
-                                <input type="email" class="form-control" id="inputEmail4" placeholder="Email" name="email">
+                                <input type="email" class="form-control" id="inputEmail4" placeholder="Email" name="email" value="{{$data->email}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputCINC4">CNIC No.</label>
-                                <input type="text" class="form-control" id="inputCNIC4" name="CNIC" placeholder="xxxxx-xxxxxxx-x">
+                                <input type="text" class="form-control" id="inputCNIC4" name="CNIC" placeholder="xxxxx-xxxxxxx-x" value="{{$data->CNIC}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputPhone4">Phone</label>
-                                <input type="tel" class="form-control" id="inputPhone4" placeholder="03xxxxxxxxx" name="phone">
+                                <input type="tel" class="form-control" id="inputPhone4" placeholder="03xxxxxxxxx" name="phone" value="{{$data->phone}}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputAddress">Address</label>
-                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address">
+                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address" value="{{$data->address}}">
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputCity">City</label>
-                                <input type="text" class="form-control" id="inputCity" name="city">
+                                <input type="text" class="form-control" id="inputCity" name="city" value="{{$data->city}}">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputState">State</label>
@@ -86,7 +86,7 @@
                                 <input type="text" class="form-control" id="inputZip">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </form>
                 </div>
             </div>

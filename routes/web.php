@@ -50,3 +50,8 @@ Route::middleware('auth')->group(function(){
 Route::get('/candidates/create',[CandidateController::class, 'create'])->name('candidates.create');
 
 Route::post('/candidates/store',[CandidateController::class, 'store'])->name('candidates.store');
+
+Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
+Route::get('/candidates/{id}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
+Route::get('/candidates/edit/{id}', [CandidateController::class, 'edit'])->name('candidates.edit');
+Route::post('/candidates/update/{id}', [CandidateController::class, 'update'])->name('candidates.update');
