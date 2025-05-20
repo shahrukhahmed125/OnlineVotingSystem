@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class AdminController extends Controller
 {
     public function index()
     {
-        // 
+        return view('admin.AdminDashboard');
     }
 }

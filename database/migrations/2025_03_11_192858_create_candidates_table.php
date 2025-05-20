@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('city');
             $table->string('address')->nullable();
             $table->timestamps();
+            // $table->softDeletes();
+
+            $table->foreignId('constituency_id')->constrained('assemblies')->onDelete('cascade');
         });
     }
 

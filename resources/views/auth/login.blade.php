@@ -31,24 +31,31 @@
                                     <div class="login p-50">
                                         <h1 class="mb-2">We Are Mentor</h1>
                                         <p>Welcome back, please login to your account.</p>
-                                        <form action="http://themes.potenzaglobalsolutions.com/html/mentor-bootstrap-4-admin-dashboard-template/auth-login.html" class="mt-3 mt-sm-5">
+                                        <form action="{{route('login_auth')}}" method="POST" class="mt-3 mt-sm-5">
+                                            @csrf
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="control-label">User Name*</label>
-                                                        <input type="text" class="form-control" placeholder="Username" />
+                                                        <label class="control-label">Email*</label>
+                                                        <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="john@example.com" name="email"/>
+                                                        @error('email')
+                                                            <p class="invalid-feedback">{{'*'.$message}}</p>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label class="control-label">Password*</label>
-                                                        <input type="password" class="form-control" placeholder="Password" />
+                                                        <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" name="password"/>
+                                                        @error('password')
+                                                            <p class="invalid-feedback">{{'*'.$message}}</p>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="d-block d-sm-flex  align-items-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" id="gridCheck">
+                                                            <input class="form-check-input" name="remember" type="checkbox" id="gridCheck">
                                                             <label class="form-check-label" for="gridCheck">
                                                                 Remember Me
                                                             </label>
@@ -57,7 +64,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-12 mt-3">
-                                                    <a href="index.html" class="btn btn-primary text-uppercase">Sign In</a>
+                                                    <button type="submit" class="btn btn-primary text-uppercase">Sign In</button>
                                                 </div>
                                                 <div class="col-12  mt-3">
                                                     <p>Don't have an account ?<a href="{{route('register')}}"> Sign Up</a></p>

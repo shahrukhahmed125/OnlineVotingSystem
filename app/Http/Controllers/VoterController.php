@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class VoterController extends Controller
 {
     public function index()
     {
-        // 
+        return view('voter.dashboard');
     }
 }
