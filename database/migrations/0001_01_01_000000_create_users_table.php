@@ -37,6 +37,9 @@ return new class extends Migration
             $table->timestamp('two_factor_expires_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreignId('na_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
+            $table->foreignId('pa_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
