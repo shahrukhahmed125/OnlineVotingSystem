@@ -16,4 +16,9 @@ class Candidate extends Model
         'city',
         'CNIC',
     ];
+
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
 }

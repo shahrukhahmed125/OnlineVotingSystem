@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('na_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
+            $table->foreignId('pa_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->string('cnic')->unique();
@@ -38,8 +40,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreignId('na_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
-            $table->foreignId('pa_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
