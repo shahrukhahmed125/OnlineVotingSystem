@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('constituency_id')->constrained('assemblies')->onDelete('cascade');
+            $table->foreignId('political_party_id')->constrained('political_parties')->onDelete('cascade');
             $table->string('name');
             $table->string('CNIC')->unique();
             $table->string('email')->unique();
@@ -22,7 +24,6 @@ return new class extends Migration
             $table->timestamps();
             // $table->softDeletes();
 
-            $table->foreignId('constituency_id')->constrained('assemblies')->onDelete('cascade');
         });
     }
 
