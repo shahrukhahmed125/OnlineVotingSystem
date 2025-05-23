@@ -16,7 +16,8 @@ return new class extends Migration
             $table->enum('type', ['NA', 'PA']); // National or Provincial
             $table->string('name'); // e.g. NA-246, PS-112
             $table->string('province')->nullable(); // For PA only
-            $table->string('district');
+            $table->string('district')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

@@ -1,0 +1,92 @@
+@extends('masterpage')
+@section('title', 'Assembly List')
+
+@section('css')
+
+
+@stop
+@section('content')
+
+<div class="container-fluid">
+    <!-- begin row -->
+    <div class="row">
+        <div class="col-md-12 m-b-30">
+            <!-- begin page title -->
+            <div class="d-block d-sm-flex flex-nowrap align-items-center">
+                <div class="page-title mb-2 mb-sm-0">
+                    <h1>Assemblies List</h1>
+                </div>
+                <div class="ml-auto d-flex align-items-center">
+                    <nav>
+                        <ol class="breadcrumb p-0 m-b-0">
+                            <li class="breadcrumb-item">
+                                <a href="{{route('admin.home')}}"><i class="ti ti-home"></i></a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li class="breadcrumb-item active text-primary" aria-current="page">Assemblies List</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!-- end page title -->
+        </div>
+    </div>
+    <!-- end row -->
+    <!-- begin row -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-statistics">
+                <div class="card-header">
+                    <div class="card-heading">
+                        <h4 class="card-title">Table Light</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Province</th>
+                                    <th scope="col">District</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($assemblies as $item)
+                                <tr>
+                                    <th scope="row">{{$loop->iteration}}</th>
+                                    <td>{{ucwords($item->name)}}</td>
+                                    <td>{{ucwords($item->type)}}</td>
+                                    <td>{{ucwords($item->province)}}</td>
+                                    <td>{{ucwords($item->district)}}</td>
+                                    <td>
+                                        <a class="btn btn-secondary" href="{{route('admin.assembly.edit', $item->id)}}">Edit</a>
+                                        <form action="{{route('admin.assembly.destroy', $item->id)}}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+</div>
+
+@endsection
+
+@section('js')
+
+
+@stop

@@ -10,7 +10,7 @@ class Assembly extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type', 'name', 'province', 'district',
+        'type', 'name', 'province', 'district', 'description',
     ];
 
     public function candidates()

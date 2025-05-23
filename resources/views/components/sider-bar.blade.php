@@ -23,10 +23,10 @@
                     </ul>
                 </li>
                 <li><a href="app-chat.html" aria-expanded="false"><i class="nav-icon ti ti-comment"></i><span class="nav-title">Chat</span></a> </li>
-                <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Calendar</span></a>
+                <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Assembly</span></a>
                     <ul aria-expanded="false">
-                        <li> <a href='calendar-full.html'>Full Calendar</a> </li>
-                        <li> <a href='calendar-list.html'>Calendar List</a> </li>
+                        <li> <a href="{{ route('admin.assembly.create') }}">Add</a> </li>
+                        <li> <a href="{{ route('admin.assembly.index') }}">List</a> </li>
                     </ul>
                 </li>
                 <li><a href="mail-inbox.html" aria-expanded="false"><i class="nav-icon ti ti-email"></i><span class="nav-title">Mail</span></a> </li>
