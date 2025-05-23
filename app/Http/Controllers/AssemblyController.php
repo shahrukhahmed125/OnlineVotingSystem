@@ -38,17 +38,70 @@ class AssemblyController extends Controller
                 ], 422);
             }
 
-            $assembly = new Assembly;
-            $assembly->name = $request->name;
-            $assembly->type = $request->type;
-            $assembly->province = $request->province;
-            $assembly->district = $request->district;
-            $assembly->description = $request->description;
-            $assembly->save();
+            Assembly::create($request->all());
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Assembly created successfully',
+            ]);
+
+        }catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function edit($id)
+    {
+        $assembly = Assembly::findOrFail($id);
+        return view('admin.assembly.edit', compact('assembly'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        try{
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'type' => 'required|string|max:255|in:NA,PA',
+                'province' => 'nullable|string|max:255',
+                'district' => 'nullable|string|max:255',
+                'description' => 'nullable|string|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'validation_error',
+                    'errors' => $validator->errors() 
+                ], 422);
+            }
+
+            $assembly = Assembly::findOrFail($id);
+            $assembly->update($request->all());
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Assembly updated successfully',
+            ]);
+
+        }catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try{
+            $assembly = Assembly::findOrFail($id);
+            $assembly->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Assembly deleted successfully',
             ]);
 
         }catch(Exception $e){

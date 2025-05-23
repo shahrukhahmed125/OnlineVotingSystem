@@ -1,5 +1,5 @@
 @extends('masterpage')
-@section('title', 'Add Assembly')
+@section('title', 'Edit Assembly')
 
 @section('css')
 
@@ -14,7 +14,7 @@
             <!-- begin page title -->
             <div class="d-block d-sm-flex flex-nowrap align-items-center">
                 <div class="page-title mb-2 mb-sm-0">
-                    <h1>Add Assembly</h1>
+                    <h1>Edit Assembly</h1>
                 </div>
                 <div class="ml-auto d-flex align-items-center">
                     <nav>
@@ -25,7 +25,7 @@
                             <li class="breadcrumb-item">
                                 Dashboard
                             </li>
-                            <li class="breadcrumb-item active text-primary" aria-current="page">Add Assembly</li>
+                            <li class="breadcrumb-item active text-primary" aria-current="page">Edit Assembly</li>
                         </ol>
                     </nav>
                 </div>
@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card card-statistics">
-                <form action="{{ route('admin.assembly.store') }}" method="POST" id="assembly-form">
+                <form action="{{ route('admin.assembly.update', $assembly->id) }}" method="POST" id="assembly-form">
                 @csrf
                 <div class="card-header">
                     <div class="card-heading">
@@ -49,35 +49,35 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputName">Name*</label>
-                                <input type="text" class="form-control" id="inputName" placeholder="Enter Name..." name="name" value="{{ old('name') }}" required>
+                                <input type="text" class="form-control" id="inputName" placeholder="Enter Name..." name="name" value="{{ $assembly->name }}" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputType">Type*</label>
                                 <select id="inputType" class="form-control" name="type" required>
-                                    <option selected disabled>--Select</option>
-                                    <option value="NA">National Assembly (NA)</option>
-                                    <option value="PA">Provincial Assembly (PA)</option>
+                                    <option disabled {{ !$assembly->type ? 'selected' : '' }}>--Select</option>
+                                    <option value="NA" {{ $assembly->type == 'NA' ? 'selected' : '' }}>National Assembly (NA)</option>
+                                    <option value="PA" {{ $assembly->type == 'PA' ? 'selected' : '' }}>Provincial Assembly (PA)</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputProvince">Province</label>
-                                <input type="text" class="form-control" id="inputProvince" name="province" placeholder="Enter Province..." value="{{ old('province') }}">
+                                <input type="text" class="form-control" id="inputProvince" name="province" placeholder="Enter Province..." value="{{ $assembly->province }}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputDistrict">District</label>
-                                <input type="text" class="form-control" id="inputDistrict" placeholder="Enter District..." name="district" value="{{ old('district') }}">
+                                <input type="text" class="form-control" id="inputDistrict" placeholder="Enter District..." name="district" value="{{ $assembly->district }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputDescription">Description</label>
-                            <textarea class="form-control" id="inputDescription" rows="3" placeholder="Description..." name="description"></textarea>
+                            <textarea class="form-control" id="inputDescription" rows="3" placeholder="Description..." name="description">{{ $assembly->description }}</textarea>
                         </div>
                 </div>
                 <div class="col-12">
                     <div class="card-footer">
                         <div class="btn-list" style="text-align: right;">
                             <input class="btn" type="button" value="Cancel"/>
-                            <button type="submit" class="btn btn-primary" id="assembly-form-btn">Submit</button>
+                            <button type="submit" class="btn btn-primary" id="assembly-form-btn">Update</button>
                         </div>
                     </div>
                 </div>
@@ -117,6 +117,9 @@
                         });
 
                         $("#assembly-form")[0].reset();
+                        setTimeout(function() {
+                            window.location.href = "{{ route('admin.assembly.index') }}";
+                        }, 2000);
                     } else if (response.status === "error") {
                         toastr.error(response.message, "Error", {
                             positionClass: "toast-top-right"
@@ -129,7 +132,7 @@
 
                         $.each(errors, function(key, value) {
                             var inputField = $("input[name='" + key + "']");
-                            inputField.addClass("is-invalid");
+                            inputField.EditClass("is-invalid");
                             inputField.after('<p class="invalid-feedback">' + value[0] + '</p>');
                         });
                     } else {
