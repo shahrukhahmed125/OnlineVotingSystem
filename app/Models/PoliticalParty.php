@@ -12,9 +12,9 @@ class PoliticalParty extends Model
     protected $fillable = [
         'name',
         'abbreviation',
-        'symbol', // image or icon
+        // 'symbol', // image or icon
         'leader_name',
-        'founded_year',
+        'founded_at',
         'head_office',
     ];
 

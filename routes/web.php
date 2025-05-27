@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssemblyController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CandidateController;
+use App\Http\Controllers\PoliticalPartyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoterController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,18 @@ Route::middleware('auth')->group(function(){
 
         Route::controller(AssemblyController::class)->group(function(){
             Route::prefix('assembly')->as('assembly.')->group(function(){
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update/{id}', 'update')->name('update');
+                Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            });
+        });
+
+        // ------- POLITICAL PARTY ROUTES ------- //
+        Route::controller(PoliticalPartyController::class)->group(function(){
+            Route::prefix('political-parties')->as('political_parties.')->group(function(){
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
