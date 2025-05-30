@@ -11,6 +11,8 @@ class Vote extends Model
         'candidate_id',
         'election_id',
         'voted_at',
+        'assembly_id',
+        'has_voted',
     ];
 
     public function user()
@@ -24,5 +26,9 @@ class Vote extends Model
     public function election()
     {
         return $this->belongsTo(Election::class);
+    }
+    public function assembly()
+    {
+        return $this->belongsTo(Assembly::class);
     }
 }

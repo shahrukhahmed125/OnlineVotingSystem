@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('candidate_id')->constrained('candidates')->onDelete('cascade');
             $table->foreignId('election_id')->constrained('elections')->onDelete('cascade');
+            $table->foreignId('assembly_id')->constrained()->onDelete('cascade');
+            $table->boolean('has_voted')->default(false); // Indicates if the user has voted
             $table->timestamp('voted_at')->default(now());
             $table->timestamps();
         });

@@ -60,7 +60,7 @@ class User extends Authenticatable
 
     public function votes()
     {
-        return $this->hasMany(Vote::class);
+        return $this->hasOne(Vote::class);
     }
 
     public function image()
