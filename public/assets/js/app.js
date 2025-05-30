@@ -10879,7 +10879,7 @@ $(function(){
 
     $(function(){
 $('.date-picker-default').datepicker({
-        format: 'mm-dd-yyyy',
+        format: 'yyyy-mm-dd',
         autoclose: true,
         orientation: "bottom",
         templates: {

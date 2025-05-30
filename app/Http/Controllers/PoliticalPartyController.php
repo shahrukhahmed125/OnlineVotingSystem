@@ -23,11 +23,11 @@ class PoliticalPartyController extends Controller
     {
         try{
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255',
-                'abbreviation' => 'required|string|max:50',
-                'symbol' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // image or icon
+                'name' => 'required|string|max:255|unique:political_parties,name',
+                'abbreviation' => 'required|string|max:50|unique:political_parties,abbreviation',
+                'img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // image or icon
                 'leader_name' => 'required|string|max:255',
-                'founded_at' => 'nullable|date',
+                'founded_at' => 'nullable',
                 'head_office' => 'nullable|string|max:255',
             ]);
 
@@ -38,15 +38,21 @@ class PoliticalPartyController extends Controller
                 ], 422);
             }
 
-            $data = PoliticalParty::create($request->all());
+            $data = new PoliticalParty;
+            $data->name = $request->name;
+            $data->abbreviation = $request->abbreviation;
+            $data->leader_name = $request->leader_name;
+            $data->founded_at = $request->founded_at;
+            $data->head_office = $request->head_office;
+            $data->save();
+
             // image save
-            if ($request->hasFile('symbol')) {
-                $filename = time() . '_' . $request->file('symbol')->getClientOriginalName();
-                $path = $request->file('symbol')->storeAs('dist/political_party', $filename, 'public');
-    
+            if ($request->hasFile('img')) {
+                $filename = time() . '_' . $request->file('img')->getClientOriginalName();
+                $path = $request->file('img')->storeAs('dist/img/symbol', $filename, 'public');
                 $data->images()->create([
                     'image_path' => $path,
-                    'type' => 'Party Symbol', // Optional: Specify the image type
+                    'type' => 'receipt',
                 ]);
             }
 

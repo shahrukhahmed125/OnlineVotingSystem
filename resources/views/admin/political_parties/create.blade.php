@@ -61,14 +61,13 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputFounded_year">Founded At*</label>
-                                <input type="text" name="founded_at" class="form-control date-picker-default">
+                                <input type="text" name="founded_at" class="form-control date-picker-default" id="inputFounded_year" placeholder="Select Date..." value="{{ old('founded_at') }}" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputLeader_name">Symbol / Image*</label>
-                                <div class="custom-file">
-                                    <input type="file" class="form-control custom-file-input" name="symbol" id="customFile" accept="image/*">
-                                    <label class="custom-file-label" for="customFile" name="symbol">Choose Image...</label>
-                                </div>
+                                <input class="form-control @error('img') is-invalid @enderror" 
+                                    name="img" placeholder="Upload Image Here..." value="{{ old('img') }}" 
+                                    type="file" accept="image/*"/>
                             </div>
                         </div>
                         <div class="form-group">

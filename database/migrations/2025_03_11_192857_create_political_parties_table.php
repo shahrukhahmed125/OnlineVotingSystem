@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('political_parties', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('abbreviation')->nullable();
+            $table->string('name')->unique();
+            $table->string('abbreviation')->unique()->nullable();
             // $table->string('symbol')->nullable(); // path to symbol/logo
             $table->string('leader_name')->nullable();
             $table->date('founded_at')->nullable();
