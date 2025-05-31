@@ -58,8 +58,22 @@ Route::middleware('auth')->group(function(){
         });
 
         // ------- POLITICAL PARTY ROUTES ------- //
+
         Route::controller(PoliticalPartyController::class)->group(function(){
             Route::prefix('political-parties')->as('political_parties.')->group(function(){
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update/{id}', 'update')->name('update');
+                Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            });
+        });
+
+        // ------- CANDIDATE ROUTES ------- //
+
+        Route::controller(CandidateController::class)->group(function(){
+            Route::prefix('candidates')->as('candidates.')->group(function(){
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
@@ -74,11 +88,11 @@ Route::middleware('auth')->group(function(){
 
 // Route::get('/admin-dashboard', [AdminController::class, 'index'])->name('home');
 
-Route::get('/candidates/create',[CandidateController::class, 'create'])->name('candidates.create');
+// Route::get('/candidates/create',[CandidateController::class, 'create'])->name('candidates.create');
 
-Route::post('/candidates/store',[CandidateController::class, 'store'])->name('candidates.store');
+// Route::post('/candidates/store',[CandidateController::class, 'store'])->name('candidates.store');
 
-Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
-Route::get('/candidates/{id}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
-Route::get('/candidates/edit/{id}', [CandidateController::class, 'edit'])->name('candidates.edit');
-Route::post('/candidates/update/{id}', [CandidateController::class, 'update'])->name('candidates.update');
+// Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
+// Route::get('/candidates/{id}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
+// Route::get('/candidates/edit/{id}', [CandidateController::class, 'edit'])->name('candidates.edit');
+// Route::post('/candidates/update/{id}', [CandidateController::class, 'update'])->name('candidates.update');

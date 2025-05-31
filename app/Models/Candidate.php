@@ -15,6 +15,8 @@ class Candidate extends Model
         'address',
         'city',
         'CNIC',
+        'constituency_id',
+        'political_party_id',
     ];
 
     public function image()

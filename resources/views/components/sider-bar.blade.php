@@ -12,8 +12,8 @@
                     </a>
                     <ul aria-expanded="false">
                         <li> <a href='index.html'>Default</a> </li>
-                        <li> <a href="{{route('candidates.create')}}">Candidates</a> </li>
-                        <li> <a href='{{route('candidates.index')}}'>Candidates List</a> </li>
+                        <li> <a href="#">Candidates</a> </li>
+                        <li> <a href='#'>Candidates List</a> </li>
                         <li> <a href='index-stock-market.html'>Stock Market</a> </li>
                         <li> <a href='index-dating.html'>Dating</a> </li>
                         <li> <a href='index-job-portal.html'>Job Portal</a> </li>
@@ -33,6 +33,12 @@
                     <ul aria-expanded="false">
                         <li> <a href="{{ route('admin.political_parties.create') }}">Add</a> </li>
                         <li> <a href="{{ route('admin.political_parties.index') }}">List</a> </li>
+                    </ul>
+                </li>
+                <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Candidates</span></a>
+                    <ul aria-expanded="false">
+                        <li> <a href="{{ route('admin.candidates.create') }}">Add</a> </li>
+                        <li> <a href="{{ route('admin.candidates.index') }}">List</a> </li>
                     </ul>
                 </li>
                 <li><a href="mail-inbox.html" aria-expanded="false"><i class="nav-icon ti ti-email"></i><span class="nav-title">Mail</span></a> </li>
