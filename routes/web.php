@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssemblyController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CandidateController;
+use App\Http\Controllers\ElectionController;
 use App\Http\Controllers\PoliticalPartyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoterController;
@@ -74,6 +75,19 @@ Route::middleware('auth')->group(function(){
 
         Route::controller(CandidateController::class)->group(function(){
             Route::prefix('candidates')->as('candidates.')->group(function(){
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update/{id}', 'update')->name('update');
+                Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            });
+        });
+
+        // ------- Election ROUTES ------- //
+
+        Route::controller(ElectionController::class)->group(function(){
+            Route::prefix('elections')->as('elections.')->group(function(){
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
