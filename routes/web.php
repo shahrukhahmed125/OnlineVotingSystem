@@ -8,6 +8,7 @@ use App\Http\Controllers\ElectionController;
 use App\Http\Controllers\PoliticalPartyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoterController;
+use App\Models\Vote;
 use Illuminate\Support\Facades\Route;
 
 // ------- AUTH ROUTES ------- //

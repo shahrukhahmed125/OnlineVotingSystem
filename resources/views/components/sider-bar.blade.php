@@ -28,7 +28,7 @@
                         <li> <a href="{{ route('admin.candidates.index') }}">List</a> </li>
                     </ul>
                 </li>
-                <li><a href="mail-inbox.html" aria-expanded="false"><i class="nav-icon ti ti-email"></i><span class="nav-title">Mail</span></a> </li>
+                <li><a href="#" aria-expanded="false"><i class="nav-icon ti ti-email"></i><span class="nav-title">Votes</span></a></li>
             </ul>
         </div>
         <!-- end sidebar-nav -->

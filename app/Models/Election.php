@@ -27,7 +27,6 @@ class Election extends Model
     public function generateElectionId()
     {
         $this->election_id = 'ELEC-' . strtoupper(uniqid());
-        $this->save();
     }
     
 }

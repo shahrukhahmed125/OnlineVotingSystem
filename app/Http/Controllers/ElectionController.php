@@ -39,13 +39,8 @@ class ElectionController extends Controller
                 ], 422);
             }
 
-            // Generate unique election ID
-            $latest = Election::latest('id')->first();
-            $nextNumber = $latest ? (int)substr($latest->election_id, -3) + 1 : 1; 
-            $electionId = sprintf('ELEC-%03d', $nextNumber);
-
             $data = new Election; 
-            $data->election_id = $electionId;
+            $data->generateElectionId();
             $data->title = $request->title;
             $data->description = $request->description;
             $data->start_time = $request->start_time;

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Vote extends Model
 {
     protected $fillable =[
-        'user_id',
+        'voter_id',
         'candidate_id',
         'election_id',
         'voted_at',
@@ -15,7 +15,7 @@ class Vote extends Model
         'has_voted',
     ];
 
-    public function user()
+    public function voter()
     {
         return $this->belongsTo(User::class);
     }
