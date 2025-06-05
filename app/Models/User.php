@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -20,10 +21,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
         'name',
         'cnic',
         'email',
         'password',
+        'na_constituency_id',
+        'pa_constituency_id',
     ];
 
     /**
@@ -60,11 +64,29 @@ class User extends Authenticatable
 
     public function votes()
     {
-        return $this->hasOne(Vote::class);
+        return $this->hasMany(Vote::class);
     }
 
     public function image()
     {
         return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public static function generateUserId()
+    {
+        // Generate a unique user ID, e.g., USR-YYYYMMDD-XXXXX
+        $prefix = 'USR-';
+        $datePart = now()->format('Ymd'); // Using 'Ymd' for a shorter date part
+        $randomPart = strtoupper(Str::random(5)); // 5 random characters
+
+        $userId = $prefix . $datePart . '-' . $randomPart;
+
+        // Ensure uniqueness (optional, but good practice if high collision risk)
+        while (static::where('user_id', $userId)->exists()) {
+            $randomPart = strtoupper(Str::random(5));
+            $userId = $prefix . $datePart . '-' . $randomPart;
+        }
+
+        return $userId;
     }
 }

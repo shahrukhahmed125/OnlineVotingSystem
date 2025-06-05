@@ -72,29 +72,61 @@ class CandidateController extends Controller
     public function edit($id)
     {
         $data = Candidate::findOrFail($id);
-        return view('admin.candidates.edit', compact('data'));
+        $assemblies = Assembly::all();
+        $parties = PoliticalParty::all(); // Renamed from 'party' for clarity
+        return view('admin.candidates.edit', compact('data', 'assemblies', 'parties'));
     }
 
     public function update(Request $request, $id)
     {
-        $data = Candidate::findOrFail($id);
-        $data->name = $request->name;
-        $data->email = $request->email;
-        $data->phone = $request->phone;
-        $data->address = $request->address;
-        $data->city = $request->city;
-        $data->CNIC = $request->CNIC;
-        $data->update();
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255|unique:candidates,name,' . $id,
+                'email' => 'nullable|email|max:255|unique:candidates,email,' . $id,
+                'phone' => 'nullable|string|max:15',
+                'address' => 'nullable|string|max:255',
+                'city' => 'nullable|string|max:100',
+                'CNIC' => 'required|string|max:15|unique:candidates,CNIC,' . $id,
+                'constituency_id' => 'required|exists:assemblies,id',
+                'political_party_id' => 'required|exists:political_parties,id',
+            ]);
 
-        return redirect()->route('admin.candidates.index');
+            if ($validator->fails()) {
+                // Redirect back with errors and old input if not an AJAX request
+                // For AJAX, you might return a JSON response as in store()
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            $data = Candidate::findOrFail($id);
+            $data->name = $request->name;
+            $data->email = $request->email;
+            $data->phone = $request->phone;
+            $data->address = $request->address;
+            $data->city = $request->city;
+            $data->CNIC = $request->CNIC;
+            $data->constituency_id = $request->constituency_id;
+            $data->political_party_id = $request->political_party_id;
+            $data->save(); // Use save() for consistency, update() also works
+
+            // Add a success message (optional, good for user feedback)
+            return redirect()->route('admin.candidates.index')->with('success', 'Candidate updated successfully!');
+
+        } catch (Exception $e) {
+            // Log the error or handle it as needed
+            return redirect()->back()->with('error', 'Error updating candidate: ' . $e->getMessage())->withInput();
+        }
     }
 
 
     public function destroy($id)
     {
-        $data = Candidate::findOrFail($id);
-        $data->delete();
+        try {
+            $candidate = Candidate::findOrFail($id);
+            $candidate->delete();
 
-        return redirect()->back();
+            return redirect()->route('admin.candidates.index')->with('success', 'Candidate deleted successfully!');
+        } catch (Exception $e) {
+            return redirect()->route('admin.candidates.index')->with('error', 'Error deleting candidate: ' . $e->getMessage());
+        }
     }
 }

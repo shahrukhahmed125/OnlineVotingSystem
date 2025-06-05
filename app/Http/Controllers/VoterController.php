@@ -22,35 +22,37 @@ class VoterController extends Controller
     public function create()
     {
         $user = Auth::user();
-        // Get the current active election
+        // Get the current active election relevant to the user's constituency
         $election = Election::where('is_active', true)
                             ->where('start_time', '<=', now())
                             ->where('end_time', '>=', now())
+                            ->where(function ($query) use ($user) {
+                                $query->where('assembly_id', $user->na_constituency_id)
+                                      ->orWhere('assembly_id', $user->pa_constituency_id);
+                            })
                             ->first();
 
         if (!$election) {
-            return redirect()->back()->with('status', 'No active election at the moment.');
+            return redirect()->back()->with('status', 'No active election for your constituency at the moment.');
         }
 
-        // Get candidates from the user's NA or PA constituency
-        $candidates = Candidate::where('constituency_id', $user->na_constituency_id)
-                            ->orWhere('constituency_id', $user->pa_constituency_id)
-                            ->get();
-
-        if ($candidates->isEmpty()) {
-            return redirect()->back()->with('status', 'No candidates available for your constituency.');
-        }
-
-        // Get the relevant assembly (based on user's constituency)
-        $assembly = Assembly::where('constituency_id', $user->na_constituency_id)
-                            ->orWhere('constituency_id', $user->pa_constituency_id)
-                            ->first();
+        // The election's assembly is the one the user is voting in for this election.
+        $assembly = $election->assembly; // Uses the relationship
 
         if (!$assembly) {
-            return redirect()->back()->with('status', 'Assembly information not found for your constituency.');
+            // This case should ideally not happen if election has a valid assembly_id
+            return redirect()->back()->with('status', 'Assembly information not found for the active election.');
         }
 
-        return view('admin.vote.create', compact('candidates', 'election', 'assembly'));
+        // Get candidates for the specific election's assembly
+        $candidates = $election->candidates()->with('politicalParty')->get(); // Eager load political party
+
+        if ($candidates->isEmpty()) {
+            return redirect()->back()->with('status', 'No candidates available for this election in your constituency.');
+        }
+
+        // Consider renaming this view if it's voter-facing, e.g., 'voter.vote.create'
+        return view('voter.cast-vote', compact('candidates', 'election', 'assembly'));
     }
 
     public function store(Request $request)
@@ -73,6 +75,14 @@ class VoterController extends Controller
             $election = Election::findOrFail($request->election_id);
             $candidate = Candidate::findOrFail($request->candidate_id);
 
+            // Check if the voter is eligible for this election's constituency
+            if ($election->assembly_id != $user->na_constituency_id && $election->assembly_id != $user->pa_constituency_id) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'You are not eligible to vote in this election.'
+                ], 403);
+            }
+
             // Check if election is active and ongoing
             $now = Carbon::now();
             if (!$election->is_active || $election->start_time > $now || $election->end_time < $now) {
@@ -94,15 +104,20 @@ class VoterController extends Controller
                 ], 409);
             }
 
-            // Candidate must belong to voter's NA or PA constituency
-            if (
-                $candidate->constituency_id != $user->na_constituency_id &&
-                $candidate->constituency_id != $user->pa_constituency_id
-            ) {
+            // Candidate must belong to the election's assembly
+            if ($candidate->constituency_id != $election->assembly_id) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'This candidate is not from your area.'
+                    'message' => 'This candidate does not belong to the election\'s constituency.'
                 ], 403);
+            }
+
+            // Ensure the assembly_id from request matches the election's assembly_id for integrity
+            if ($request->assembly_id != $election->assembly_id) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Assembly mismatch for the election.'
+                ], 400); // Bad Request
             }
 
             // Save vote
@@ -110,8 +125,8 @@ class VoterController extends Controller
             $vote->voter_id = $user->id;
             $vote->candidate_id = $candidate->id;
             $vote->election_id = $election->id;
-            $vote->assembly_id = $request->assembly_id;
-            $vote->has_voted = true;
+            $vote->assembly_id = $election->assembly_id; // Use election's assembly_id for consistency
+            // $vote->has_voted = true; // This field was removed
             $vote->voted_at = now();
             $vote->save();
 

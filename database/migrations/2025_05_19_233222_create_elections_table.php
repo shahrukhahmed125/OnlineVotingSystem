@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('elections', function (Blueprint $table) {
             $table->id();
-            $table->string('election_id');
+            $table->string('election_id')->unique(); // Made election_id unique
+            $table->foreignId('assembly_id')->constrained('assemblies')->onDelete('cascade'); // Added foreign key for assembly
             $table->string('title');
             $table->text('description')->nullable();
             $table->timestamp('start_time')->nullable();

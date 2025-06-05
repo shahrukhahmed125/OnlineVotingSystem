@@ -40,7 +40,7 @@
             <div class="card card-statistics">
                 <div class="card-header">
                     <div class="card-heading">
-                        <h4 class="card-title">Form Row</h4>
+                        <h4 class="card-title">Candidate Information</h4>
                     </div>
                 </div>
                 <div class="card-body">
@@ -48,42 +48,73 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="inputName4">Name</label>
-                                <input type="text" class="form-control" id="inputName4" placeholder="Enter Name..." name="name" value="{{$data->name}}">
+                                <label for="inputName4">Name*</label>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="inputName4" placeholder="Enter Name..." name="name" value="{{ old('name', $data->name) }}" required>
+                                @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputEmail4">Email</label>
-                                <input type="email" class="form-control" id="inputEmail4" placeholder="Email" name="email" value="{{$data->email}}">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputCINC4">CNIC No.</label>
-                                <input type="text" class="form-control" id="inputCNIC4" name="CNIC" placeholder="xxxxx-xxxxxxx-x" value="{{$data->CNIC}}">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputPhone4">Phone</label>
-                                <input type="tel" class="form-control" id="inputPhone4" placeholder="03xxxxxxxxx" name="phone" value="{{$data->phone}}">
+                                <label for="inputCNIC4">CNIC No.*</label>
+                                <input type="text" class="form-control @error('CNIC') is-invalid @enderror" id="inputCNIC4" name="CNIC" placeholder="xxxxx-xxxxxxx-x" value="{{ old('CNIC', $data->CNIC) }}" required>
+                                @error('CNIC') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="inputAddress">Address</label>
-                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address" value="{{$data->address}}">
-                        </div>
+
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="inputCity">City</label>
-                                <input type="text" class="form-control" id="inputCity" name="city" value="{{$data->city}}">
+                                <label for="selectAssembly">Select Assembly*</label>
+                                <select id="selectAssembly" class="js-basic-single form-control @error('constituency_id') is-invalid @enderror" name="constituency_id" required>
+                                    <option value="" disabled {{ old('constituency_id', $data->constituency_id) ? '' : 'selected' }}>--Select Assembly--</option>
+                                    @if(isset($assemblies) && $assemblies->isNotEmpty())
+                                        @foreach ($assemblies as $assembly)
+                                            <option value="{{ $assembly->id }}" {{ old('constituency_id', $data->constituency_id) == $assembly->id ? 'selected' : '' }}>
+                                                {{ $assembly->name }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="">No Assemblies Found</option>
+                                    @endif
+                                </select>
+                                @error('constituency_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="selectPoliticalParty">Select Political Party*</label>
+                                <select id="selectPoliticalParty" class="js-basic-single form-control @error('political_party_id') is-invalid @enderror" name="political_party_id" required>
+                                    <option value="" disabled {{ old('political_party_id', $data->political_party_id) ? '' : 'selected' }}>--Select Political Party--</option>
+                                    @if(isset($parties) && $parties->isNotEmpty())
+                                        @foreach ($parties as $party)
+                                            <option value="{{ $party->id }}" {{ old('political_party_id', $data->political_party_id) == $party->id ? 'selected' : '' }}>
+                                                {{ $party->name }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="">No Parties Found</option>
+                                    @endif
+                                </select>
+                                @error('political_party_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputAddress">Address</label>
+                            <textarea class="form-control @error('address') is-invalid @enderror" id="inputAddress" placeholder="1234 Main St" name="address" rows="3">{{ old('address', $data->address) }}</textarea>
+                            @error('address') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="inputEmail4">Email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="inputEmail4" placeholder="Email" name="email" value="{{ old('email', $data->email) }}">
+                                @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="inputState">State</label>
-                                <select id="inputState" class="form-control">
-                                    <option selected>Select State</option>
-                                    <option>Ontario</option>
-                                    <option>Toronto</option>
-                                </select>
+                                <label for="inputPhone4">Phone</label>
+                                <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="inputPhone4" placeholder="03xxxxxxxxx" name="phone" value="{{ old('phone', $data->phone) }}" pattern="03[0-9]{9}">
+                                @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-                            <div class="form-group col-md-2">
-                                <label for="inputZip">Zip</label>
-                                <input type="text" class="form-control" id="inputZip">
+                            <div class="form-group col-md-4">
+                                <label for="inputCity">City</label>
+                                <input type="text" class="form-control @error('city') is-invalid @enderror" id="inputCity" name="city" placeholder="Enter City..." value="{{ old('city', $data->city) }}">
+                                @error('city') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Update</button>

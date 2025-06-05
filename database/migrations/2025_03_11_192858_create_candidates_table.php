@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('CNIC')->unique();
             $table->string('email')->unique();
-            $table->bigInteger('phone');
+            $table->string('phone');
             $table->string('city');
             $table->string('address')->nullable();
             $table->timestamps();

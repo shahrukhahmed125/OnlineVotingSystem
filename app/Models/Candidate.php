@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Candidate extends Model
 {
-    // use SoftDeletes;
+    use HasFactory;
     protected $fillable=[
         'name',
         'email',
@@ -22,5 +23,15 @@ class Candidate extends Model
     public function image()
     {
         return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function assembly()
+    {
+        return $this->belongsTo(Assembly::class, 'constituency_id');
+    }
+
+    public function politicalParty()
+    {
+        return $this->belongsTo(PoliticalParty::class);
     }
 }

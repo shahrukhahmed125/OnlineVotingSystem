@@ -1,5 +1,5 @@
 @extends('masterpage')
-@section('title', 'Add New Election')
+@section('title', 'Edit Election')
 @section('css')
 
 
@@ -14,18 +14,19 @@
             <!-- begin page title -->
             <div class="d-block d-sm-flex flex-nowrap align-items-center">
                 <div class="page-title mb-2 mb-sm-0">
-                    <h1>Add Election</h1>
+                    <h1>Edit Election</h1>
                 </div>
                 <div class="ml-auto d-flex align-items-center">
                     <nav>
                         <ol class="breadcrumb p-0 m-b-0">
                             <li class="breadcrumb-item">
-                                <a href="{{route('admin.home')}}"><i class="ti ti-home"></i></a>
+                                <a href="{{ route('admin.home') }}"><i class="ti ti-home"></i></a>
                             </li>
                             <li class="breadcrumb-item">
                                 Dashboard
                             </li>
-                            <li class="breadcrumb-item active text-primary" aria-current="page">Add Election</li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.elections.index') }}">Elections</a></li>
+                            <li class="breadcrumb-item active text-primary" aria-current="page">Edit Election</li>
                         </ol>
                     </nav>
                 </div>
@@ -38,8 +39,9 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card card-statistics">
-                <form action="{{route('admin.elections.store')}}" method="POST" id="election-form">
+                <form action="{{ route('admin.elections.update', $election->id) }}" method="POST" id="election-form">
                 @csrf
+                @method('PUT')
                 <div class="card-header">
                     <div class="card-heading">
                         <h4 class="card-title">Details</h4>
@@ -49,16 +51,16 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputTitle">Election Title*</label>
-                                <input type="text" class="form-control @error('title') is-invalid @enderror" id="inputTitle" placeholder="Enter Title..." name="title" value="{{ old('title') }}" required>
+                                <input type="text" class="form-control @error('title') is-invalid @enderror" id="inputTitle" placeholder="Enter Title..." name="title" value="{{ old('title', $election->title) }}" required>
                                 @error('title') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="selectAssembly">Select Assembly*</label>
                                 <select id="selectAssembly" class="js-basic-single form-control @error('assembly_id') is-invalid @enderror" name="assembly_id" required>
-                                    <option value="" selected disabled>--Select Assembly--</option>
+                                    <option value="" disabled {{ old('assembly_id', $election->assembly_id) ? '' : 'selected' }}>--Select Assembly--</option>
                                     @if(isset($assemblies) && $assemblies->isNotEmpty())
                                         @foreach ($assemblies as $assembly)
-                                            <option value="{{ $assembly->id }}" {{ old('assembly_id') == $assembly->id ? 'selected' : '' }}>
+                                            <option value="{{ $assembly->id }}" {{ old('assembly_id', $election->assembly_id) == $assembly->id ? 'selected' : '' }}>
                                                 {{ $assembly->name }}
                                             </option>
                                         @endforeach
@@ -72,17 +74,17 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="inputStartTime">Start Time*</label>
-                                <input type="text" name="start_time" class="form-control date-picker-default @error('start_time') is-invalid @enderror" id="inputStartTime" placeholder="Select Date..." value="{{ old('start_time') }}" required>
+                                <input type="text" name="start_time" class="form-control date-picker-default @error('start_time') is-invalid @enderror" id="inputStartTime" placeholder="Select Date..." value="{{ old('start_time', $election->start_time ? \Carbon\Carbon::parse($election->start_time)->format('m/d/Y') : '') }}" required>
                                 @error('start_time') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputEndTime">End Time*</label>
-                                <input type="text" name="end_time" class="form-control date-picker-default @error('end_time') is-invalid @enderror" id="inputEndTime" placeholder="Select Date..." value="{{ old('end_time') }}" required>
+                                <input type="text" name="end_time" class="form-control date-picker-default @error('end_time') is-invalid @enderror" id="inputEndTime" placeholder="Select Date..." value="{{ old('end_time', $election->end_time ? \Carbon\Carbon::parse($election->end_time)->format('m/d/Y') : '') }}" required>
                                 @error('end_time') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-4 align-self-center">
                                 <div class="form-check">
-                                    <input class="form-check-input @error('is_active') is-invalid @enderror" type="checkbox" name="is_active" id="inputIsActive" value="1" {{ old('is_active') ? 'checked' : '' }}>
+                                    <input class="form-check-input @error('is_active') is-invalid @enderror" type="checkbox" name="is_active" id="inputIsActive" value="1" {{ old('is_active', $election->is_active) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="inputIsActive">
                                         Is Active?
                                     </label>
@@ -92,15 +94,15 @@
                         </div>    
                         <div class="form-group">
                             <label for="inputDescription">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="inputDescription" placeholder="Add more details..." name="description" rows="3">{{ old('description') }}</textarea>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="inputDescription" placeholder="Add more details..." name="description" rows="3">{{ old('description', $election->description) }}</textarea>
                             @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                 </div>
                 <div class="col-12">
                     <div class="card-footer">
                         <div class="btn-list" style="text-align: right;">
-                            <input class="btn" type="button" value="Cancel"/>
-                            <button type="submit" class="btn btn-primary" id="election-form-btn">Submit</button>
+                            <a href="{{ route('admin.elections.index') }}" class="btn">Cancel</a>
+                            <button type="submit" class="btn btn-primary" id="election-form-btn">Update</button>
                         </div>
                     </div>
                 </div>
@@ -118,10 +120,20 @@
 
 <script>
     $(document).ready(function() {
+        // Assuming date-picker-default class initializes a date picker
+        // If not, you might need to initialize it here, e.g.:
+        // $('.date-picker-default').datepicker({
+        //     format: 'mm/dd/yyyy',
+        //     autoclose: true,
+        //     todayHighlight: true
+        // });
+
+        // AJAX form submission (optional, if you prefer this over standard form submission)
+        // If using standard form submission, remove this script block or adapt as needed.
         $("#election-form").submit(function(e) {
             e.preventDefault();
             $(".invalid-feedback").remove();
-            $("input").removeClass("is-invalid");
+            $("input, select, textarea").removeClass("is-invalid");
 
             var formData = $(this).serialize();
 
@@ -131,7 +143,7 @@
 
             $.ajax({
                 url: $(this).attr("action"),
-                type: "POST",
+                type: "POST", // Should be POST, Laravel handles PUT/PATCH via _method field
                 data: formData,
                 dataType: "json",
                 success: function(response) {
@@ -139,8 +151,8 @@
                         toastr.success(response.message, "Success", {
                             positionClass: "toast-top-right"
                         });
-
-                        $("#election-form")[0].reset();
+                        // Optionally redirect or update UI
+                        // window.location.href = "{{ route('admin.elections.index') }}"; 
                     } else if (response.status === "error") {
                         toastr.error(response.message, "Error", {
                             positionClass: "toast-top-right"
@@ -150,20 +162,23 @@
                 error: function(xhr) {
                     if (xhr.status === 422) {
                         var errors = xhr.responseJSON.errors;
-
                         $.each(errors, function(key, value) {
-                            var inputField = $("input[name='" + key + "']");
+                            var fieldName = key;
+                            // For fields like start_time.date or start_time.time if backend sends it that way
+                            // if (key.includes('.')) { fieldName = key.split('.')[0]; } 
+                            var inputField = $("[name='" + fieldName + "']");
                             inputField.addClass("is-invalid");
-                            inputField.after('<p class="invalid-feedback">' + value[0] + '</p>');
+                            // Add error message after the field or in a designated error span
+                            inputField.closest('.form-group').append('<p class="invalid-feedback d-block">' + value[0] + '</p>');
                         });
                     } else {
-                        toastr.error("Something went wrong!", "Error", {
+                        toastr.error("Something went wrong! Please try again.", "Error", {
                             positionClass: "toast-top-right"
                         });
                     }
                 },
                 complete: function() {
-                    $('#election-form-btn').prop("disabled", false).html('Submit');
+                    $('#election-form-btn').prop("disabled", false).html('Update');
                 }
             });
         });

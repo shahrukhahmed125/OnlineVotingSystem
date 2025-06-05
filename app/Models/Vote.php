@@ -12,7 +12,6 @@ class Vote extends Model
         'election_id',
         'voted_at',
         'assembly_id',
-        'has_voted',
     ];
 
     public function voter()

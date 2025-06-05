@@ -30,6 +30,6 @@ class Assembly extends Model
 
     public function elections()
     {
-        return $this->hasMany(Election::class, 'constituency_id');
+        return $this->hasMany(Election::class, 'assembly_id');
     }
 }

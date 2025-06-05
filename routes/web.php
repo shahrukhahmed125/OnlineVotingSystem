@@ -29,7 +29,11 @@ Route::middleware('auth', 'role:user')->group(function(){
         // ------- VOTER DASHBOARD ROUTES ------- //
 
         Route::controller(VoterController::class)->group(function(){
-            Route::get('/', 'index')->name('home');
+            Route::get('/', 'index')->name('dashboard'); // Renamed from 'home'
+            Route::prefix('vote')->as('vote.')->group(function(){
+                Route::get('/', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+            });
         });
 
     });

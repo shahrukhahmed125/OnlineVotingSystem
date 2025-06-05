@@ -21,8 +21,12 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
+            AssemblySeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
+            PoliticalPartySeeder::class,
+            ElectionSeeder::class,
+            CandidateSeeder::class,
         ]);
     }
 }
