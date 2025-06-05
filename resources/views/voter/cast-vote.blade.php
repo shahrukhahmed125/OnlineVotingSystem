@@ -41,24 +41,24 @@
                 @csrf
                 <div class="card-header">
                     <div class="card-heading">
-                        {{-- <h4 class="card-title">Election: {{ $election->title }} ({{ $assembly->name }})</h4> --}}
+                        <h4 class="card-title">Election: {{ $election->title }} ({{ $assembly->name }})</h4>
                     </div>
                 </div>
                 <div class="card-body">
-                        {{-- <input type="hidden" name="election_id" value="{{ $election->id }}">
-                        <input type="hidden" name="assembly_id" value="{{ $assembly->id }}"> --}}
+                        <input type="hidden" name="election_id" value="{{ $election->id }}">
+                        <input type="hidden" name="assembly_id" value="{{ $assembly->id }}">
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="candidate_id">Select Candidate*</label>
                                     <select id="candidate_id" class="js-basic-single form-control" name="candidate_id" required>
                                         <option value="" selected disabled>--Select Your Candidate--</option>
-                                        {{-- @if ($candidates->isNotEmpty())
+                                        @if ($candidates->isNotEmpty())
                                             @foreach ($candidates as $candidate)
                                                 <option value="{{ $candidate->id }}">{{ $candidate->name }} ({{ $candidate->politicalParty->name ?? 'Independent' }})</option>
                                             @endforeach
                                         @else
                                             <option value="">No Candidates Found for this Election</option>
-                                        @endif --}}
+                                        @endif
                                     </select>
                             </div>
                         </div>    
@@ -82,7 +82,7 @@
 
 @section('js')
 
-<script>
+{{-- <script>
     $(document).ready(function() {
         // Initialize select2 if you are using it for js-basic-single
         if ($.fn.select2) {
@@ -149,6 +149,6 @@
         });
     });
 
-</script>  
+</script>   --}}
 
 @stop

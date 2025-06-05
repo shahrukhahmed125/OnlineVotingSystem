@@ -24,35 +24,40 @@ class VoterController extends Controller
         $user = Auth::user();
         // Get the current active election relevant to the user's constituency
         $election = Election::where('is_active', true)
-                            ->where('start_time', '<=', now())
-                            ->where('end_time', '>=', now())
+                            // ->where('start_time', '<=', now())
+                            // ->where('end_time', '>=', now())
                             ->where(function ($query) use ($user) {
                                 $query->where('assembly_id', $user->na_constituency_id)
-                                      ->orWhere('assembly_id', $user->pa_constituency_id);
+                                    ->orWhere('assembly_id', $user->pa_constituency_id);
                             })
                             ->first();
 
         if (!$election) {
-            return redirect()->back()->with('status', 'No active election for your constituency at the moment.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No active election for your constituency at the moment.'
+            ], 404);
         }
 
-        // The election's assembly is the one the user is voting in for this election.
-        $assembly = $election->assembly; // Uses the relationship
+        $assembly = $election->assembly;
 
         if (!$assembly) {
-            // This case should ideally not happen if election has a valid assembly_id
-            return redirect()->back()->with('status', 'Assembly information not found for the active election.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Assembly information not found for the active election.'
+            ], 404);
         }
 
-        // Get candidates for the specific election's assembly
-        $candidates = $election->candidates()->with('politicalParty')->get(); // Eager load political party
+        $candidates = $election->candidates()->with('politicalParty')->get();
 
         if ($candidates->isEmpty()) {
-            return redirect()->back()->with('status', 'No candidates available for this election in your constituency.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No candidates available for this election in your constituency.'
+            ], 404);
         }
 
-        // Consider renaming this view if it's voter-facing, e.g., 'voter.vote.create'
-        return view('voter.cast-vote', compact('candidates', 'election', 'assembly'));
+        return view('voter.cast-vote', compact('election', 'assembly', 'candidates'));
     }
 
     public function store(Request $request)
@@ -84,8 +89,8 @@ class VoterController extends Controller
             }
 
             // Check if election is active and ongoing
-            $now = Carbon::now();
-            if (!$election->is_active || $election->start_time > $now || $election->end_time < $now) {
+            // $now = Carbon::now();
+            if (!$election->is_active) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'This election is not active currently.'

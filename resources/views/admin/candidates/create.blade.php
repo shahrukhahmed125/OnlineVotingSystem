@@ -56,8 +56,8 @@
                                 <input type="text" class="form-control" id="inputCNIC4" name="CNIC" placeholder="xxxxx-xxxxxxx-x" required >
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputState">Select Assembly*</label>
-                                    <select id="inputState" class="js-basic-single form-control" name="constituency_id" required>
+                                <label for="constituency_id">Select Assembly*</label>
+                                    <select id="constituency_id" class="js-basic-single form-control" name="constituency_id" required>
                                         <option selected disabled>--Select</option>
                                         @if ($assemblies->isNotEmpty())
                                             @foreach ($assemblies as $assembly)

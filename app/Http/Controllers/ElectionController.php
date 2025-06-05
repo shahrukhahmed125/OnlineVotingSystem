@@ -42,7 +42,7 @@ class ElectionController extends Controller
             }
 
             $data = new Election; 
-            $data->generateElectionId();
+            $data->election_id = $data->generateElectionId();
             $data->title = $request->title;
             $data->description = $request->description;
             $data->start_time = $request->start_time;
