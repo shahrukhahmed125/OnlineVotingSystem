@@ -11,7 +11,8 @@ class PoliticalPartyController extends Controller
 {
     public function index()
     {
-        return view('admin.political_parties.index');
+        $politicalParties = PoliticalParty::all();
+        return view('admin.political_parties.index', compact('politicalParties'));
     }
 
     public function create()

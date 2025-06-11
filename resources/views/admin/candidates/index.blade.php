@@ -4,7 +4,6 @@
 @section('css')
 
 
-
 @stop
 @section('content')
 
@@ -39,33 +38,41 @@
     <div class="row">
         <div class="col-12">
             <div class="card card-statistics">
-                <div class="card-header">
-                    <div class="card-heading">
-                        <h4 class="card-title">Table Light</h4>
-                    </div>
-                </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
+                    <div class="export-table-wrapper datatable-wrapper table-responsive">
+                        <table id="export-table" class="table table-bordered">
+                            <thead class="thead-light">
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">First</th>
-                                    <th scope="col">Last</th>
-                                    <th scope="col">Handle</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">CNIC</th>
+                                    <th scope="col">Political Party</th>
+                                    <th scope="col">Constituency</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($data as $item)
                                 <tr>
-                                    <th scope="row">{{$item->id}}</th>
-                                    <td>{{$item->name}}</td>
-                                    <td>{{$item->email}}</td>
-                                    <td>{{$item->CNIC}}</td>
+                                    <td>{{ucwords($item->name)}}</td>
+                                    <td>{{ucwords($item->CNIC)}}</td>
                                     <td>
-                                        <a class="btn btn-primary" href="{{route('candidates.edit', $item->id)}}">Edit</a>
-                                        <a class="btn btn-danger" href="{{route('candidates.destroy',$item->id)}}">Delete</a>
+                                        @if($item->politicalParty && $item->politicalParty->name)
+                                            {{ ucwords($item->politicalParty->name) }}
+                                            @if($item->politicalParty->abbreviation)
+                                                ({{ strtoupper($item->politicalParty->abbreviation) }})
+                                            @endif
+                                        @else
+                                            null
+                                        @endif
+                                    </td>
+                                    <td>{{ $item->assembly->name ? ucwords($item->assembly->name) : 'null' }}</td>
+                                    <td>
+                                        <a class="btn btn-secondary" href="{{route('admin.candidates.edit', $item->id)}}">Edit</a>
+                                        <form action="{{route('admin.candidates.destroy', $item->id)}}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -78,7 +85,6 @@
     </div>
     <!-- end row -->
 </div>
-
 
 @endsection
 

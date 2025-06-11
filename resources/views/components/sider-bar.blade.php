@@ -3,7 +3,7 @@
         <!-- begin sidebar-nav -->
         <div class="sidebar-nav scrollbar scroll_light">
             <ul class="metismenu " id="sidebarNav">
-                <li><a href="app-chat.html" aria-expanded="false"><i class="nav-icon ti ti-rocket"></i><span class="nav-title">Dashboards</span></a> </li>
+                <li><a href="{{route('admin.home')}}" aria-expanded="false"><i class="nav-icon ti ti-rocket"></i><span class="nav-title">Dashboards</span></a> </li>
                 <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Election</span></a>
                     <ul aria-expanded="false">
                         <li> <a href="{{ route('admin.elections.create') }}">Add</a> </li>

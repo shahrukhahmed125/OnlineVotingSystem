@@ -1,0 +1,87 @@
+@extends('masterpage')
+@section('title', 'Elections List')
+
+@section('css')
+
+
+@stop
+@section('content')
+
+<div class="container-fluid">
+    <!-- begin row -->
+    <div class="row">
+        <div class="col-md-12 m-b-30">
+            <!-- begin page title -->
+            <div class="d-block d-sm-flex flex-nowrap align-items-center">
+                <div class="page-title mb-2 mb-sm-0">
+                    <h1>Elections List</h1>
+                </div>
+                <div class="ml-auto d-flex align-items-center">
+                    <nav>
+                        <ol class="breadcrumb p-0 m-b-0">
+                            <li class="breadcrumb-item">
+                                <a href="{{route('admin.home')}}"><i class="ti ti-home"></i></a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li class="breadcrumb-item active text-primary" aria-current="page">Elections List</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!-- end page title -->
+        </div>
+    </div>
+    <!-- end row -->
+    <!-- begin row -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    <div class="export-table-wrapper datatable-wrapper table-responsive">
+                        <table id="export-table" class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Assembly</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $item)
+                                <tr>
+                                    <td>{{ucwords($item->election_id)}}</td>
+                                    <td>{{ucwords($item->title)}}</td>
+                                    <td>{{ $item->assembly->name ? ucwords($item->assembly->name) : 'null' }}</td>
+                                    <td>{{ $item->start_date ? ucwords($item->start_date) : 'null' }}</td>
+                                    <td>{{ $item->end_date ? ucwords($item->end_date) : 'null' }}</td>
+                                    <td>
+                                        <a class="btn btn-secondary" href="{{route('admin.elections.edit', $item->id)}}">Edit</a>
+                                        <form action="{{route('admin.elections.destroy', $item->id)}}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+</div>
+
+@endsection
+
+@section('js')
+
+
+@stop
