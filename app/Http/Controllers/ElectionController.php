@@ -30,7 +30,7 @@ class ElectionController extends Controller
                 'description' => 'required|string|max:1000',
                 'start_time' => 'required|date',
                 'end_time' => 'required|date|after:start_time',
-                'assembly_id' => 'required|exists:assemblies,id', // Added assembly_id validation
+                'type' => 'required|in:general assembly,national assembly,provincial assembly', // Updated to use string values
                 'is_active' => 'sometimes|boolean', // Changed to sometimes, default can be false
             ]);
 
@@ -47,7 +47,7 @@ class ElectionController extends Controller
             $data->description = $request->description;
             $data->start_time = $request->start_time;
             $data->end_time = $request->end_time;
-            $data->assembly_id = $request->assembly_id; // Added assembly_id assignment
+            $data->type = $request->type; // Updated to use type
             $data->is_active = $request->input('is_active', false); // Set is_active, default to false
             $data->save();
 

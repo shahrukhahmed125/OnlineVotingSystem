@@ -41,12 +41,12 @@
                 @csrf
                 <div class="card-header">
                     <div class="card-heading">
-                        <h4 class="card-title">Election: {{ $election->title }} ({{ $assembly->name }})</h4>
+                        <h4 class="card-title">Election: {{ $election->title }}</h4>
+                        {{-- <p>You can select up to {{ $maxVotes }} candidate(s)</p> --}}
                     </div>
                 </div>
                 <div class="card-body">
                         <input type="hidden" name="election_id" value="{{ $election->id }}">
-                        <input type="hidden" name="assembly_id" value="{{ $assembly->id }}">
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="candidate_id">Select Candidate*</label>

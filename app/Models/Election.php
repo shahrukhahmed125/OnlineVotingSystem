@@ -16,12 +16,12 @@ class Election extends Model
         'start_time',
         'end_time',
         'is_active',
-        'assembly_id'
+        'type'
     ];
 
     public function candidates()
     {
-        // An Election has an assembly_id.
+        // An Election has a type.
         // Candidates have a constituency_id (which is an assembly_id).
         // This relationship fetches candidates whose constituency_id matches this election's assembly_id.
         return $this->hasMany(Candidate::class, 'constituency_id', 'assembly_id');
@@ -37,8 +37,4 @@ class Election extends Model
         return 'ELEC-' . strtoupper(uniqid());
     }
 
-    public function assembly()
-    {
-        return $this->belongsTo(Assembly::class, 'assembly_id');
-    }
 }

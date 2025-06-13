@@ -53,20 +53,14 @@
                                 @error('title') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="selectAssembly">Select Assembly*</label>
-                                <select id="selectAssembly" class="js-basic-single form-control @error('assembly_id') is-invalid @enderror" name="assembly_id" required>
-                                    <option value="" selected disabled>--Select Assembly--</option>
-                                    @if(isset($assemblies) && $assemblies->isNotEmpty())
-                                        @foreach ($assemblies as $assembly)
-                                            <option value="{{ $assembly->id }}" {{ old('assembly_id') == $assembly->id ? 'selected' : '' }}>
-                                                {{ $assembly->name }}
-                                            </option>
-                                        @endforeach
-                                    @else
-                                        <option value="">No Assemblies Found</option>
-                                    @endif
+                                <label for="selectAssembly">Select Type*</label>
+                                <select id="selectAssembly" class="js-basic-single form-control @error('type') is-invalid @enderror" name="type" required>
+                                    <option value="" selected disabled>--Select</option>
+                                    <option value="general assembly">General Assembly</option>
+                                    <option value="national assembly">National Assembly</option>
+                                    <option value="provincial assembly">Provincial Assembly</option>
                                 </select>
-                                @error('assembly_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('type') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <div class="form-row">

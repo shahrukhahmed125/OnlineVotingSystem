@@ -24,13 +24,12 @@ class VoterController extends Controller
         $user = Auth::user();
         // Get the current active election relevant to the user's constituency
         $election = Election::where('is_active', true)
-                            // ->where('start_time', '<=', now())
-                            // ->where('end_time', '>=', now())
-                            ->where(function ($query) use ($user) {
-                                $query->where('assembly_id', $user->na_constituency_id)
-                                    ->orWhere('assembly_id', $user->pa_constituency_id);
-                            })
-                            ->first();
+            ->where(function ($query) use ($user) {
+                $query->where('type', 'national assembly')
+                    ->orWhere('type', 'provincial assembly')
+                    ->orWhere('type', 'general assembly');
+            })
+            ->first();
 
         if (!$election) {
             return response()->json([
@@ -39,7 +38,19 @@ class VoterController extends Controller
             ], 404);
         }
 
-        $assembly = $election->assembly;
+        $assembly = null;
+
+        // Determine which assembly applies to the user based on the election type
+        if ($election->type === 'national assembly') {
+            $assembly = Assembly::find($user->na_constituency_id);
+        } elseif ($election->type === 'provincial assembly') {
+            $assembly = Assembly::find($user->pa_constituency_id);
+        } elseif ($election->type === 'general assembly') {
+            // For general elections, you might want to handle both NA and PA
+            $naAssembly = Assembly::find($user->na_constituency_id);
+            $paAssembly = Assembly::find($user->pa_constituency_id);
+            $assembly = collect([$naAssembly, $paAssembly])->filter(); // just in case one is null
+        }
 
         if (!$assembly) {
             return response()->json([
@@ -48,7 +59,11 @@ class VoterController extends Controller
             ], 404);
         }
 
-        $candidates = $election->candidates()->with('politicalParty')->get();
+        // Get candidates for the relevant assembly or both
+        $candidates = Candidate::whereIn('constituency_id', [
+            $user->na_constituency_id,
+            $user->pa_constituency_id
+        ])->with('politicalParty')->get();
 
         if ($candidates->isEmpty()) {
             return response()->json([
@@ -57,7 +72,10 @@ class VoterController extends Controller
             ], 404);
         }
 
-        return view('voter.cast-vote', compact('election', 'assembly', 'candidates'));
+        // Determine how many votes the user can cast
+        $maxVotes = $election->type === 'general assembly' ? 2 : 1;
+
+        return view('voter.cast-vote', compact('election', 'assembly', 'candidates', 'maxVotes'));
     }
 
     public function store(Request $request)

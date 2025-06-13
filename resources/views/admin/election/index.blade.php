@@ -40,14 +40,14 @@
             <div class="card card-statistics">
                 <div class="card-body">
                     <div class="export-table-wrapper datatable-wrapper table-responsive">
-                        <table id="export-table" class="table table-bordered">
+                        <table id="export-table" class="table mb-0">
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">ID</th>
                                     <th scope="col">Title</th>
-                                    <th scope="col">Assembly</th>
-                                    <th scope="col">Start Date</th>
-                                    <th scope="col">End Date</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Duration</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -56,16 +56,35 @@
                                 <tr>
                                     <td>{{ucwords($item->election_id)}}</td>
                                     <td>{{ucwords($item->title)}}</td>
-                                    <td>{{ $item->assembly->name ? ucwords($item->assembly->name) : 'null' }}</td>
-                                    <td>{{ $item->start_date ? ucwords($item->start_date) : 'null' }}</td>
-                                    <td>{{ $item->end_date ? ucwords($item->end_date) : 'null' }}</td>
+                                    <td>{{ ucwords($item->type) }}</td>
                                     <td>
-                                        <a class="btn btn-secondary" href="{{route('admin.elections.edit', $item->id)}}">Edit</a>
-                                        <form action="{{route('admin.elections.destroy', $item->id)}}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
+                                        @if($item->is_active)
+                                            <span class="mr-2 mb-2 mr-sm-0 mb-sm-0 badge badge-pill badge-success-inverse">Active</span>
+                                        @else
+                                            <span class="mr-2 mb-2 mr-sm-0 mb-sm-0 badge badge-pill badge-danger-inverse">Inactive</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($item->start_time && $item->end_time)
+                                            {{ \Carbon\Carbon::parse($item->start_time)->format('d-M-y') }} to {{ \Carbon\Carbon::parse($item->end_time)->format('d-M-y') }}
+                                        @else
+                                            null
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
+                                                <a class="dropdown-item" href="{{route('admin.elections.edit', $item->id)}}">Edit</a>
+                                                <form action="{{route('admin.elections.destroy', $item->id)}}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this election?')">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
