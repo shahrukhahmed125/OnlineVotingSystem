@@ -101,7 +101,7 @@
             $(".invalid-feedback").remove();
             $("input").removeClass("is-invalid");
 
-            var formData = $(this).serialize();
+            var formData = new FormData(this);
 
             $('#party-form-btn').prop("disabled", true).html(
                 '<span class="spinner-border spinner-border-sm"></span> Processing...'
@@ -112,6 +112,8 @@
                 type: "POST",
                 data: formData,
                 dataType: "json",
+                contentType: false, // Important for file upload
+                processData: false, // Important for file upload
                 success: function(response) {
                     if (response.status === "success") {
                         toastr.success(response.message, "Success", {
@@ -130,7 +132,7 @@
                         var errors = xhr.responseJSON.errors;
 
                         $.each(errors, function(key, value) {
-                            var inputField = $("input[name='" + key + "']");
+                            var inputField = $("[name='" + key + "']");
                             inputField.addClass("is-invalid");
                             inputField.after('<p class="invalid-feedback">' + value[0] + '</p>');
                         });

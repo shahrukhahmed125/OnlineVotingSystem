@@ -53,7 +53,7 @@ class PoliticalPartyController extends Controller
                 $path = $request->file('img')->storeAs('dist/img/symbol', $filename, 'public');
                 $data->images()->create([
                     'image_path' => $path,
-                    'type' => 'receipt',
+                    'type' => 'symbol',
                 ]);
             }
 
