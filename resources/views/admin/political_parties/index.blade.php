@@ -40,7 +40,7 @@
             <div class="card card-statistics">
                 <div class="card-body">
                     <div class="export-table-wrapper datatable-wrapper table-responsive">
-                        <table id="export-table" class="table table-bordered">
+                        <table id="export-table" class="table">
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">Name</th>
@@ -58,12 +58,21 @@
                                     <td>{{ $item->leader_name ? ucwords($item->leader_name) : 'null' }}</td>
                                     <td class="text-wrap">{{ $item->details ? ucwords($item->details) : 'null' }}</td>
                                     <td>
-                                        <a class="btn btn-secondary" href="{{route('admin.political_parties.edit', $item->id)}}">Edit</a>
-                                        <form action="{{route('admin.political_parties.destroy', $item->id)}}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
+                                                <a class="dropdown-item" href="{{route('admin.political_parties.edit', $item->id)}}">Edit</a>
+                                                <a class="dropdown-item" href="#">Details</a>
+                                                <a class="dropdown-item" href="#">Candidates</a>
+                                                <form action="{{route('admin.political_parties.destroy', $item->id)}}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this election?')">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
