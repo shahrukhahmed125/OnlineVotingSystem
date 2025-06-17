@@ -50,6 +50,20 @@ Route::middleware('auth')->group(function(){
             Route::get('/', 'index')->name('home');
         });
 
+        // ------- USER ROUTES ------- //
+
+        Route::controller(UserController::class)->group(function(){
+            Route::prefix('users')->as('users.')->group(function(){
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::post('/update/{id}', 'update')->name('update');
+                Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            });
+        });
+
+
         // ------- ASSEMBLY ROUTES ------- //
 
         Route::controller(AssemblyController::class)->group(function(){
