@@ -73,8 +73,11 @@ class AuthController extends Controller
             'password' => 'required|min:8|string',
         ]);
 
-        $user = User::create(($request->all()));
+        $user = new User;
+        $user->user_id = $user->generateUserId();
+        $user->fill($request->all());
         $user->assignRole('user');
+        $user->save();
 
         // event(new Registered($user));
         // $user->sendEmailVerificationNotification();
