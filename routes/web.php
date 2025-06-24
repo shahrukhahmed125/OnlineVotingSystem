@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssemblyController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\ElectionController;
 use App\Http\Controllers\PoliticalPartyController;
@@ -19,6 +20,12 @@ Route::get('/logout',[AuthController::class,'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 
 Route::post('/redirect/register',[AuthController::class,'register_auth'])->name('register_auth');
+
+//----- TWO FACTOR AUTHENTICATION -----//
+
+Route::get('/2fa/challenge', [TwoFactorController::class, 'show'])->name('2fa.challenge');
+Route::post('/2fa/verify/{id}', [TwoFactorController::class, 'verify'])->name('2fa.verify');
+
 
 
 // ------- VOTER ROUTES ------- //

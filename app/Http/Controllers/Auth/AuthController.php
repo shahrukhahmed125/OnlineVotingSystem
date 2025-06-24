@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\TwoFactorCodeNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,11 @@ class AuthController extends Controller
             if (is_null($user->password)) {
                 $user->password = bcrypt($request->password);
                 $user->save();
+                $user->generateTwoFactorCode();
+                $user->notify(new TwoFactorCodeNotification);
+                $request->session()->put('2fa_user_id', $user->id);
+                
+                return redirect()->route('2fa.challenge');
             }
             else {
                 return redirect()->back()->withErrors(['cnic' => 'User already registered! Please login.']);
