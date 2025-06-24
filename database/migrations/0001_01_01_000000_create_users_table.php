@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('pending_email')->nullable();
             $table->string('email_verification_code')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->timestamp('password_changed_at')->nullable();
             $table->rememberToken();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();

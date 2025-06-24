@@ -27,14 +27,14 @@ class AuthController extends Controller
     public function login_auth(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|string',
+            'cnic' => 'required|string|max:255',
             'password' => 'required|min:8|string',
         ]);
 
         // Check if the "remember" checkbox is selected
         $remember = $request->has('remember');
 
-        if (Auth::attempt($request->only('email', 'password'), $remember)) {
+        if (Auth::attempt($request->only('cnic', 'password'), $remember)) {
             $user = Auth::user();
             // session(['2fa_email' => $request->email]);
 
@@ -56,7 +56,7 @@ class AuthController extends Controller
             return redirect()->intended('admin-dashboard');
         }
 
-        return redirect()->back()->withErrors(['email' => 'Inavlid Credentials!']);
+        return redirect()->back()->withErrors(['cnic' => 'Inavlid Credentials!']);
     }
 
     public function register()
@@ -67,20 +67,26 @@ class AuthController extends Controller
     public function register_auth(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'cnic' => 'required|string|unique:users,cnic|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
+            'cnic' => 'required|string|max:255',
             'password' => 'required|min:8|string',
         ]);
 
-        $user = new User;
-        $user->user_id = $user->generateUserId();
-        $user->fill($request->all());
-        $user->assignRole('user');
-        $user->save();
+        // Try to find user by cnic, name, and email
+        $user = User::where('cnic', $request->cnic)->first();
 
-        // event(new Registered($user));
-        // $user->sendEmailVerificationNotification();
+        if ($user) {
+            // Only update password if it is null
+            if (is_null($user->password)) {
+                $user->password = bcrypt($request->password);
+                $user->save();
+            }
+            else {
+                return redirect()->back()->withErrors(['cnic' => 'User already registered! Please login.']);
+            }
+        } else {
+            return redirect()->back()->withErrors(['cnic' => 'Data not found! Please make sure you have made your CNIC.']);
+        }
+
         Auth::login($user);
 
         return redirect()->intended('voter-dashboard');

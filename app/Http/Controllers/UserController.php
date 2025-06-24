@@ -50,7 +50,7 @@ class UserController extends Controller
                 'email' => 'required|string|email|unique:users,email|max:255',
                 'role' => 'required',
                 'email_verified_at' => 'required',
-                'password' => 'required|min:8|confirmed',
+                // 'password' => 'required|min:8|confirmed',
                 'gender' => 'nullable|string|in:male,female,others',
                 'title' => 'nullable|string|max:255',
                 'department' => 'nullable|string|max:255',
@@ -78,6 +78,7 @@ class UserController extends Controller
             $data->user_id = $data->generateUserId();
             $name = $request->fname . ' ' . $request->lname;
             $data->name = $name;
+            $data->password = null;
             $data->fill($request->all());
             
             // optional fields

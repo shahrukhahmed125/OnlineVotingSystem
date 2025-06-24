@@ -23,13 +23,13 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => bcrypt('123456789'), // Ensure password is a string
             'remember_token' => Str::random(10),
-            // 'gender' => 'male', // These fields are not in the standard User model or factory, removing unless added
-            // 'title' => 'Owner',
-            // 'department' => 'Company',
+            'gender' => 'male', // These fields are not in the standard User model or factory, removing unless added
+            'title' => 'Owner',
+            'department' => 'Company',
             'address' => 'A 36 Block B North Nazimabad Karachi',
-            // 'about' => 'dshfjashfjkahf',
+            'about' => 'dshfjashfjkahf',
             'city' => "Karachi",
-            // 'postal_code' => '74600',
+            'postal_code' => '74600',
             'phone' => '03265419876',
             // 'two_factor_code' => null, // These are typically handled by Fortify/Jetstream if installed
             // 'two_factor_expires_at' => null,
@@ -49,13 +49,13 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => bcrypt('123456789'), // Ensure password is a string
             'remember_token' => Str::random(10),
-            // 'gender' => 'male', // These fields are not in the standard User model or factory, removing unless added
-            // 'title' => 'Owner',
-            // 'department' => 'Company',
+            'gender' => 'male', // These fields are not in the standard User model or factory, removing unless added
+            'title' => 'Owner',
+            'department' => 'Company',
             'address' => 'A 36 Block B North Nazimabad Karachi',
-            // 'about' => 'dshfjashfjkahf',
+            'about' => 'dshfjashfjkahf',
             'city' => "Karachi",
-            // 'postal_code' => '74600',
+            'postal_code' => '74600',
             'phone' => '03265419876',
             'na_constituency_id' => 1, // TODO: Replace 1 with a valid Assembly ID from your assemblies table
             'pa_constituency_id' => 2, // TODO: Replace 2 with a valid Assembly ID from your assemblies table
@@ -70,6 +70,6 @@ class UserSeeder extends Seeder
 
         // Create some regular voter users using the factory
         // The factory will assign 'voter' role and constituency IDs
-        User::factory()->count(20)->create(); // Create 20 voter users
+        // User::factory()->count(20)->create(); // Create 20 voter users
     }
 }

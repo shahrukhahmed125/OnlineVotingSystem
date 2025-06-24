@@ -24,7 +24,7 @@ class User extends Authenticatable
         'name',
         'cnic',
         'email',
-        'password',
+        // 'password',
     ];
 
     /**
@@ -64,9 +64,9 @@ class User extends Authenticatable
         return $this->hasMany(Vote::class);
     }
 
-    public function image()
+    public function images()
     {
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable');
     }
 
     public static function generateUserId()

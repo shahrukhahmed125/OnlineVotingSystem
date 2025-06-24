@@ -91,24 +91,6 @@
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
-                                                <label class="form-label required">Password*</label>
-                                                <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password Here..." name="password" required>
-                                                @error('password')
-                                                <p class="invalid-feedback">{{'*'.$message}}</p>
-                                                @enderror
-                                            </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6">
-                                            <div class="mb-3">
-                                                <label class="form-label required">Confirm Password*</label>
-                                                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="Re-Password" name="password_confirmation" required>
-                                                @error('password_confirmation')
-                                                <p class="invalid-feedback">{{'*'.$message}}</p>
-                                                @enderror
-                                            </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6">
-                                            <div class="mb-3">
                                                 <label class="form-label required">Email Verified?</label>
                                                 <select class="js-basic-single form-control " name="email_verified_at" required>
                                                 <option disabled selected>--Select</option>
@@ -201,9 +183,9 @@
                                     <div class="card mb-3" style="border: none; border-left: 1px solid #e3e7ea; border-radius: none; box-shadow: none;">
                                     <div class="card-body">
                                         <h3 class="card-title">Profile Picture</h3>
-                                        <p class="card-subtitle">Images must be in JPG, JPEG, PNG</p>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0">
+                                        <p class="card-subtitle mb-3">Images must be in JPG, JPEG, PNG</p>
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
                                                 <div class="avatar avatar-xl overflow-hidden rounded-circle" style="width: 80px; height: 80px;">
                                                     <img 
                                                         src="{{ asset('assets/img/avtar/11.png') }}" 
@@ -216,7 +198,8 @@
                                                 <p class="invalid-feedback">{{'*'.$message}}</p>
                                                 @enderror
                                             </div>
-                                            <div class="flex-grow-1 ms-3">
+
+                                            <div class="col-auto">
                                                 <label for="formFile" class="btn btn-outline-primary mb-0">Upload avatar</label>
                                                 <input 
                                                     class="form-control d-none @error('img') is-invalid @enderror" 
@@ -228,13 +211,13 @@
                                                     accept="image/jpeg, image/png"
                                                 />
                                             </div>
-                                        </div>
+                                        </div>   
                                     </div>
                                     </div>
                                     <div class="card mb-6" style="border: none; border-left: 1px solid #e3e7ea;border-radius: none; box-shadow: none;">
                                     <div class="card-body">
                                         <h3 class="card-title">Role & Permissions</h3>
-                                        <p class="card-subtitle">Select multiple permissions for any role to give access.</p>
+                                        <p class="card-subtitle mb-3">Select multiple permissions for any role to give access.</p>
                                         <div class="mb-3">
                                             <label class="form-label required">User's Role*</label>
                                             <select class="js-basic-single form-control" name="role" id="role-select" required>
@@ -254,7 +237,7 @@
                                         <h3 class="card-title">Other Details</h3>
                                         <div class="mb-3">
                                         <label class="form-label">About Me (bio)</label>
-                                        <textarea class="form-control" rows="3" placeholder="Here can be your description" name="about">{{old('about')}}</textarea>
+                                        <textarea class="form-control" placeholder="Here can be your description" name="about">{{old('about')}}</textarea>
                                         </div>
                                         <div class="mb-3">
                                         <label class="form-label">City </label>
@@ -311,13 +294,30 @@
 @section('js')
 
 <script>
+    function preview() {
+        const input = document.getElementById("formFile");
+        const frame = document.getElementById("frame");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                frame.src = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+<script>
     $(document).ready(function() {
         $("#addUser-form").submit(function(e) {
             e.preventDefault();
             $(".invalid-feedback").remove();
             $("input").removeClass("is-invalid");
 
-            var formData = $(this).serialize();
+            var formData = new FormData(this);
 
             $('#addUser-form-btn').prop("disabled", true).html(
                 '<span class="spinner-border spinner-border-sm"></span> Processing...'
@@ -328,6 +328,8 @@
                 type: "POST",
                 data: formData,
                 dataType: "json",
+                contentType: false, // Important for file upload
+                processData: false, // Important for file upload
                 success: function(response) {
                     if (response.status === "success") {
                         toastr.success(response.message, "Success", {
@@ -346,7 +348,7 @@
                         var errors = xhr.responseJSON.errors;
 
                         $.each(errors, function(key, value) {
-                            var inputField = $("input[name='" + key + "']");
+                            var inputField = $("[name='" + key + "']");
                             inputField.addClass("is-invalid");
                             inputField.after('<p class="invalid-feedback">' + value[0] + '</p>');
                         });

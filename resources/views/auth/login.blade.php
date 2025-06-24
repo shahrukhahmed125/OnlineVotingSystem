@@ -36,11 +36,11 @@
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="control-label">Email*</label>
-                                                        <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="john@example.com" name="email"/>
-                                                        @error('email')
+                                                        <label class="control-label">CNIC*</label>
+                                                        <input type="text" class="form-control @error('cnic') is-invalid @enderror" placeholder="xxxx-xxxxxxx-x" name="cnic"/>
+                                                        @error('cnic')
                                                             <p class="invalid-feedback">{{'*'.$message}}</p>
-                                                        @enderror
+                                                        @enderror        
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
