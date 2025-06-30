@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TwoFactorController extends Controller
 {
-        public function show(Request $request)
+    public function show(Request $request)
     {
         if(Auth::check())
         {
@@ -25,5 +25,27 @@ class TwoFactorController extends Controller
 
             return view('auth.2fa-challenge', compact('user_id', 'user_email'));           
         }
+    }
+
+    public function verify(Request $request, $id)
+    {
+        $code = $request->code;
+        $user = User::findOrFail($id);
+
+        if ($code === $user->two_factor_code && $user->two_factor_expires_at > now()) {
+            $user->resetTwoFactorCode();
+            
+            session(['2fa_verified_at' => now()->timestamp]);
+
+            Auth::login($user);
+            $request->session()->regenerate();
+            
+            if ($user->hasRole('user')) {
+                return redirect()->intended('voter-dashboard');
+            }
+            return redirect()->intended('admin-dashboard');
+        }
+
+        return back()->withErrors(['2fa_code' => 'Invalid or expired 2FA code.']);
     }
 }
