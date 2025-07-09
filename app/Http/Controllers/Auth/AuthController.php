@@ -50,8 +50,14 @@ class AuthController extends Controller
             // }
 
             $request->session()->regenerate();
-
-            if ($user->hasRole('user')) {
+            if($user->hasRole('admin'))
+            {
+                return redirect()->intended('admin-dashboard');
+            }
+            elseif ($user->hasRole('candidate')) {
+                return redirect()->intended('candidate-dashboard');
+            }
+            elseif ($user->hasRole('voter')) {
                 return redirect()->intended('voter-dashboard');
             }
             return redirect()->intended('admin-dashboard');

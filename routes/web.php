@@ -18,7 +18,6 @@ Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/redirect/login', [AuthController::class, 'login_auth'])->name('login_auth');
 Route::get('/logout',[AuthController::class,'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
-
 Route::post('/redirect/register',[AuthController::class,'register_auth'])->name('register_auth');
 
 //----- TWO FACTOR AUTHENTICATION -----//
@@ -27,10 +26,9 @@ Route::get('/2fa/challenge', [TwoFactorController::class, 'show'])->name('2fa.ch
 Route::post('/2fa/verify/{id}', [TwoFactorController::class, 'verify'])->name('2fa.verify');
 
 
-
 // ------- VOTER ROUTES ------- //
 
-Route::middleware('auth', 'role:user')->group(function(){
+Route::middleware('auth', 'role:voter')->group(function(){
     Route::prefix('voter-dashboard')->as('voter.')->group(function(){
 
         // ------- VOTER DASHBOARD ROUTES ------- //
@@ -45,6 +43,23 @@ Route::middleware('auth', 'role:user')->group(function(){
 
     });
 });
+
+// ------- CANDIDATE ROUTES ------- //
+
+Route::middleware('auth', 'role:candidate')->group(function(){
+    Route::prefix('candidate-dashboard')->as('candidate.')->group(function(){
+
+        // ------- CANDIDATE DASHBOARD ROUTES ------- //
+
+        Route::controller(VoterController::class)->group(function(){
+            Route::get('/', 'candidateDashboard')->name('dashboard');
+            Route::get('/cast-vote', 'castVote')->name('castVote');
+        });
+
+    });
+});
+
+
 
 // ------- DASHBOARD ROUTES ------- //
 
@@ -125,14 +140,3 @@ Route::middleware('auth')->group(function(){
 
     });
 });
-
-// Route::get('/admin-dashboard', [AdminController::class, 'index'])->name('home');
-
-// Route::get('/candidates/create',[CandidateController::class, 'create'])->name('candidates.create');
-
-// Route::post('/candidates/store',[CandidateController::class, 'store'])->name('candidates.store');
-
-// Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
-// Route::get('/candidates/{id}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
-// Route::get('/candidates/edit/{id}', [CandidateController::class, 'edit'])->name('candidates.edit');
-// Route::post('/candidates/update/{id}', [CandidateController::class, 'update'])->name('candidates.update');

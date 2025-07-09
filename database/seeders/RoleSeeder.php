@@ -13,8 +13,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'manager']);
-        Role::create(['name' => 'user']);
+        Role::create(['name' => 'admin']); // Ability to do anything
+        Role::create(['name' => 'manager']); // can add and edit but can't delete
+        Role::create(['name' => 'candidate']); // can vote and view results
+        Role::create(['name' => 'voter']); // can vote and view results
+        Role::create(['name' => 'user']); // default for deactivated users
     }
 }

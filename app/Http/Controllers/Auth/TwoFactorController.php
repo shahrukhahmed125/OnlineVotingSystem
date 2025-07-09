@@ -40,7 +40,7 @@ class TwoFactorController extends Controller
             Auth::login($user);
             $request->session()->regenerate();
             
-            if ($user->hasRole('user')) {
+            if ($user->hasRole('voter')) {
                 return redirect()->intended('voter-dashboard');
             }
             return redirect()->intended('admin-dashboard');

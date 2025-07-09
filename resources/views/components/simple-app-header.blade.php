@@ -10,18 +10,16 @@
                     <x-app-logo/>
                 </a>
             </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="ti ti-align-left"></i>
-            </button>
             <!-- end navbar-header -->
             <!-- begin navigation -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div class="navigation d-flex">
+                <div class="navigation d-flex" style="background-color: #2C2E3E;color:white;">
                     <ul class="navbar-nav nav-left">
                         <li class="nav-item">
-                            <a href="javascript:void(0)" class="nav-link sidebar-toggle">
-                                <i class="ti ti-align-right"></i>
-                            </a>
+                            <a href="{{ route('candidate.dashboard') }}" class="nav-link">Overview</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('candidate.castVote') }}" class="nav-link">Cast Vote</a>
                         </li>
                         <li class="nav-item full-screen d-none d-lg-block" id="btnFullscreen">
                             <a href="javascript:void(0)" class="nav-link expand">
@@ -31,17 +29,19 @@
                     </ul>
                     <ul class="navbar-nav nav-right ml-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown3"
+                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fe fe-bell"></i>
                                 <span class="notify">
-                                            <span class="blink"></span>
-                                <span class="dot"></span>
+                                    <span class="blink"></span>
+                                    <span class="dot"></span>
                                 </span>
                             </a>
                             <div class="dropdown-menu extended animated fadeIn" aria-labelledby="navbarDropdown">
                                 <ul>
                                     <li class="dropdown-header bg-gradient p-4 text-white text-left">Notifications
-                                        <a href="#" class="float-right btn btn-square btn-inverse-light btn-xs m-0">
+                                        <a href="#"
+                                            class="float-right btn btn-square btn-inverse-light btn-xs m-0">
                                             <span class="font-13"> Clear all</span></a>
                                     </li>
                                     <li class="dropdown-body min-h-240 nicescroll">
@@ -131,8 +131,9 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown user-profile">
-                            <a href="javascript:void(0)" class="nav-link dropdown-toggle " id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{asset('assets/img/avtar/02.jpg')}}" alt="avtar-img">
+                            <a href="javascript:void(0)" class="nav-link dropdown-toggle " id="navbarDropdown4"
+                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{{ asset('assets/img/avtar/02.jpg') }}" alt="avtar-img">
                                 <span class="bg-success user-status"></span>
                             </a>
                             <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
