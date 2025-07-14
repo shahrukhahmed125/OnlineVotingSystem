@@ -43,18 +43,23 @@
                         <table id="export-table" class="table">
                             <thead class="thead-light">
                                 <tr>
+                                    <th scope="col">Id</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">CNIC</th>
-                                    <th scope="col">Political Party</th>
                                     <th scope="col">Constituency</th>
+                                    <th scope="col">Political Party</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($data as $item)
                                 <tr>
-                                    <td>{{ucwords($item->name)}}</td>
-                                    <td>{{ucwords($item->CNIC)}}</td>
+                                    <td>{{ $item->user->user_id }}</td>
+                                    <td>{{ucwords($item->user->name)}}<br>
+                                        <small class="text-muted"><a href="mailto:{{$item->user->email}}">{{$item->user->email}}</a></small>
+                                    </td>
+                                    <td>{{ucwords($item->user->cnic)}}</td>
+                                    <td>{{ $item->assembly->name ? ucwords($item->assembly->name) : 'null' }}</td>
                                     <td>
                                         @if($item->politicalParty && $item->politicalParty->name)
                                             {{ ucwords($item->politicalParty->name) }}
@@ -65,13 +70,13 @@
                                             null
                                         @endif
                                     </td>
-                                    <td>{{ $item->assembly->name ? ucwords($item->assembly->name) : 'null' }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Actions
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
+                                                <a class="dropdown-item" href="#">View</a>
                                                 <a class="dropdown-item" href="{{route('admin.candidates.edit', $item->id)}}">Edit</a>
                                                 <form action="{{route('admin.candidates.destroy', $item->id)}}" method="POST" style="display:inline;">
                                                     @csrf

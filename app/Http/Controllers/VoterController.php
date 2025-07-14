@@ -79,6 +79,7 @@ class VoterController extends Controller
 
         // Determine how many votes the user can cast
         $maxVotes = $election->type === 'general assembly' ? 2 : 1;
+        // dd($election, $assembly, $candidates, $maxVotes);
 
         return view('candidate.castVote', compact('election', 'assembly', 'candidates', 'maxVotes'));
     }

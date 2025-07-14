@@ -63,7 +63,7 @@ Route::middleware('auth', 'role:candidate')->group(function(){
 
 // ------- DASHBOARD ROUTES ------- //
 
-Route::middleware('auth')->group(function(){
+Route::middleware('auth', 'role:admin')->group(function(){
     Route::prefix('admin-dashboard')->as('admin.')->group(function(){
 
         // ------- ADMIN DASHBOARD ROUTES ------- //

@@ -50,6 +50,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function candidates()
+    {
+        return $this->hasMany(Candidate::class);
+    }
+
     public function naConstituency()
     {
         return $this->belongsTo(Assembly::class, 'na_constituency_id');

@@ -57,8 +57,8 @@ class UserSeeder extends Seeder
             'city' => "Karachi",
             'postal_code' => '74600',
             'phone' => '03265419876',
-            'na_constituency_id' => 1, // TODO: Replace 1 with a valid Assembly ID from your assemblies table
-            'pa_constituency_id' => 2, // TODO: Replace 2 with a valid Assembly ID from your assemblies table
+            'na_constituency_id' => 2, // TODO: Replace 1 with a valid Assembly ID from your assemblies table
+            'pa_constituency_id' => 8, // TODO: Replace 2 with a valid Assembly ID from your assemblies table
             // 'two_factor_code' => null, // These are typically handled by Fortify/Jetstream if installed
             // 'two_factor_expires_at' => null,
             'created_at' => now(),
@@ -85,8 +85,8 @@ class UserSeeder extends Seeder
             'city' => "Karachi",
             'postal_code' => '74600',
             'phone' => '03265419876',
-            'na_constituency_id' => 1, // TODO: Replace 1 with a valid Assembly ID from your assemblies table
-            'pa_constituency_id' => 2, // TODO: Replace 2 with a valid Assembly ID from your assemblies table
+            'na_constituency_id' => 2, // TODO: Replace 1 with a valid Assembly ID from your assemblies table
+            'pa_constituency_id' => 8, // TODO: Replace 2 with a valid Assembly ID from your assemblies table
             // 'two_factor_code' => null, // These are typically handled by Fortify/Jetstream if installed
             // 'two_factor_expires_at' => null,
             'created_at' => now(),
@@ -98,6 +98,8 @@ class UserSeeder extends Seeder
 
         // Create some regular voter users using the factory
         // The factory will assign 'voter' role and constituency IDs
-        // User::factory()->count(20)->create(); // Create 20 voter users
+        User::factory()->count(20)->create()->each(function ($user) {
+            $user->assignRole('candidate');
+        });
     }
 }

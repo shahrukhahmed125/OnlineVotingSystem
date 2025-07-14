@@ -10,12 +10,7 @@ class Candidate extends Model
 {
     use HasFactory;
     protected $fillable=[
-        'name',
-        'email',
-        'phone',
-        'address',
-        'city',
-        'CNIC',
+        'user_id',
         'constituency_id',
         'political_party_id',
     ];
@@ -23,6 +18,11 @@ class Candidate extends Model
     public function image()
     {
         return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function assembly()

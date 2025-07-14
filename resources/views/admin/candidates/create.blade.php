@@ -48,12 +48,17 @@
                 <div class="card-body">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="inputName4">Name*</label>
-                                <input type="text" class="form-control" id="inputName4" placeholder="Enter Name..." name="name" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputCINC4">CNIC No.*</label>
-                                <input type="text" class="form-control" id="inputCNIC4" name="CNIC" placeholder="xxxxx-xxxxxxx-x" required >
+                                <label for="user_id">Select User*</label>
+                                    <select id="user_id" class="js-basic-single form-control" name="user_id" required>
+                                        <option selected disabled>--Select</option>
+                                        @if ($users->isNotEmpty())
+                                            @foreach ($users as $user)
+                                                <option value="{{$user->id}}">{{$user->name}}</option>
+                                            @endforeach
+                                        @else
+                                            <option value="">No Users Found</option>
+                                        @endif
+                                    </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="constituency_id">Select Assembly*</label>
@@ -72,8 +77,8 @@
                                 <label for="inputState">Select Political Party*</label>
                                     <select id="inputState" class="js-basic-single form-control" name="political_party_id" required>
                                         <option selected disabled>--Select</option>
-                                        @if ($party->isNotEmpty())
-                                            @foreach ($party as $party)
+                                        @if ($parties->isNotEmpty())
+                                            @foreach ($parties as $party)
                                                 <option value="{{$party->id}}">{{$party->name}}</option>
                                             @endforeach
                                         @else
@@ -81,23 +86,7 @@
                                         @endif
                                     </select>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputEmail4">Email</label>
-                                <input type="email" class="form-control" id="inputEmail4" placeholder="Email" name="email">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputPhone4">Phone</label>
-                                <input type="tel" class="form-control" id="inputPhone4" placeholder="03xxxxxxxxx" name="phone" pattern="03\d{9}">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputCity">City</label>
-                                <input type="text" class="form-control" id="inputCity" name="city" placeholder="Enter City...">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputAddress">Address</label>
-                            <textarea type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address" row="3"></textarea>
-                        </div>
+                        </div>    
                 </div>
                 <div class="col-12">
                     <div class="card-footer">

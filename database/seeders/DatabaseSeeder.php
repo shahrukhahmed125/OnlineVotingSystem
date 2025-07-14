@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
             AssemblySeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
-            PoliticalPartySeeder::class,
-            CandidateSeeder::class,
+            // PoliticalPartySeeder::class,
+            // CandidateSeeder::class,
             // ElectionSeeder::class,
         ]);
     }

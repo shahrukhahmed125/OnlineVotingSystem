@@ -2,6 +2,13 @@
 @section('title', 'Cast Vote')
 @section('css')
 
+    <style>
+        .selectable-card.selected-card {
+            border: 2px solid #007bff !important;
+            box-shadow: 0 0 10px #007bff33;
+            background: #eaf4ff;
+        }
+    </style>
 
 @stop
 
@@ -42,143 +49,173 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="card card-statistics  px-2" style="box-shadow: none; border: 1px solid #e0e0e0;">
+                        <div class="card card-statistics px-2" style="box-shadow: none;">
                             <div class="card-body">
-
                                 @if (empty($election))
                                     <div class="alert alert-warning">
                                         No elections are currently available for voting.
                                     </div>
                                 @elseif ($election->type === 'general assembly')
-                                    <h5 class="mb-4">Provincial Assembly (PA)</h5>
-                                    @php $paCandidates = $candidates->filter(fn($c) => $c->assembly->type === 'PA'); @endphp
-                                    @if ($paCandidates->isNotEmpty())
-                                        <div class="row mb-5">
-                                            @foreach ($paCandidates as $candidate)
-                                                <div class="col-xl-4 col-sm-6">
-                                                    <div class="card card-statistics  px-2">
-                                                        <div class="card-body pb-5 pt-4">
-                                                            <div class="text-center">
-                                                                <div class="text-right">
-                                                                    <h4><span class="badge badge-info badge-pill px-3 py-2">{{$candidate->politicalParty->abbreviation}}</span>
-                                                                    </h4>
-                                                                </div>
-                                                                <div class="pt-1 bg-img m-auto">
-                                                                    <img src="{{ $candidate->photo_url ?? asset('assets/img/avtar/01.jpg') }}"
-                                                                        class="img-fluid" alt="candidate-img">
-                                                                </div>
-                                                                <div class="mt-3 -inner">
-                                                                    <h4 class="mb-1">{{ $candidate->name }}</h4>
-                                                                    <h5 class="mb-0 text-muted">
-                                                                        {{ $candidate->designation ?? 'Candidate' }}</h5>
-                                                                    <div class="mt-3">
-                                                                        <span
-                                                                            class="badge badge-pill badge-success-inverse px-3 py-2">
-                                                                            {{ $candidate->politicalParty->name ?? 'Independent' }}
-                                                                        </span>
+                                    <form action="#" method="POST" id="voteForm">
+                                        @csrf
+                                        <div class="card-heading">
+                                            <h4 class="card-title mb-4">Provincial Assembly (PA)</h4>
+                                        </div>
+                                        @php $paCandidates = $candidates->filter(fn($c) => $c->assembly->type === 'PA'); @endphp
+                                        @if ($paCandidates->isNotEmpty())
+                                            <div class="row mb-5">
+                                                @foreach ($paCandidates as $candidate)
+                                                    <div class="col-xl-4 col-sm-6">
+                                                        <div class="selectable-card card card-statistics px-2"
+                                                            data-group="pa" data-id="{{ $candidate->id }}"
+                                                            style="cursor:pointer;">
+                                                            <div class="card-body pb-5 pt-4">
+                                                                <div class="text-center">
+                                                                    <div class="text-right">
+                                                                        <h4>
+                                                                            <span class="badge badge-pill badge-info-inverse px-3 py-2">{{ ucwords($candidate->politicalParty->symbol) }}</span>
+                                                                        </h4>
                                                                     </div>
-                                                                    <form action="#" method="POST" class="mt-3">
-                                                                        @csrf
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary btn-block">Vote</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <div class="alert alert-warning">
-                                            No Candidates Found for Provincial Assembly
-                                        </div>
-                                    @endif
+                                                                    <div class="pt-1 bg-img m-auto">
+                                                                        <img src="{{ $candidate->politicalParty->images->isNotEmpty() ? asset('storage/' . $candidate->politicalParty->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}"
+                                                                            class="img-fluid" alt="candidate-img">
+                                                                    </div>
+                                                                    <div class="mt-3 -inner">
+                                                                        <h4 class="mb-1">{{ $candidate->name }}</h4>
+                                                                        <h5 class="mb-0 text-muted">
+                                                                            {{ ucwords($candidate->politicalParty->name) ?? 'Candidate' }}
+                                                                        </h5>
+                                                                        <div class="mt-3">
+                                                                            <span
+                                                                                class="badge badge-pill badge-success-inverse px-3 py-2">
+                                                                                {{ ucwords($candidate->politicalParty->abbreviation) ?? 'IND' }}
+                                                                            </span>
+                                                                        </div>
 
-                                    <h5 class="mb-4">National Assembly (NA)</h5>
-                                    @php $naCandidates = $candidates->filter(fn($c) => $c->assembly->type === 'NA'); @endphp
-                                    @if ($naCandidates->isNotEmpty())
-                                        <div class="row">
-                                            @foreach ($naCandidates as $candidate)
-                                                <div class="col-xl-4 col-sm-6">
-                                                    <div class="card card-statistics  px-2">
-                                                        <div class="card-body pb-5 pt-4">
-                                                            <div class="text-center">
-                                                                <div class="text-right">
-                                                                    <h4><span class="badge badge-info badge-pill px-3 py-2">{{$candidate->politicalParty->abbreviation}}</span>
-                                                                    </h4>
-                                                                </div>
-                                                                <div class="pt-1 bg-img m-auto">
-                                                                    <img src="{{ $candidate->image ?? asset('assets/img/avtar/01.jpg') }}"
-                                                                        class="img-fluid" alt="candidate-img">
-                                                                </div>
-                                                                <div class="mt-3 -inner">
-                                                                    <h4 class="mb-1">{{ $candidate->name }}</h4>
-                                                                    <h5 class="mb-0 text-muted">
-                                                                        {{ $candidate->designation ?? 'Candidate' }}</h5>
-                                                                    <div class="mt-3">
-                                                                        <span
-                                                                            class="badge badge-pill badge-success-inverse px-3 py-2">
-                                                                            {{ $candidate->politicalParty->name ?? 'Independent' }}
-                                                                        </span>
                                                                     </div>
-                                                                    <form action="#" method="POST" class="mt-3">
-                                                                        @csrf
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary btn-block">Vote</button>
-                                                                    </form>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                @endforeach
+                                            </div>
+                                            <input type="hidden" name="pa_candidate_id" id="pa_candidate_id" required>
+                                        @else
+                                            <div class="alert alert-warning">
+                                                No Candidates Found for Provincial Assembly
+                                            </div>
+                                        @endif
+                                        <div class="card-heading">
+                                            <h4 class="card-title mb-4">National Assembly (NA)</h4>
+                                        </div>
+                                        @php $naCandidates = $candidates->filter(fn($c) => $c->assembly->type === 'NA'); @endphp
+                                        @if ($naCandidates->isNotEmpty())
+                                            <div class="row">
+                                                @foreach ($naCandidates as $candidate)
+                                                    <div class="col-xl-4 col-sm-6">
+                                                        <div class="selectable-card card card-statistics px-2"
+                                                            data-group="na" data-id="{{ $candidate->id }}"
+                                                            style="cursor:pointer;">
+                                                            <div class="card-body pb-5 pt-4">
+                                                                <div class="text-center">
+                                                                    <div class="text-right">
+                                                                        <h4>
+                                                                            <span
+                                                                                class="badge badge-pill badge-info-inverse px-3 py-2">{{ ucwords($candidate->politicalParty->symbol) }}
+                                                                            </span>
+                                                                        </h4>
+                                                                    </div>
+                                                                    <div class="pt-1 bg-img m-auto">
+                                                                        <img src="{{ $candidate->politicalParty->images->isNotEmpty() ? asset('storage/' . $candidate->politicalParty->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}"
+                                                                            class="img-fluid" alt="candidate-img">
+                                                                    </div>
+                                                                    <div class="mt-3 -inner">
+                                                                        <h4 class="mb-1">{{ $candidate->name }}</h4>
+                                                                        <h5 class="mb-0 text-muted">
+                                                                            {{ ucwords($candidate->politicalParty->name) ?? 'Candidate' }}
+                                                                        </h5>
+                                                                        <div class="mt-3">
+                                                                            <span
+                                                                                class="badge badge-pill badge-success-inverse px-3 py-2">
+                                                                                {{ $candidate->politicalParty->abbreviation ?? 'IND' }}
+                                                                            </span>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <input type="hidden" name="na_candidate_id" id="na_candidate_id" required>
+                                        @else
+                                            <div class="alert alert-warning">
+                                                No Candidates Found for National Assembly
+                                            </div>
+                                        @endif
+                                        <div class="col-12">
+                                            <div class="card-footer">
+                                                <div class="btn-list" style="text-align: right;">
+                                                    <input class="btn" type="button" value="Cancel" onclick="window.history.back();"/>
+                                                    <button type="submit" class="btn btn-primary" id="party-form-btn">Submit</button>
                                                 </div>
-                                            @endforeach
+                                            </div>
                                         </div>
-                                    @else
-                                        <div class="alert alert-warning">
-                                            No Candidates Found for National Assembly
-                                        </div>
-                                    @endif
+                                    </form>
                                 @else
-                                    <h5 class="mb-4">{{ strtoupper($election->type) }}</h5>
-                                    @if ($candidates->isNotEmpty())
-                                        <div class="row">
-                                            @foreach ($candidates as $candidate)
-                                                <div class="col-xl-4 col-sm-6">
-                                                    <div class="card card-statistics  px-2">
-                                                        <div class="card-body pb-5 pt-4">
-                                                            <div class="text-center">
-                                                                <div class="pt-1 bg-img m-auto">
-                                                                    <img src="{{ $candidate->photo_url ?? asset('assets/img/avtar/01.jpg') }}"
-                                                                        class="img-fluid" alt="candidate-img">
-                                                                </div>
-                                                                <div class="mt-3 -inner">
-                                                                    <h4 class="mb-1">{{ $candidate->name }}</h4>
-                                                                    <h5 class="mb-0 text-muted">
-                                                                        {{ $candidate->designation ?? 'Candidate' }}</h5>
-                                                                    <div class="mt-3">
-                                                                        <span
-                                                                            class="badge badge-pill badge-success-inverse px-3 py-2">
-                                                                            {{ $candidate->politicalParty->name ?? 'Independent' }}
-                                                                        </span>
+                                    <form action="{{ route('candidate.vote') }}" method="POST" id="voteForm">
+                                        @csrf
+                                        <h5 class="mb-4">{{ strtoupper($election->type) }}</h5>
+                                        @if ($candidates->isNotEmpty())
+                                            <div class="row">
+                                                @foreach ($candidates as $candidate)
+                                                    <div class="col-xl-4 col-sm-6">
+                                                        <div class="selectable-card card card-statistics px-2"
+                                                            data-group="single" data-id="{{ $candidate->id }}"
+                                                            style="cursor:pointer;">
+                                                            <div class="card-body pb-5 pt-4">
+                                                                <div class="text-center">
+                                                                    <div class="pt-1 bg-img m-auto">
+                                                                        <img src="{{ $candidate->politicalParty->images->isNotEmpty() ? asset('storage/' . $candidate->politicalParty->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}"
+                                                                            class="img-fluid" alt="candidate-img">
                                                                     </div>
-                                                                    <form action="#" method="POST" class="mt-3">
-                                                                        @csrf
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary btn-block">Vote</button>
-                                                                    </form>
+                                                                    <div class="mt-3 -inner">
+                                                                        <h4>
+                                                                            <span class="badge badge-pill badge-info-inverse px-3 py-2">{{ ucwords($candidate->politicalParty->symbol) }}</span>
+                                                                        </h4>
+                                                                        <h5 class="mb-0 text-muted">
+                                                                            {{ ucwords($candidate->politicalParty->name) ?? 'Candidate' }}
+                                                                        </h5>
+                                                                        <div class="mt-3">
+                                                                            <span
+                                                                                class="badge badge-pill badge-success-inverse px-3 py-2">
+                                                                                {{ $candidate->politicalParty->abbreviation ?? 'IND' }}
+                                                                            </span>
+                                                                        </div>
+
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                @endforeach
+                                            </div>
+                                            <input type="hidden" name="candidate_id" id="candidate_id" required>
+                                            <div class="col-12">
+                                                <div class="card-footer">
+                                                    <div class="btn-list" style="text-align: right;">
+                                                        <input class="btn" type="button" value="Cancel" onclick="window.history.back();"/>
+                                                        <button type="submit" class="btn btn-primary" id="party-form-btn">Submit</button>
+                                                    </div>
                                                 </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <div class="alert alert-warning">
-                                            No Candidates Found for this Election
-                                        </div>
-                                    @endif
+                                            </div>
+                                        @else
+                                            <div class="alert alert-warning">
+                                                No Candidates Found for this Election
+                                            </div>
+                                        @endif
+                                    </form>
                                 @endif
                             </div>
                         </div>
@@ -190,4 +227,40 @@
 @stop
 @section('js')
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // For general assembly
+            document.querySelectorAll('.selectable-card[data-group="pa"]').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.selectable-card[data-group="pa"]').forEach(function(
+                        c) {
+                        c.classList.remove('selected-card');
+                    });
+                    card.classList.add('selected-card');
+                    document.getElementById('pa_candidate_id').value = card.getAttribute('data-id');
+                });
+            });
+            document.querySelectorAll('.selectable-card[data-group="na"]').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.selectable-card[data-group="na"]').forEach(function(
+                        c) {
+                        c.classList.remove('selected-card');
+                    });
+                    card.classList.add('selected-card');
+                    document.getElementById('na_candidate_id').value = card.getAttribute('data-id');
+                });
+            });
+            // For other elections
+            document.querySelectorAll('.selectable-card[data-group="single"]').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.selectable-card[data-group="single"]').forEach(
+                        function(c) {
+                            c.classList.remove('selected-card');
+                        });
+                    card.classList.add('selected-card');
+                    document.getElementById('candidate_id').value = card.getAttribute('data-id');
+                });
+            });
+        });
+    </script>
 @stop

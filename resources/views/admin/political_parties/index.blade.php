@@ -43,8 +43,8 @@
                         <table id="export-table" class="table">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col">Name</th>
                                     <th scope="col">Symbol</th>
+                                    <th scope="col">Name</th>
                                     <th scope="col">Leader</th>
                                     <th scope="col">Details</th>
                                     <th scope="col">Actions</th>
@@ -53,8 +53,14 @@
                             <tbody>
                                 @foreach ($politicalParties as $item)
                                 <tr>
+                                    <td>
+                                        @if($item->images)
+                                        <img src="{{ $item->images->isNotEmpty() ? asset('storage/' . $item->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}" alt="Party Symbol" style="width:40px; height:40px; object-fit:cover;">
+                                        @else
+                                        <span class="text-muted">No Image</span>
+                                        @endif
+                                    </td>
                                     <td>{{ ucwords($item->name) . ' (' . ucwords($item->abbreviation) . ')' }}</td>
-                                    <td>{{ucwords($item->symbol)}}</td>
                                     <td>{{ $item->leader_name ? ucwords($item->leader_name) : 'null' }}</td>
                                     <td class="text-wrap">{{ $item->details ? ucwords($item->details) : 'null' }}</td>
                                     <td>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Assembly;
 use App\Models\Candidate;
 use App\Models\PoliticalParty;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,21 +20,17 @@ class CandidateController extends Controller
 
     public function create()
     {
+        $users = User::role('candidate')->get();
         $assemblies = Assembly::all();
-        $party = PoliticalParty::all();
-        return view('admin.candidates.create', compact('assemblies', 'party'));
+        $parties = PoliticalParty::all();
+        return view('admin.candidates.create', compact('users', 'assemblies', 'parties'));
     }
 
     public function store(Request $request)
     {
         try{
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:candidates,name',
-                'email' => 'nullable|email|max:255|unique:candidates,email',
-                'phone' => 'nullable|string|max:15',
-                'address' => 'nullable|string|max:255',
-                'city' => 'nullable|string|max:100',
-                'CNIC' => 'required|string|max:15|unique:candidates,CNIC',
+                'user_id' => 'required|exists:users,id',
                 'constituency_id' => 'required|exists:assemblies,id',
                 'political_party_id' => 'required|exists:political_parties,id',
             ]);
@@ -46,12 +43,7 @@ class CandidateController extends Controller
             }
 
             $data = new Candidate; 
-            $data->name = $request->name;
-            $data->email = $request->email;
-            $data->phone = $request->phone;
-            $data->address = $request->address;
-            $data->city = $request->city;
-            $data->CNIC = $request->CNIC;
+            $data->user_id = $request->user_id;
             $data->constituency_id = $request->constituency_id;
             $data->political_party_id = $request->political_party_id;
             $data->save();
@@ -81,12 +73,7 @@ class CandidateController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:candidates,name,' . $id,
-                'email' => 'nullable|email|max:255|unique:candidates,email,' . $id,
-                'phone' => 'nullable|string|max:15',
-                'address' => 'nullable|string|max:255',
-                'city' => 'nullable|string|max:100',
-                'CNIC' => 'required|string|max:15|unique:candidates,CNIC,' . $id,
+                'user_id' => 'required|exists:users,id',
                 'constituency_id' => 'required|exists:assemblies,id',
                 'political_party_id' => 'required|exists:political_parties,id',
             ]);
@@ -98,12 +85,7 @@ class CandidateController extends Controller
             }
 
             $data = Candidate::findOrFail($id);
-            $data->name = $request->name;
-            $data->email = $request->email;
-            $data->phone = $request->phone;
-            $data->address = $request->address;
-            $data->city = $request->city;
-            $data->CNIC = $request->CNIC;
+            $data->user_id = $request->user_id;
             $data->constituency_id = $request->constituency_id;
             $data->political_party_id = $request->political_party_id;
             $data->save(); // Use save() for consistency, update() also works
