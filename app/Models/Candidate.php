@@ -34,4 +34,9 @@ class Candidate extends Model
     {
         return $this->belongsTo(PoliticalParty::class);
     }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
 }

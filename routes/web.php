@@ -54,6 +54,7 @@ Route::middleware('auth', 'role:candidate')->group(function(){
         Route::controller(VoterController::class)->group(function(){
             Route::get('/', 'candidateDashboard')->name('dashboard');
             Route::get('/cast-vote', 'castVote')->name('castVote');
+            Route::post('/cast-vote', 'storeVote')->name('storeVote');
         });
 
     });

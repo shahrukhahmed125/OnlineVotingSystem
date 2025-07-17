@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('voted_at')->default(now());
             $table->timestamps();
 
-            $table->unique(['election_id', 'voter_id']); // One vote per election per user
+            // $table->unique(['election_id', 'voter_id']); // One vote per election per user
         });
     }
 

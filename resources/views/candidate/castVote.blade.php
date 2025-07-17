@@ -56,7 +56,7 @@
                                         No elections are currently available for voting.
                                     </div>
                                 @elseif ($election->type === 'general assembly')
-                                    <form action="#" method="POST" id="voteForm">
+                                    <form action="{{ route('candidate.storeVote')}}" method="POST" id="voteForm">
                                         @csrf
                                         <div class="card-heading">
                                             <h4 class="card-title mb-4">Provincial Assembly (PA)</h4>
@@ -70,6 +70,8 @@
                                                             data-group="pa" data-id="{{ $candidate->id }}"
                                                             style="cursor:pointer;">
                                                             <div class="card-body pb-5 pt-4">
+                                                                <input type="hidden" name="pa_candidate_id" id="pa_candidate_id" value="{{ $candidate->id }}" required>
+                                                                <input type="hidden" name="pa_assembly_id" value="{{ $candidate->constituency_id  }}">
                                                                 <div class="text-center">
                                                                     <div class="text-right">
                                                                         <h4>
@@ -99,7 +101,7 @@
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <input type="hidden" name="pa_candidate_id" id="pa_candidate_id" required>
+                                            <input type="hidden" name="election_id" value="{{ $election->id }}">
                                         @else
                                             <div class="alert alert-warning">
                                                 No Candidates Found for Provincial Assembly
@@ -117,6 +119,8 @@
                                                             data-group="na" data-id="{{ $candidate->id }}"
                                                             style="cursor:pointer;">
                                                             <div class="card-body pb-5 pt-4">
+                                                                <input type="hidden" name="na_candidate_id" id="na_candidate_id" value="{{ $candidate->id }}" required>
+                                                                <input type="hidden" name="na_assembly_id" value="{{ $candidate->constituency_id  }}">
                                                                 <div class="text-center">
                                                                     <div class="text-right">
                                                                         <h4>
@@ -148,7 +152,7 @@
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <input type="hidden" name="na_candidate_id" id="na_candidate_id" required>
+                                            <input type="hidden" name="election_id" value="{{ $election->id }}">
                                         @else
                                             <div class="alert alert-warning">
                                                 No Candidates Found for National Assembly
@@ -164,7 +168,7 @@
                                         </div>
                                     </form>
                                 @else
-                                    <form action="{{ route('candidate.vote') }}" method="POST" id="voteForm">
+                                    <form action="{{ route('candidate.storeVote') }}" method="POST" id="voteForm">
                                         @csrf
                                         <h5 class="mb-4">{{ strtoupper($election->type) }}</h5>
                                         @if ($candidates->isNotEmpty())
@@ -175,6 +179,8 @@
                                                             data-group="single" data-id="{{ $candidate->id }}"
                                                             style="cursor:pointer;">
                                                             <div class="card-body pb-5 pt-4">
+                                                                <input type="hidden" name="candidate_id" id="candidate_id" value="{{ $candidate->id }}" required>
+                                                                <input type="hidden" name="assembly_id" value="{{ $candidate->constituency_id  }}">
                                                                 <div class="text-center">
                                                                     <div class="pt-1 bg-img m-auto">
                                                                         <img src="{{ $candidate->politicalParty->images->isNotEmpty() ? asset('storage/' . $candidate->politicalParty->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}"
@@ -201,7 +207,7 @@
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <input type="hidden" name="candidate_id" id="candidate_id" required>
+                                            <input type="hidden" name="election_id" value="{{ $election->id }}">
                                             <div class="col-12">
                                                 <div class="card-footer">
                                                     <div class="btn-list" style="text-align: right;">
