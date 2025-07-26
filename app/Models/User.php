@@ -68,7 +68,7 @@ class User extends Authenticatable
 
     public function votes()
     {
-        return $this->hasMany(Vote::class);
+        return $this->hasMany(Vote::class, 'voter_id');
     }
 
     public function images()

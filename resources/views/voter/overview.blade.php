@@ -20,7 +20,7 @@
                     <nav>
                         <ol class="breadcrumb p-0 m-b-0">
                             <li class="breadcrumb-item">
-                                <a href="{{ route('candidate.dashboard') }}"><i class="ti ti-home"></i></a>
+                                <a href="{{ route('voter.dashboard') }}"><i class="ti ti-home"></i></a>
                             </li>
                             <li class="breadcrumb-item text-primary active">
                                 Overview

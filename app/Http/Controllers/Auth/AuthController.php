@@ -54,11 +54,8 @@ class AuthController extends Controller
             {
                 return redirect()->intended('admin-dashboard');
             }
-            elseif ($user->hasRole('candidate')) {
-                return redirect()->intended('candidate-dashboard');
-            }
-            elseif ($user->hasRole('voter')) {
-                return redirect()->intended('voter-dashboard');
+            elseif ($user->hasRole('candidate') || $user->hasRole('voter')) {
+                return redirect()->intended('dashboard');
             }
             return redirect()->intended('admin-dashboard');
         }

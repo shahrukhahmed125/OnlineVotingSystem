@@ -10,6 +10,9 @@
             @elseif(Auth::user()->HasRole('candidate'))
                 <h4 class="text-white mb-0">{{ Str::title(Auth::user()->name) }}</h4>
                 <small class="text-white">Candidate</small>
+            @elseif(Auth::user()->HasRole('voter'))
+                <h4 class="text-white mb-0">{{ Str::title(Auth::user()->name) }}</h4>
+                <small class="text-white">Voter</small>
             @elseif(Auth::user()->HasRole('user'))
                 <h4 class="text-white mb-0">{{ Str::title(Auth::user()->name) }}</h4>
                 <small class="text-white">User</small>

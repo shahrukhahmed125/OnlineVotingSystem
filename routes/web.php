@@ -28,31 +28,30 @@ Route::post('/2fa/verify/{id}', [TwoFactorController::class, 'verify'])->name('2
 
 // ------- VOTER ROUTES ------- //
 
-Route::middleware('auth', 'role:voter')->group(function(){
-    Route::prefix('voter-dashboard')->as('voter.')->group(function(){
+// Route::middleware('auth', 'role:voter')->group(function(){
+//     Route::prefix('voter-dashboard')->as('voter.')->group(function(){
 
-        // ------- VOTER DASHBOARD ROUTES ------- //
+//         // ------- VOTER DASHBOARD ROUTES ------- //
 
-        Route::controller(VoterController::class)->group(function(){
-            Route::get('/', 'index')->name('dashboard'); // Renamed from 'home'
-            Route::prefix('vote')->as('vote.')->group(function(){
-                Route::get('/', 'create')->name('create');
-                Route::post('/', 'store')->name('store');
-            });
-        });
+//         Route::controller(VoterController::class)->group(function(){
+//             Route::get('/', 'index')->name('dashboard'); // Renamed from 'home'
+//             Route::prefix('vote')->as('vote.')->group(function(){
+//                 Route::get('/', 'create')->name('create');
+//                 Route::post('/', 'store')->name('store');
+//             });
+//         });
 
-    });
-});
+//     });
+// });
 
-// ------- CANDIDATE ROUTES ------- //
+// ------- CANDIDATE / VOTER ROUTES ------- //
 
-Route::middleware('auth', 'role:candidate')->group(function(){
-    Route::prefix('candidate-dashboard')->as('candidate.')->group(function(){
+Route::middleware(['auth', 'role:candidate|voter'])->group(function () {
+    Route::prefix('dashboard')->as('voter.')->group(function () {
 
-        // ------- CANDIDATE DASHBOARD ROUTES ------- //
-
-        Route::controller(VoterController::class)->group(function(){
-            Route::get('/', 'candidateDashboard')->name('dashboard');
+        // ------- CANDIDATE/VOTER DASHBOARD ROUTES ------- //
+        Route::controller(VoterController::class)->group(function () {
+            Route::get('/', 'index')->name('dashboard');
             Route::get('/cast-vote', 'castVote')->name('castVote');
             Route::post('/cast-vote', 'storeVote')->name('storeVote');
         });

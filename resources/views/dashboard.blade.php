@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Candidate Dashboard - @yield('title')</title>
+    <title>@role('candidate') Candidate Dashboard - @yield('title') @else Voter Dashboard - @yield('title') @endrole</title>
     <x-css/>
     @yield('css')
 </head>

@@ -16,10 +16,10 @@
                 <div class="navigation d-flex" style="background-color: #2C2E3E;color:white;">
                     <ul class="navbar-nav nav-left">
                         <li class="nav-item">
-                            <a href="{{ route('candidate.dashboard') }}" class="nav-link">Overview</a>
+                            <a href="{{ route('voter.dashboard') }}" class="nav-link">Overview</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('candidate.castVote') }}" class="nav-link">Cast Vote</a>
+                            <a href="{{ route('voter.castVote') }}" class="nav-link">Cast Vote</a>
                         </li>
                         <li class="nav-item full-screen d-none d-lg-block" id="btnFullscreen">
                             <a href="javascript:void(0)" class="nav-link expand">
