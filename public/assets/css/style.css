@@ -12632,6 +12632,10 @@ a.text-dark:hover {
     background-color: #eceef3 !important
 }
 
+.bg-green {
+    background-color: #036233 !important
+}
+
 .bg-inverse {
     background-color: #2c2e3e !important
 }

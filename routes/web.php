@@ -12,9 +12,13 @@ use App\Http\Controllers\VoterController;
 use App\Models\Vote;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () {
+    return view('welcome');
+});
+
 // ------- AUTH ROUTES ------- //
 
-Route::get('/', [AuthController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/redirect/login', [AuthController::class, 'login_auth'])->name('login_auth');
 Route::get('/logout',[AuthController::class,'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
