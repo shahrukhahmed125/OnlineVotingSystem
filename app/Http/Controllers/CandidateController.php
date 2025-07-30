@@ -21,9 +21,8 @@ class CandidateController extends Controller
     public function create()
     {
         $users = User::role('candidate')->get();
-        $assemblies = Assembly::all();
         $parties = PoliticalParty::all();
-        return view('admin.candidates.create', compact('users', 'assemblies', 'parties'));
+        return view('admin.candidates.create', compact('users', 'parties'));
     }
 
     public function store(Request $request)
@@ -31,7 +30,6 @@ class CandidateController extends Controller
         try{
             $validator = Validator::make($request->all(), [
                 'user_id' => 'required|exists:users,id',
-                'constituency_id' => 'required|exists:assemblies,id',
                 'political_party_id' => 'required|exists:political_parties,id',
             ]);
 

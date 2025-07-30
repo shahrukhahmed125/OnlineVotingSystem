@@ -132,7 +132,7 @@
                         </li>
                         <li class="nav-item dropdown user-profile">
                             <a href="javascript:void(0)" class="nav-link dropdown-toggle " id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{asset('assets/img/avtar/02.jpg')}}" alt="avtar-img">
+                                <img src="{{ Auth::user()->images->isNotEmpty() ? asset('storage/' . Auth::user()->images->first()->image_path) : asset('assets/img/avtar/11.png') }}" alt="avtar-img">
                                 <span class="bg-success user-status"></span>
                             </a>
                             <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">

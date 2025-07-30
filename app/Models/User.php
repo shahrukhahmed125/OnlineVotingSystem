@@ -56,6 +56,12 @@ class User extends Authenticatable
         return $this->hasMany(Candidate::class);
     }
 
+    public function candidate()
+    {
+        return $this->hasOne(Candidate::class);
+    }
+
+
     public function naConstituency()
     {
         return $this->belongsTo(Assembly::class, 'na_constituency_id');
