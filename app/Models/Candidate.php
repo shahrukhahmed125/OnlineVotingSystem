@@ -25,14 +25,14 @@ class Candidate extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function assembly()
-    {
-        return $this->belongsTo(Assembly::class, 'constituency_id');
-    }
-
     public function politicalParty()
     {
         return $this->belongsTo(PoliticalParty::class);
+    }
+
+    public function elections()
+    {
+        return $this->belongsToMany(Election::class, 'election_candidate');
     }
 
     public function votes()

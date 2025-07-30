@@ -41,7 +41,6 @@
             <div class="card card-statistics">
                 <form action="{{ route('admin.elections.update', $election->id) }}" method="POST" id="election-form">
                 @csrf
-                @method('PUT')
                 <div class="card-header">
                     <div class="card-heading">
                         <h4 class="card-title">Details</h4>
@@ -56,30 +55,30 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="selectAssembly">Select Assembly*</label>
-                                <select id="selectAssembly" class="js-basic-single form-control @error('assembly_id') is-invalid @enderror" name="assembly_id" required>
-                                    <option value="" disabled {{ old('assembly_id', $election->assembly_id) ? '' : 'selected' }}>--Select Assembly--</option>
-                                    @if(isset($assemblies) && $assemblies->isNotEmpty())
-                                        @foreach ($assemblies as $assembly)
-                                            <option value="{{ $assembly->id }}" {{ old('assembly_id', $election->assembly_id) == $assembly->id ? 'selected' : '' }}>
-                                                {{ $assembly->name }}
+                                <select id="selectAssembly" class="js-basic-single form-control @error('type') is-invalid @enderror" name="type" required>
+                                    <option value="" disabled {{ old('type', $election->type) ? '' : 'selected' }}>--Select</option>
+                                    @if(isset($types) && !empty($types))
+                                        @foreach ($types as $type)
+                                            <option value="{{ $type }}" {{ old('type', $election->type) == $type ? 'selected' : '' }}>
+                                                {{ ucfirst($type) }}
                                             </option>
                                         @endforeach
                                     @else
-                                        <option value="">No Assemblies Found</option>
+                                        <option value="">No Type Found</option>
                                     @endif
                                 </select>
-                                @error('assembly_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('type') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="inputStartTime">Start Time*</label>
-                                <input type="text" name="start_time" class="form-control date-picker-default @error('start_time') is-invalid @enderror" id="inputStartTime" placeholder="Select Date..." value="{{ old('start_time', $election->start_time ? \Carbon\Carbon::parse($election->start_time)->format('m/d/Y') : '') }}" required>
+                                <input type="text" name="start_time" class="form-control date-picker-default @error('start_time') is-invalid @enderror" id="inputStartTime" placeholder="Select Date..." value="{{ old('start_time', $election->start_time ? \Carbon\Carbon::parse($election->start_time)->format('Y-m-d') : '') }}" required>
                                 @error('start_time') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputEndTime">End Time*</label>
-                                <input type="text" name="end_time" class="form-control date-picker-default @error('end_time') is-invalid @enderror" id="inputEndTime" placeholder="Select Date..." value="{{ old('end_time', $election->end_time ? \Carbon\Carbon::parse($election->end_time)->format('m/d/Y') : '') }}" required>
+                                <input type="text" name="end_time" class="form-control date-picker-default @error('end_time') is-invalid @enderror" id="inputEndTime" placeholder="Select Date..." value="{{ old('end_time', $election->end_time ? \Carbon\Carbon::parse($election->end_time)->format('Y-m-d') : '') }}" required>
                                 @error('end_time') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="form-group col-md-4 align-self-center">
@@ -152,7 +151,7 @@
                             positionClass: "toast-top-right"
                         });
                         // Optionally redirect or update UI
-                        // window.location.href = "{{ route('admin.elections.index') }}"; 
+                        window.location.href = "{{ route('admin.elections.index') }}"; 
                     } else if (response.status === "error") {
                         toastr.error(response.message, "Error", {
                             positionClass: "toast-top-right"

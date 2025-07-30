@@ -55,10 +55,16 @@
                             <div class="form-group col-md-6">
                                 <label for="selectAssembly">Select Type*</label>
                                 <select id="selectAssembly" class="js-basic-single form-control @error('type') is-invalid @enderror" name="type" required>
-                                    <option value="" selected disabled>--Select</option>
-                                    <option value="general assembly">General Assembly</option>
-                                    <option value="national assembly">National Assembly</option>
-                                    <option value="provincial assembly">Provincial Assembly</option>
+                                    <option value="" disabled {{ old('type') ? '' : 'selected' }}>--Select</option>
+                                    @if(isset($types) && !empty($types))
+                                        @foreach ($types as $type)
+                                            <option value="{{ $type }}" {{ old('type') == $type ? 'selected' : '' }}>
+                                                {{ ucfirst($type) }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="">No Type Found</option>
+                                    @endif
                                 </select>
                                 @error('type') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>

@@ -19,7 +19,8 @@ class ElectionController extends Controller
     public function create()
     {
         $assemblies = Assembly::all();
-        return view('admin.election.create', compact('assemblies'));
+        $types = Election::TYPE_ASSEMBLY; // Fetching types from the model
+        return view('admin.election.create', compact('assemblies', 'types'));
     }
 
     public function store(Request $request)
@@ -67,8 +68,8 @@ class ElectionController extends Controller
     public function edit($id)
     {
         $election = Election::findOrFail($id);
-        $assemblies = Assembly::all();
-        return view('admin.election.edit', compact('election', 'assemblies'));
+        $types = Election::TYPE_ASSEMBLY; // Fetching types from the model
+        return view('admin.election.edit', compact('election', 'types'));
     }
 
     public function update(Request $request, $id)
@@ -79,7 +80,7 @@ class ElectionController extends Controller
                 'description' => 'required|string|max:1000',
                 'start_time' => 'required|date',
                 'end_time' => 'required|date|after:start_time',
-                'assembly_id' => 'required|exists:assemblies,id',
+                'type' => 'required|in:general assembly,national assembly,provincial assembly', // Updated to use string values
                 'is_active' => 'sometimes|boolean',
             ]);
 
@@ -95,8 +96,8 @@ class ElectionController extends Controller
             $data->description = $request->description;
             $data->start_time = $request->start_time;
             $data->end_time = $request->end_time;
-            $data->assembly_id = $request->assembly_id;
-            $data->is_active = $request->input('is_active', $data->is_active); // Keep current if not provided
+            $data->type = $request->type;
+            $data->is_active = $request->has('is_active') ? 1 : 0; // Keep current if not provided
             $data->save();
 
             return response()->json([

@@ -4,7 +4,7 @@
         <div class="sidebar-nav scrollbar scroll_light">
             <ul class="metismenu " id="sidebarNav">
                 <li><a href="{{route('admin.home')}}" aria-expanded="false"><i class="nav-icon ti ti-rocket"></i><span class="nav-title">Dashboards</span></a> </li>
-                <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-calendar"></i><span class="nav-title">Users</span></a>
+                <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="nav-icon ti ti-user"></i><span class="nav-title">Users</span></a>
                     <ul aria-expanded="false">
                         <li> <a href="{{ route('admin.users.create') }}">Add</a> </li>
                         <li> <a href="{{ route('admin.users.index') }}">List</a> </li>

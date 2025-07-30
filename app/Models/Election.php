@@ -19,12 +19,11 @@ class Election extends Model
         'type'
     ];
 
+    const TYPE_ASSEMBLY = ['general assembly', 'national assembly', 'provincial assembly'];
+
     public function candidates()
     {
-        // An Election has a type.
-        // Candidates have a constituency_id (which is an assembly_id).
-        // This relationship fetches candidates whose constituency_id matches this election's assembly_id.
-        return $this->hasMany(Candidate::class, 'constituency_id', 'assembly_id');
+        return $this->belongsToMany(Candidate::class, 'election_candidate');
     }
 
     public function votes()

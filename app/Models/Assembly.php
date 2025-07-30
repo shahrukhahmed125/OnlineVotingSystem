@@ -13,11 +13,6 @@ class Assembly extends Model
         'type', 'name', 'province', 'district', 'description',
     ];
 
-    public function candidates()
-    {
-        return $this->hasMany(Candidate::class, 'constituency_id');
-    }
-
     public function naUsers()
     {
         return $this->hasMany(User::class, 'na_constituency_id');
