@@ -65,6 +65,16 @@ class AuthController extends Controller
 
     public function register()
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.home');
+            } elseif ($user->hasRole('candidate') || $user->hasRole('voter')) {
+                return redirect()->route('dashboard');
+            }
+        }
+
         return view('auth.register');
     }
 

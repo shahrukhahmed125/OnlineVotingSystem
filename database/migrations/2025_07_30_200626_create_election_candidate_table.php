@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('election_id')->constrained()->onDelete('cascade');
             $table->foreignId('candidate_id')->constrained()->onDelete('cascade');
+            $table->foreignId('assembly_id')->constrained()->onDelete('cascade');
+            $table->enum('status', ['nominated', 'won', 'lost'])->nullable();
             $table->timestamps();
         });
     }

@@ -23,7 +23,9 @@ class Election extends Model
 
     public function candidates()
     {
-        return $this->belongsToMany(Candidate::class, 'election_candidate');
+        return $this->belongsToMany(Candidate::class, 'election_candidate')
+                    ->withPivot('assembly_id', 'status')
+                    ->withTimestamps();
     }
 
     public function votes()

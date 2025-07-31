@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Assembly;
 use App\Models\Candidate;
+use App\Models\Election;
 use App\Models\PoliticalParty;
 use App\Models\User;
 use Exception;
@@ -15,7 +16,43 @@ class CandidateController extends Controller
     public function index()
     {
         $data = Candidate::all();
-        return view('admin.candidates.index', compact('data'));
+        $elections = Election::all();
+        $assemblies = Assembly::all();
+        return view('admin.candidates.index', compact('data', 'elections', 'assemblies'));
+    }
+
+    public function assign(Request $request, $id)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'assembly_id' => 'required|exists:assemblies,id',
+                'election_id' => 'required|exists:elections,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'validation_error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $candidate = Candidate::findOrFail($id);
+            $candidate->elections()->attach($request->election_id, [
+                'assembly_id' => $request->assembly_id,
+                'status' => 'nominated',
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Candidate assigned successfully!',
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function create()
@@ -58,45 +95,6 @@ class CandidateController extends Controller
             ], 500);
         }
     }
-
-    public function edit($id)
-    {
-        $data = Candidate::findOrFail($id);
-        $assemblies = Assembly::all();
-        $parties = PoliticalParty::all(); // Renamed from 'party' for clarity
-        return view('admin.candidates.edit', compact('data', 'assemblies', 'parties'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'user_id' => 'required|exists:users,id',
-                'constituency_id' => 'required|exists:assemblies,id',
-                'political_party_id' => 'required|exists:political_parties,id',
-            ]);
-
-            if ($validator->fails()) {
-                // Redirect back with errors and old input if not an AJAX request
-                // For AJAX, you might return a JSON response as in store()
-                return redirect()->back()->withErrors($validator)->withInput();
-            }
-
-            $data = Candidate::findOrFail($id);
-            $data->user_id = $request->user_id;
-            $data->constituency_id = $request->constituency_id;
-            $data->political_party_id = $request->political_party_id;
-            $data->save(); // Use save() for consistency, update() also works
-
-            // Add a success message (optional, good for user feedback)
-            return redirect()->route('admin.candidates.index')->with('success', 'Candidate updated successfully!');
-
-        } catch (Exception $e) {
-            // Log the error or handle it as needed
-            return redirect()->back()->with('error', 'Error updating candidate: ' . $e->getMessage())->withInput();
-        }
-    }
-
 
     public function destroy($id)
     {

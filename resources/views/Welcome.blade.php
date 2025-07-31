@@ -22,7 +22,17 @@
                     <li><a href="#how-it-works">How It Works</a></li>
                     <li><a href="#security">Security</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="{{ route('login') }}" class="btn">Login</a></li>
+                    @auth
+                        @if(auth()->user()->hasRole('admin'))
+                            <li><a href="{{ route('admin.home') }}">Dashboard</a></li>
+                        @elseif(auth()->user()->hasRole('candidate') || auth()->user()->hasRole('voter'))
+                            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                        @endif
+                    @endauth
+
+                    @guest
+                        <li><a href="{{ route('login') }}" class="btn">Login</a></li>
+                    @endguest
                 </ul>
             </nav>
         </div>
