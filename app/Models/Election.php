@@ -2,20 +2,30 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Election extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'name',
-        'start_date',
-        'end_date',
-        'status',
+        'election_id', // Ensure this is also in your fillable if you're mass-assigning it
+        'title',
+        'description',
+        'start_time',
+        'end_time',
+        'is_active',
+        'type'
     ];
+
+    const TYPE_ASSEMBLY = ['general assembly', 'national assembly', 'provincial assembly'];
 
     public function candidates()
     {
-        return $this->hasMany(Candidate::class);
+        return $this->belongsToMany(Candidate::class, 'election_candidate')
+                    ->withPivot('assembly_id', 'status')
+                    ->withTimestamps();
     }
 
     public function votes()
@@ -23,10 +33,9 @@ class Election extends Model
         return $this->hasMany(Vote::class);
     }
 
-    public function generateElectionId()
+    public static function generateElectionId() // Made static and returns value
     {
-        $this->election_id = 'ELEC-' . strtoupper(uniqid());
-        $this->save();
+        return 'ELEC-' . strtoupper(uniqid());
     }
-    
+
 }

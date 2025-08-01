@@ -10865,7 +10865,7 @@ $(function(){
     $(function(){
         var dataTable = jQuery(".datatable-wrapper");
         if (dataTable.length > 0) {
-            $('#datatable').DataTable({
+            $('#export-table').DataTable({
                 "bLengthChange": false,
                 "searching": false,
                 "bPaginate":true,
@@ -10879,7 +10879,7 @@ $(function(){
 
     $(function(){
 $('.date-picker-default').datepicker({
-        format: 'mm-dd-yyyy',
+        format: 'yyyy-mm-dd',
         autoclose: true,
         orientation: "bottom",
         templates: {

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->string('path'); // image file path
-            $table->nullableMorphs('imageable'); // polymorphic relation
+            $table->string('image_path'); // The file path of the image
+            $table->string('type')->nullable(); // Optional, to specify types like 'profile', 'logo', etc.
+            $table->morphs('imageable'); // polymorphic relation
             $table->timestamps();
         });
     }

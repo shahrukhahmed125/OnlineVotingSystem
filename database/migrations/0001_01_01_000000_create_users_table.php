@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('user_id')->unique(); // Added user_id column
             $table->foreignId('na_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
             $table->foreignId('pa_constituency_id')->nullable()->constrained('assemblies')->nullOnDelete();
             $table->string('name');
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('pending_email')->nullable();
             $table->string('email_verification_code')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->timestamp('password_changed_at')->nullable();
             $table->rememberToken();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();

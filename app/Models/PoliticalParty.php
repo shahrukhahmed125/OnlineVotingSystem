@@ -12,9 +12,9 @@ class PoliticalParty extends Model
     protected $fillable = [
         'name',
         'abbreviation',
-        'symbol', // image or icon
+        // 'symbol', // image or icon
         'leader_name',
-        'founded_year',
+        'founded_at',
         'head_office',
     ];
 
@@ -23,8 +23,8 @@ class PoliticalParty extends Model
         return $this->hasMany(Candidate::class);
     }
     
-    public function image()
+    public function images()
     {
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

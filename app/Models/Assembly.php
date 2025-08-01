@@ -10,13 +10,8 @@ class Assembly extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type', 'name', 'province', 'district',
+        'type', 'name', 'province', 'district', 'description',
     ];
-
-    public function candidates()
-    {
-        return $this->hasMany(Candidate::class, 'constituency_id');
-    }
 
     public function naUsers()
     {
@@ -30,6 +25,6 @@ class Assembly extends Model
 
     public function elections()
     {
-        return $this->hasMany(Election::class, 'constituency_id');
+        return $this->hasMany(Election::class, 'assembly_id');
     }
 }

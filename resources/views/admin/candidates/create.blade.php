@@ -38,57 +38,65 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card card-statistics">
+                <form action="{{route('admin.candidates.store')}}" method="POST" id="candidate-form">
+                @csrf
                 <div class="card-header">
                     <div class="card-heading">
-                        <h4 class="card-title">Form Row</h4>
+                        <h4 class="card-title">Details</h4>
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{route('candidates.store')}}" method="POST">
-                        @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="inputName4">Name</label>
-                                <input type="text" class="form-control" id="inputName4" placeholder="Enter Name..." name="name">
+                                <label for="user_id">Select User*</label>
+                                    <select id="user_id" class="js-basic-single form-control" name="user_id" required>
+                                        <option selected disabled>--Select</option>
+                                        @if ($users->isNotEmpty())
+                                            @foreach ($users as $user)
+                                                <option value="{{$user->id}}">{{$user->name}}</option>
+                                            @endforeach
+                                        @else
+                                            <option value="">No Users Found</option>
+                                        @endif
+                                    </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputEmail4">Email</label>
-                                <input type="email" class="form-control" id="inputEmail4" placeholder="Email" name="email">
+                                <label for="constituency_id">Select Assembly*</label>
+                                    <select id="constituency_id" class="js-basic-single form-control" name="constituency_id" required>
+                                        <option selected disabled>--Select</option>
+                                        @if ($assemblies->isNotEmpty())
+                                            @foreach ($assemblies as $assembly)
+                                                <option value="{{$assembly->id}}">{{$assembly->name}}</option>
+                                            @endforeach
+                                        @else
+                                            <option value="">No Assemblies Found</option>
+                                        @endif
+                                    </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputCINC4">CNIC No.</label>
-                                <input type="text" class="form-control" id="inputCNIC4" name="CNIC" placeholder="xxxxx-xxxxxxx-x">
+                                <label for="inputState">Select Political Party*</label>
+                                    <select id="inputState" class="js-basic-single form-control" name="political_party_id" required>
+                                        <option selected disabled>--Select</option>
+                                        @if ($parties->isNotEmpty())
+                                            @foreach ($parties as $party)
+                                                <option value="{{$party->id}}">{{$party->name}}</option>
+                                            @endforeach
+                                        @else
+                                            <option value="">No Parties Found</option>
+                                        @endif
+                                    </select>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputPhone4">Phone</label>
-                                <input type="tel" class="form-control" id="inputPhone4" placeholder="03xxxxxxxxx" name="phone">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputAddress">Address</label>
-                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" name="address">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="inputCity">City</label>
-                                <input type="text" class="form-control" id="inputCity" name="city">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputState">State</label>
-                                <select id="inputState" class="form-control">
-                                    <option selected>Select State</option>
-                                    <option>Ontario</option>
-                                    <option>Toronto</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-2">
-                                <label for="inputZip">Zip</label>
-                                <input type="text" class="form-control" id="inputZip">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                        </div>    
                 </div>
+                <div class="col-12">
+                    <div class="card-footer">
+                        <div class="btn-list" style="text-align: right;">
+                            <input class="btn" type="button" value="Cancel"/>
+                            <button type="submit" class="btn btn-primary" id="candidate-form-btn">Submit</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -100,6 +108,59 @@
 
 @section('js')
 
+<script>
+    $(document).ready(function() {
+        $("#candidate-form").submit(function(e) {
+            e.preventDefault();
+            $(".invalid-feedback").remove();
+            $("input").removeClass("is-invalid");
 
+            var formData = $(this).serialize();
+
+            $('#candidate-form-btn').prop("disabled", true).html(
+                '<span class="spinner-border spinner-border-sm"></span> Processing...'
+            );
+
+            $.ajax({
+                url: $(this).attr("action"),
+                type: "POST",
+                data: formData,
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        toastr.success(response.message, "Success", {
+                            positionClass: "toast-top-right"
+                        });
+
+                        $("#candidate-form")[0].reset();
+                    } else if (response.status === "error") {
+                        toastr.error(response.message, "Error", {
+                            positionClass: "toast-top-right"
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        var errors = xhr.responseJSON.errors;
+
+                        $.each(errors, function(key, value) {
+                            var inputField = $("input[name='" + key + "']");
+                            inputField.addClass("is-invalid");
+                            inputField.after('<p class="invalid-feedback">' + value[0] + '</p>');
+                        });
+                    } else {
+                        toastr.error("Something went wrong!", "Error", {
+                            positionClass: "toast-top-right"
+                        });
+                    }
+                },
+                complete: function() {
+                    $('#candidate-form-btn').prop("disabled", false).html('Submit');
+                }
+            });
+        });
+    });
+
+</script>  
 
 @stop

@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Vote extends Model
 {
     protected $fillable =[
-        'user_id',
+        'voter_id',
         'candidate_id',
         'election_id',
         'voted_at',
+        'assembly_id',
     ];
 
-    public function user()
+    public function voter()
     {
         return $this->belongsTo(User::class);
     }
@@ -24,5 +25,9 @@ class Vote extends Model
     public function election()
     {
         return $this->belongsTo(Election::class);
+    }
+    public function assembly()
+    {
+        return $this->belongsTo(Assembly::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\TwoFactorCodeNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,14 +28,14 @@ class AuthController extends Controller
     public function login_auth(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|string',
+            'cnic' => 'required|string|max:255',
             'password' => 'required|min:8|string',
         ]);
 
         // Check if the "remember" checkbox is selected
         $remember = $request->has('remember');
 
-        if (Auth::attempt($request->only('email', 'password'), $remember)) {
+        if (Auth::attempt($request->only('cnic', 'password'), $remember)) {
             $user = Auth::user();
             // session(['2fa_email' => $request->email]);
 
@@ -49,35 +50,62 @@ class AuthController extends Controller
             // }
 
             $request->session()->regenerate();
-
-            if ($user->hasRole('user')) {
-                return redirect()->intended('voter-dashboard');
+            if($user->hasRole('admin'))
+            {
+                return redirect()->intended('admin-dashboard');
+            }
+            elseif ($user->hasRole('candidate') || $user->hasRole('voter')) {
+                return redirect()->intended('dashboard');
             }
             return redirect()->intended('admin-dashboard');
         }
 
-        return redirect()->back()->withErrors(['email' => 'Inavlid Credentials!']);
+        return redirect()->back()->withErrors(['cnic' => 'Inavlid Credentials!']);
     }
 
     public function register()
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.home');
+            } elseif ($user->hasRole('candidate') || $user->hasRole('voter')) {
+                return redirect()->route('dashboard');
+            }
+        }
+
         return view('auth.register');
     }
 
     public function register_auth(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'cnic' => 'required|string|unique:users,cnic|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
+            'cnic' => 'required|string|max:255',
             'password' => 'required|min:8|string',
         ]);
 
-        $user = User::create(($request->all()));
-        $user->assignRole('user');
+        // Try to find user by cnic, name, and email
+        $user = User::where('cnic', $request->cnic)->first();
 
-        // event(new Registered($user));
-        // $user->sendEmailVerificationNotification();
+        if ($user) {
+            // Only update password if it is null
+            if (is_null($user->password)) {
+                $user->password = bcrypt($request->password);
+                $user->save();
+                $user->generateTwoFactorCode();
+                $user->notify(new TwoFactorCodeNotification);
+                $request->session()->put('2fa_user_id', $user->id);
+                
+                return redirect()->route('2fa.challenge');
+            }
+            else {
+                return redirect()->back()->withErrors(['cnic' => 'User already registered! Please login.']);
+            }
+        } else {
+            return redirect()->back()->withErrors(['cnic' => 'Data not found! Please make sure you have made your CNIC.']);
+        }
+
         Auth::login($user);
 
         return redirect()->intended('voter-dashboard');

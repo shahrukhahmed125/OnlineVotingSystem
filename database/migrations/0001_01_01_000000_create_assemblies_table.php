@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('assemblies', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['NA', 'PA']); // National or Provincial
-            $table->string('name'); // e.g. NA-246, PS-112
+            $table->string('name')->unique(); // e.g. NA-246, PS-112
             $table->string('province')->nullable(); // For PA only
-            $table->string('district');
+            $table->string('district')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
