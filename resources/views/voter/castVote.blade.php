@@ -61,6 +61,10 @@
                                 <h4 class="card-title">Please Select a Candidate to Cast Your Vote</h4>
                             </div>
                         </div>
+                        @php
+                            $naCandidates = $candidates->filter(fn($c) => $c->assembly_type === 'NA');
+                            $paCandidates = $candidates->filter(fn($c) => $c->assembly_type === 'PA');
+                        @endphp
                         <div class="card-body">
                             <div class="card card-statistics px-2" style="box-shadow: none;">
                                 <div class="card-body">
@@ -71,28 +75,26 @@
                                     @elseif ($election->type === 'general assembly')
                                         <form action="{{ route('voter.storeVote') }}" method="POST" id="voteForm">
                                             @csrf
+                                            {{-- PA Section --}}
                                             <div class="card-heading">
                                                 <h4 class="card-title mb-4">Provincial Assembly (PA)</h4>
                                             </div>
-                                            @php $paCandidates = $candidates->filter(fn($c) => $c->assembly->type === 'PA'); @endphp
                                             @if ($paCandidates->isNotEmpty())
                                                 <div class="row mb-5">
                                                     @foreach ($paCandidates as $candidate)
                                                         <div class="col-xl-4 col-sm-6">
-                                                            <div class="selectable-card card card-statistics px-2"
-                                                                data-group="pa" data-id="{{ $candidate->id }}"
-                                                                style="cursor:pointer;">
+                                                            <div class="selectable-card card card-statistics px-2" data-group="pa"
+                                                                data-id="{{ $candidate->id }}" style="cursor:pointer;">
                                                                 <div class="card-body pb-5 pt-4">
-                                                                    <input type="hidden" name="pa_candidate_id"
-                                                                        id="pa_candidate_id" value="{{ $candidate->id }}"
-                                                                        required>
+                                                                    <input type="radio" name="pa_candidate_id" value="{{ $candidate->id }}" required class="d-none">
                                                                     <input type="hidden" name="pa_assembly_id"
-                                                                        value="{{ $candidate->constituency_id }}">
+                                                                        value="{{ $candidate->elections->first()->pivot->assembly_id ?? '' }}">
                                                                     <div class="text-center">
                                                                         <div class="text-right">
                                                                             <h4>
-                                                                                <span
-                                                                                    class="badge badge-pill badge-info-inverse px-3 py-2">{{ ucwords($candidate->politicalParty->symbol) }}</span>
+                                                                                <span class="badge badge-pill badge-info-inverse px-3 py-2">
+                                                                                    {{ ucwords($candidate->politicalParty->symbol) }}
+                                                                                </span>
                                                                             </h4>
                                                                         </div>
                                                                         <div class="pt-1 bg-img m-auto">
@@ -105,12 +107,10 @@
                                                                                 {{ ucwords($candidate->politicalParty->name) ?? 'Candidate' }}
                                                                             </h5>
                                                                             <div class="mt-3">
-                                                                                <span
-                                                                                    class="badge badge-pill badge-success-inverse px-3 py-2">
+                                                                                <span class="badge badge-pill badge-success-inverse px-3 py-2">
                                                                                     {{ ucwords($candidate->politicalParty->abbreviation) ?? 'IND' }}
                                                                                 </span>
                                                                             </div>
-
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -118,34 +118,29 @@
                                                         </div>
                                                     @endforeach
                                                 </div>
-                                                <input type="hidden" name="election_id" value="{{ $election->id }}">
                                             @else
-                                                <div class="alert alert-warning">
-                                                    No Candidates Found for Provincial Assembly
-                                                </div>
+                                                <div class="alert alert-warning">No Candidates Found for Provincial Assembly</div>
                                             @endif
+
+                                            {{-- NA Section --}}
                                             <div class="card-heading">
                                                 <h4 class="card-title mb-4">National Assembly (NA)</h4>
                                             </div>
-                                            @php $naCandidates = $candidates->filter(fn($c) => $c->assembly->type === 'NA'); @endphp
                                             @if ($naCandidates->isNotEmpty())
                                                 <div class="row">
                                                     @foreach ($naCandidates as $candidate)
                                                         <div class="col-xl-4 col-sm-6">
-                                                            <div class="selectable-card card card-statistics px-2"
-                                                                data-group="na" data-id="{{ $candidate->id }}"
-                                                                style="cursor:pointer;">
+                                                            <div class="selectable-card card card-statistics px-2" data-group="na"
+                                                                data-id="{{ $candidate->id }}" style="cursor:pointer;">
                                                                 <div class="card-body pb-5 pt-4">
-                                                                    <input type="hidden" name="na_candidate_id"
-                                                                        id="na_candidate_id" value="{{ $candidate->id }}"
-                                                                        required>
+                                                                    <input type="radio" name="na_candidate_id" value="{{ $candidate->id }}" required class="d-none">
                                                                     <input type="hidden" name="na_assembly_id"
-                                                                        value="{{ $candidate->constituency_id }}">
+                                                                        value="{{ $candidate->elections->first()->pivot->assembly_id ?? '' }}">
                                                                     <div class="text-center">
                                                                         <div class="text-right">
                                                                             <h4>
-                                                                                <span
-                                                                                    class="badge badge-pill badge-info-inverse px-3 py-2">{{ ucwords($candidate->politicalParty->symbol) }}
+                                                                                <span class="badge badge-pill badge-info-inverse px-3 py-2">
+                                                                                    {{ ucwords($candidate->politicalParty->symbol) }}
                                                                                 </span>
                                                                             </h4>
                                                                         </div>
@@ -159,12 +154,10 @@
                                                                                 {{ ucwords($candidate->politicalParty->name) ?? 'Candidate' }}
                                                                             </h5>
                                                                             <div class="mt-3">
-                                                                                <span
-                                                                                    class="badge badge-pill badge-success-inverse px-3 py-2">
-                                                                                    {{ $candidate->politicalParty->abbreviation ?? 'IND' }}
+                                                                                <span class="badge badge-pill badge-success-inverse px-3 py-2">
+                                                                                    {{ ucwords($candidate->politicalParty->abbreviation) ?? 'IND' }}
                                                                                 </span>
                                                                             </div>
-
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -172,40 +165,35 @@
                                                         </div>
                                                     @endforeach
                                                 </div>
-                                                <input type="hidden" name="election_id" value="{{ $election->id }}">
                                             @else
-                                                <div class="alert alert-warning">
-                                                    No Candidates Found for National Assembly
-                                                </div>
+                                                <div class="alert alert-warning">No Candidates Found for National Assembly</div>
                                             @endif
+
+                                            <input type="hidden" name="election_id" value="{{ $election->id }}">
                                             <div class="col-12">
                                                 <div class="card-footer">
-                                                    <div class="btn-list" style="text-align: right;">
-                                                        <input class="btn" type="button" value="Cancel"
-                                                            onclick="window.history.back();" />
-                                                        <button type="submit" class="btn btn-primary"
-                                                            id="party-form-btn">Submit</button>
+                                                    <div class="btn-list text-right">
+                                                        <input class="btn" type="button" value="Cancel" onclick="window.history.back();" />
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </form>
                                     @else
-                                        <form action="{{ route('candidate.storeVote') }}" method="POST" id="voteForm">
+                                        {{-- Single-type Election (NA or PA) --}}
+                                        <form action="{{ route('voter.storeVote') }}" method="POST" id="voteForm">
                                             @csrf
                                             <h5 class="mb-4">{{ strtoupper($election->type) }}</h5>
                                             @if ($candidates->isNotEmpty())
                                                 <div class="row">
                                                     @foreach ($candidates as $candidate)
                                                         <div class="col-xl-4 col-sm-6">
-                                                            <div class="selectable-card card card-statistics px-2"
-                                                                data-group="single" data-id="{{ $candidate->id }}"
-                                                                style="cursor:pointer;">
+                                                            <div class="selectable-card card card-statistics px-2" data-group="single"
+                                                                data-id="{{ $candidate->id }}" style="cursor:pointer;">
                                                                 <div class="card-body pb-5 pt-4">
-                                                                    <input type="hidden" name="candidate_id"
-                                                                        id="candidate_id" value="{{ $candidate->id }}"
-                                                                        required>
+                                                                    <input type="radio" name="candidate_id" value="{{ $candidate->id }}" required class="d-none">
                                                                     <input type="hidden" name="assembly_id"
-                                                                        value="{{ $candidate->constituency_id }}">
+                                                                        value="{{ $candidate->elections->first()->pivot->assembly_id ?? '' }}">
                                                                     <div class="text-center">
                                                                         <div class="pt-1 bg-img m-auto">
                                                                             <img src="{{ $candidate->politicalParty->images->isNotEmpty() ? asset('storage/' . $candidate->politicalParty->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}"
@@ -213,19 +201,18 @@
                                                                         </div>
                                                                         <div class="mt-3 -inner">
                                                                             <h4>
-                                                                                <span
-                                                                                    class="badge badge-pill badge-info-inverse px-3 py-2">{{ ucwords($candidate->politicalParty->symbol) }}</span>
+                                                                                <span class="badge badge-pill badge-info-inverse px-3 py-2">
+                                                                                    {{ ucwords($candidate->politicalParty->symbol) }}
+                                                                                </span>
                                                                             </h4>
                                                                             <h5 class="mb-0 text-muted">
                                                                                 {{ ucwords($candidate->politicalParty->name) ?? 'Candidate' }}
                                                                             </h5>
                                                                             <div class="mt-3">
-                                                                                <span
-                                                                                    class="badge badge-pill badge-success-inverse px-3 py-2">
+                                                                                <span class="badge badge-pill badge-success-inverse px-3 py-2">
                                                                                     {{ $candidate->politicalParty->abbreviation ?? 'IND' }}
                                                                                 </span>
                                                                             </div>
-
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -236,11 +223,9 @@
                                                 <input type="hidden" name="election_id" value="{{ $election->id }}">
                                                 <div class="col-12">
                                                     <div class="card-footer">
-                                                        <div class="btn-list" style="text-align: right;">
-                                                            <input class="btn" type="button" value="Cancel"
-                                                                onclick="window.history.back();" />
-                                                            <button type="submit" class="btn btn-primary"
-                                                                id="party-form-btn">Submit</button>
+                                                        <div class="btn-list text-right">
+                                                            <input class="btn" type="button" value="Cancel" onclick="window.history.back();" />
+                                                            <button type="submit" class="btn btn-primary">Submit</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -263,37 +248,40 @@
 @section('js')
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // For general assembly
-            document.querySelectorAll('.selectable-card[data-group="pa"]').forEach(function(card) {
-                card.addEventListener('click', function() {
-                    document.querySelectorAll('.selectable-card[data-group="pa"]').forEach(function(
-                        c) {
+        document.addEventListener('DOMContentLoaded', function () {
+            // For PA (Provincial Assembly)
+            document.querySelectorAll('.selectable-card[data-group="pa"]').forEach(function (card) {
+                card.addEventListener('click', function () {
+                    document.querySelectorAll('.selectable-card[data-group="pa"]').forEach(function (c) {
                         c.classList.remove('selected-card');
                     });
                     card.classList.add('selected-card');
-                    document.getElementById('pa_candidate_id').value = card.getAttribute('data-id');
+                    const radioInput = card.querySelector('input[type="radio"][name="pa_candidate_id"]');
+                    if (radioInput) radioInput.checked = true;
                 });
             });
-            document.querySelectorAll('.selectable-card[data-group="na"]').forEach(function(card) {
-                card.addEventListener('click', function() {
-                    document.querySelectorAll('.selectable-card[data-group="na"]').forEach(function(
-                        c) {
+
+            // For NA (National Assembly)
+            document.querySelectorAll('.selectable-card[data-group="na"]').forEach(function (card) {
+                card.addEventListener('click', function () {
+                    document.querySelectorAll('.selectable-card[data-group="na"]').forEach(function (c) {
                         c.classList.remove('selected-card');
                     });
                     card.classList.add('selected-card');
-                    document.getElementById('na_candidate_id').value = card.getAttribute('data-id');
+                    const radioInput = card.querySelector('input[type="radio"][name="na_candidate_id"]');
+                    if (radioInput) radioInput.checked = true;
                 });
             });
-            // For other elections
-            document.querySelectorAll('.selectable-card[data-group="single"]').forEach(function(card) {
-                card.addEventListener('click', function() {
-                    document.querySelectorAll('.selectable-card[data-group="single"]').forEach(
-                        function(c) {
-                            c.classList.remove('selected-card');
-                        });
+
+            // For single-type election
+            document.querySelectorAll('.selectable-card[data-group="single"]').forEach(function (card) {
+                card.addEventListener('click', function () {
+                    document.querySelectorAll('.selectable-card[data-group="single"]').forEach(function (c) {
+                        c.classList.remove('selected-card');
+                    });
                     card.classList.add('selected-card');
-                    document.getElementById('candidate_id').value = card.getAttribute('data-id');
+                    const radioInput = card.querySelector('input[type="radio"][name="candidate_id"]');
+                    if (radioInput) radioInput.checked = true;
                 });
             });
         });

@@ -36,6 +36,13 @@ class Candidate extends Model
                     ->withTimestamps();
     }
 
+    public function assemblies()
+    {
+        return $this->belongsToMany(Assembly::class, 'election_candidate')
+                    ->withPivot('election_id', 'status')
+                    ->withTimestamps();
+    }
+
     public function votes()
     {
         return $this->hasMany(Vote::class);

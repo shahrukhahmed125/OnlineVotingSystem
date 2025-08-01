@@ -40,10 +40,11 @@ class TwoFactorController extends Controller
             Auth::login($user);
             $request->session()->regenerate();
             
-            if ($user->hasRole('voter')) {
-                return redirect()->intended('voter-dashboard');
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.home');
+            } elseif ($user->hasRole('candidate') || $user->hasRole('voter')) {
+                return redirect()->route('dashboard');
             }
-            return redirect()->intended('admin-dashboard');
         }
 
         return back()->withErrors(['2fa_code' => 'Invalid or expired 2FA code.']);

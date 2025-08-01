@@ -92,8 +92,9 @@
                                                     <div class="dropdown-menu"
                                                         aria-labelledby="dropdownMenuButton{{ $item->id }}">
                                                         <a class="dropdown-item" href="#">View</a>
-                                                        <a class="dropdown-item" href="#" data-toggle="modal"
-                                                            data-target="#assignModal">Assign</a>
+                                                        @if($item->elections->isEmpty())
+                                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#assignModal{{ $item->id }}">Assign</a>
+                                                        @endif
                                                         <form action="{{ route('admin.candidates.destroy', $item->id) }}"
                                                             method="POST" style="display:inline;">
                                                             @csrf
@@ -107,8 +108,8 @@
                                         </tr>
 
                                         <!-- Assign Modal -->
-                                        <div class="modal fade" id="assignModal" tabindex="-1" role="dialog"
-                                            aria-labelledby="assignModal" aria-hidden="true">
+                                        <div class="modal fade" id="assignModal{{ $item->id }}" tabindex="-1" role="dialog"
+                                            aria-labelledby="assignModal{{ $item->id }}" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">

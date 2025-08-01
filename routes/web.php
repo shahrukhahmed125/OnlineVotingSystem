@@ -57,7 +57,7 @@ Route::middleware(['auth', 'role:candidate|voter'])->group(function () {
         Route::controller(VoterController::class)->group(function () {
             Route::get('/', 'index')->name('dashboard');
             Route::get('/cast-vote', 'castVote')->name('castVote');
-            Route::post('/cast-vote', 'storeVote')->name('storeVote');
+            Route::post('/store-vote', 'storeVote')->name('storeVote');
         });
 
     });

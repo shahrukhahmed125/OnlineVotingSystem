@@ -22,48 +22,50 @@ class VoterController extends Controller
     public function castVote()
     {
         $user = Auth::user();
-        // Get the current active election relevant to the user's constituency
+
+        // Fetch the active election
         $election = Election::where('is_active', true)
-            ->where(function ($query) use ($user) {
-                $query->where('type', 'national assembly')
-                    ->orWhere('type', 'provincial assembly')
-                    ->orWhere('type', 'general assembly');
-            })
+            ->whereIn('type', ['national assembly', 'provincial assembly', 'general assembly'])
             ->first();
 
         if (!$election) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'No active election for your constituency at the moment.'
+                'message' => 'No active election available at the moment.'
             ], 404);
         }
 
-        $assembly = null;
+        // Get relevant assembly IDs
+        $assemblyIds = [];
 
-        // Determine which assembly applies to the user based on the election type
-        if ($election->type === 'national assembly') {
-            $assembly = Assembly::find($user->na_constituency_id);
-        } elseif ($election->type === 'provincial assembly') {
-            $assembly = Assembly::find($user->pa_constituency_id);
+        if ($election->type === 'national assembly' && $user->na_constituency_id) {
+            $assemblyIds[] = $user->na_constituency_id;
+        } elseif ($election->type === 'provincial assembly' && $user->pa_constituency_id) {
+            $assemblyIds[] = $user->pa_constituency_id;
         } elseif ($election->type === 'general assembly') {
-            // For general elections, you might want to handle both NA and PA
-            $naAssembly = Assembly::find($user->na_constituency_id);
-            $paAssembly = Assembly::find($user->pa_constituency_id);
-            $assembly = collect([$naAssembly, $paAssembly])->filter(); // just in case one is null
+            if ($user->na_constituency_id) $assemblyIds[] = $user->na_constituency_id;
+            if ($user->pa_constituency_id) $assemblyIds[] = $user->pa_constituency_id;
         }
 
-        if (!$assembly) {
+        if (empty($assemblyIds)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Assembly information not found for the active election.'
+                'message' => 'No valid assembly found for your constituency.'
             ], 404);
         }
 
-        // Get candidates for the relevant assembly or both
-        $candidates = Candidate::whereIn('constituency_id', [
-            $user->na_constituency_id,
-            $user->pa_constituency_id
-        ])->with('politicalParty')->get();
+        // Fetch candidates assigned to this election and user's assemblies via pivot
+        $candidates = Candidate::whereHas('elections', function ($query) use ($election, $assemblyIds) {
+            $query->where('election_candidate.election_id', $election->id)
+                ->whereIn('election_candidate.assembly_id', $assemblyIds);
+        })
+        ->with([
+            'politicalParty.images',
+            'elections' => function ($query) use ($election) {
+                $query->where('election_candidate.election_id', $election->id);
+            },
+            'assemblies' // Make sure this relationship exists
+        ])->get();
 
         if ($candidates->isEmpty()) {
             return response()->json([
@@ -72,11 +74,15 @@ class VoterController extends Controller
             ], 404);
         }
 
-        // Determine how many votes the user can cast
-        $maxVotes = $election->type === 'general assembly' ? 2 : 1;
-        // dd($election, $assembly, $candidates, $maxVotes);
+        // Attach assembly_type manually to each candidate
+        foreach ($candidates as $candidate) {
+            $assemblyId = $candidate->elections->first()?->pivot->assembly_id;
+            $candidate->assembly_type = \App\Models\Assembly::find($assemblyId)?->type;
+        }
 
-        return view('voter.castVote', compact('election', 'assembly', 'candidates', 'maxVotes', 'user'));
+        $maxVotes = $election->type === 'general assembly' ? 2 : 1;
+
+        return view('voter.castVote', compact('election', 'candidates', 'user', 'maxVotes'));
     }
 
     public function storeVote(Request $request)
@@ -103,24 +109,18 @@ class VoterController extends Controller
                 ], 403);
             }
 
+            // Handle General Election (2 votes)
             if ($election->type === 'general assembly') {
-
-                // Handle PA vote
+                // PA
                 if ($request->pa_candidate_id) {
                     $paCandidate = Candidate::findOrFail($request->pa_candidate_id);
                     $paAssemblyId = $request->pa_assembly_id;
 
-                    if ($paCandidate->constituency_id != $user->pa_constituency_id) {
-                        return response()->json([
-                            'status' => 'error', 
-                            'message' => 'You are not eligible to vote for PA.'],
-                             403);
-                    }
-
-                    $alreadyVotedPA = Vote::where('voter_id', $user->id)
-                        ->where('election_id', $election->id)
-                        ->where('assembly_id', $paAssemblyId)
-                        ->exists();
+                    $alreadyVotedPA = Vote::where([
+                        ['voter_id', $user->id],
+                        ['election_id', $election->id],
+                        ['assembly_id', $paAssemblyId],
+                    ])->exists();
 
                     if (!$alreadyVotedPA) {
                         Vote::create([
@@ -128,27 +128,21 @@ class VoterController extends Controller
                             'candidate_id' => $paCandidate->id,
                             'election_id' => $election->id,
                             'assembly_id' => $paAssemblyId,
-                            'voted_at' => now()
+                            'voted_at' => now(),
                         ]);
                     }
                 }
 
-                // Handle NA vote
+                // NA
                 if ($request->na_candidate_id) {
                     $naCandidate = Candidate::findOrFail($request->na_candidate_id);
                     $naAssemblyId = $request->na_assembly_id;
 
-                    if ($naCandidate->constituency_id != $user->na_constituency_id) {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'You are not eligible to vote for NA.'
-                        ], 403);
-                    }
-
-                    $alreadyVotedNA = Vote::where('voter_id', $user->id)
-                        ->where('election_id', $election->id)
-                        ->where('assembly_id', $naAssemblyId)
-                        ->exists();
+                    $alreadyVotedNA = Vote::where([
+                        ['voter_id', $user->id],
+                        ['election_id', $election->id],
+                        ['assembly_id', $naAssemblyId],
+                    ])->exists();
 
                     if (!$alreadyVotedNA) {
                         Vote::create([
@@ -156,7 +150,7 @@ class VoterController extends Controller
                             'candidate_id' => $naCandidate->id,
                             'election_id' => $election->id,
                             'assembly_id' => $naAssemblyId,
-                            'voted_at' => now()
+                            'voted_at' => now(),
                         ]);
                     }
                 }
@@ -167,20 +161,18 @@ class VoterController extends Controller
                 ]);
             }
 
-            // Handle other election types (e.g. single NA or PA)
+            // Handle Single Vote (NA or PA)
             if ($request->candidate_id) {
                 $candidate = Candidate::findOrFail($request->candidate_id);
 
-                if ($candidate->constituency_id != $user->na_constituency_id && $candidate->constituency_id != $user->pa_constituency_id) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'You are not eligible to vote in this election.'
-                    ], 403);
-                }
+                // Get the assembly from pivot table
+                $assemblyId = $request->assembly_id;
 
-                $alreadyVoted = Vote::where('voter_id', $user->id)
-                    ->where('election_id', $election->id)
-                    ->exists();
+                $alreadyVoted = Vote::where([
+                    ['voter_id', $user->id],
+                    ['election_id', $election->id],
+                    ['assembly_id', $assemblyId],
+                ])->exists();
 
                 if ($alreadyVoted) {
                     return response()->json([
@@ -193,17 +185,26 @@ class VoterController extends Controller
                     'voter_id' => $user->id,
                     'candidate_id' => $candidate->id,
                     'election_id' => $election->id,
-                    'assembly_id' => $candidate->constituency_id,
-                    'voted_at' => now()
+                    'assembly_id' => $assemblyId,
+                    'voted_at' => now(),
                 ]);
 
-                return response()->json(['status' => 'success', 'message' => 'Your vote has been cast.']);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Your vote has been cast successfully.'
+                ]);
             }
 
-            return response()->json(['status' => 'error', 'message' => 'No vote submitted.'], 400);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No vote data was submitted.'
+            ], 400);
 
-        } catch (Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
