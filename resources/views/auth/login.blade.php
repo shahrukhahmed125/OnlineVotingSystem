@@ -37,7 +37,7 @@
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label class="control-label">CNIC*</label>
-                                                        <input type="text" class="form-control @error('cnic') is-invalid @enderror" placeholder="xxxx-xxxxxxx-x" name="cnic"/>
+                                                        <input type="text" class="form-control @error('cnic') is-invalid @enderror inputmask" data-mask="99999-9999999-9" placeholder="xxxxx-xxxxxxx-x" pattern="\d{5}-\d{7}-\d{1}"  title="Enter CNIC in format 12345-1234567-1" name="cnic" id="cnic" required/>
                                                         @error('cnic')
                                                             <p class="invalid-feedback">{{'*'.$message}}</p>
                                                         @enderror        
@@ -46,7 +46,7 @@
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label class="control-label">Password*</label>
-                                                        <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" name="password"/>
+                                                        <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" name="password" required/>
                                                         @error('password')
                                                             <p class="invalid-feedback">{{'*'.$message}}</p>
                                                         @enderror
