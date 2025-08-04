@@ -61,7 +61,7 @@ class UserController extends Controller
                 'phone' => 'nullable|regex:/^\d{4}-\d{7}$/',
                 'zip_code' => 'nullable|regex:/^\d{5}$/',
                 'about' => 'nullable|string|max:255',
-                // 'img' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'img' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
             $validator->setAttributeNames([
@@ -271,6 +271,19 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        // 
+        try{
+            User::findOrFail($id)->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User deleted successfully',
+            ]);
+        }catch(Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

@@ -13,7 +13,7 @@
             <!-- end navbar-header -->
             <!-- begin navigation -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div class="navigation d-flex" style="background-color: #2C2E3E;color:white;">
+                <div class="navigation d-flex">
                     <ul class="navbar-nav nav-left">
                         <li class="nav-item">
                             <a href="{{ route('voter.dashboard') }}" class="nav-link">Overview</a>

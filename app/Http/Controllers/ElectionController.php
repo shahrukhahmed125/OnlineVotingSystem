@@ -120,9 +120,15 @@ class ElectionController extends Controller
             $election = Election::findOrFail($id);
             $election->delete();
 
-            return redirect()->route('admin.elections.index')->with('success', 'Election deleted successfully!');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Election deleted successfully!'
+            ]);
         } catch (Exception $e) {
-            return redirect()->route('admin.elections.index')->with('error', 'Error deleting election: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }

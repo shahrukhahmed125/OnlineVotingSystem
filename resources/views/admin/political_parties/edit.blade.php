@@ -74,17 +74,21 @@
                                     </div>
                                 @endif
                             </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputHead_office">Head Office*</label>
+                                <input type="text" class="form-control @error('head_office') is-invalid @enderror" id="inputHead_office" placeholder="Enter Name..." name="head_office" value="{{ $politicalParty->head_office }}" required>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputHead_office">Head Office</label>
-                            <textarea class="form-control" id="inputHead_office" rows="3" placeholder="Head office street address..." name="head_office">{{ $politicalParty->details }}</textarea>
+                            <label for="inputHead_office">Details</label>
+                            <textarea class="form-control" id="details" rows="6" placeholder="Party details..." name="details">{{ $politicalParty->details }}</textarea>
                         </div>
                 </div>
                 <div class="col-12">
                     <div class="card-footer">
                         <div class="btn-list" style="text-align: right;">
                             <input class="btn" type="button" value="Cancel"/>
-                            <button type="submit" class="btn btn-primary" id="party-form-btn">Submit</button>
+                            <button type="submit" class="btn btn-primary" id="party-form-btn">Update</button>
                         </div>
                     </div>
                 </div>
@@ -125,7 +129,7 @@
                             positionClass: "toast-top-right"
                         });
 
-                        $("#party-form")[0].reset();
+                        window.location.href = "{{ route('admin.political_parties.index') }}";
                     } else if (response.status === "error") {
                         toastr.error(response.message, "Error", {
                             positionClass: "toast-top-right"
