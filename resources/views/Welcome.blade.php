@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pakistan Online Voting System | Secure Digital Elections</title>
+    <link rel="icon" href="{{ asset('assets/img/emblem-of-the-election-commission-of-pakistan-logo-png_seeklogo-411520.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -12,7 +13,7 @@
     <header>
         <div class="container">
             <div class="logo">
-                <img src="https://via.placeholder.com/50x50" alt="Election Commission of Pakistan Logo">
+                <img src="{{ asset('assets/img/emblem-of-the-election-commission-of-pakistan-logo-png_seeklogo-411520.png') }}" alt="Election Commission of Pakistan Logo">
                 <h1>Pakistan Online Voting System</h1>
             </div>
             <nav>
@@ -50,7 +51,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="https://via.placeholder.com/500x350" alt="Online Voting Illustration">
+                <img src="{{ asset('assets/img/undraw_voting_3ygx.png') }}" alt="Online Voting Illustration" style="border-radius: 15px;">
             </div>
         </div>
     </section>
@@ -88,7 +89,7 @@
     <section class="about" id="about">
         <div class="container">
             <div class="about-image">
-                <img src="https://via.placeholder.com/450x300" alt="About Online Voting">
+                <img src="{{ asset('assets/img/freepik_assistant_1754323797851.png') }}" alt="About Online Voting">
             </div>
             <div class="about-content">
                 <h2>About Our Online Voting System</h2>
@@ -176,7 +177,7 @@
                         <p>"This system will revolutionize democracy in Pakistan by making voting accessible to overseas Pakistanis and people in remote areas."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://via.placeholder.com/60x60" alt="Dr. Ali Khan">
+                        <img src="{{ asset('assets/img/avtar/06.jpg') }}" alt="Dr. Ali Khan">
                         <h4>Dr. Ali Khan</h4>
                         <p>Political Science Professor, LUMS</p>
                     </div>
@@ -186,7 +187,7 @@
                         <p>"As someone with mobility challenges, I appreciate being able to vote from home securely. This is a game-changer for accessibility."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://via.placeholder.com/60x60" alt="Ayesha Malik">
+                        <img src="{{ asset('assets/img/avtar/07.jpg') }}" alt="Ayesha Malik">
                         <h4>Ayesha Malik</h4>
                         <p>Voter from Karachi</p>
                     </div>

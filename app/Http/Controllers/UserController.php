@@ -246,11 +246,12 @@ class UserController extends Controller
 
             // if candidate, assign political party
             if ($request->role === 'candidate' && $request->has('political_party_id')) {
-                $data->candidate()->create([
-                    'user_id' => $data->id,
-                    'political_party_id' => $request->political_party_id,
-                ]);
-            }else{
+                // If candidate exists, update it. Otherwise, create.
+                $data->candidate()->updateOrCreate(
+                    ['user_id' => $data->id], // Match condition
+                    ['political_party_id' => $request->political_party_id] // Data to update/create
+                );
+            } else {
                 // If the user is not a candidate, ensure no candidate record exists
                 $data->candidate()->delete();
             }
