@@ -12,7 +12,7 @@
     <x-css/>
 </head>
 
-<body>
+<body class="light-sidebar">
     <!-- begin app -->
     <div class="app">
         <!-- begin app-wrap -->

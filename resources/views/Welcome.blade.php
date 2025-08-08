@@ -241,7 +241,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 Pakistan Online Voting System. All rights reserved. A Final Year Project.</p>
+                <p>&copy; {{ date('Y') }} Pakistan Online Voting System. All rights reserved. A Final Year Project.</p>
                 <div class="footer-legal">
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>

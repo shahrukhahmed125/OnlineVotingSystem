@@ -20,7 +20,7 @@
     --gray-dark: #343a40;
     --primary: #007bff;
     --secondary: #6c757d;
-    --success: #036434;
+    --success: #28a745;
     --info: #17a2b8;
     --warning: #ffc107;
     --danger: #dc3545;
@@ -5628,6 +5628,7 @@ input[type=submit].btn-block {
 
 .card-footer {
     padding: .75rem 1.25rem;
+    /* background-color: rgba(0, 0, 0, .03); */
     border-top: 1px solid rgba(0, 0, 0, .125)
 }
 
@@ -12632,10 +12633,6 @@ a.text-dark:hover {
     background-color: #eceef3 !important
 }
 
-.bg-green {
-    background-color: #036233 !important
-}
-
 .bg-inverse {
     background-color: #2c2e3e !important
 }
@@ -17021,7 +17018,7 @@ ol.breadcrumb {
 }
 
 .top-bar .navbar .navbar-header {
-    background: #fff;
+    background: #2c2e3e;
     width: 240px;
     -webkit-flex-shrink: 0;
     -ms-flex-negative: 0;
@@ -18038,7 +18035,7 @@ ol.breadcrumb {
     -ms-flex-preferred-size: auto !important;
     flex-basis: auto !important;
     margin-bottom: auto;
-    background: #fff;
+    background: #2c2e3e;
     height: 100%;
     overflow: hidden
 }
@@ -18067,10 +18064,10 @@ ol.breadcrumb {
     transition: all .3s ease-out
 }
 
-/* .app-navbar .sidebar-nav ul.metismenu li a .nav-title {
+.app-navbar .sidebar-nav ul.metismenu li a .nav-title {
     opacity: 1;
     visibility: visible
-} */
+}
 
 .app-navbar .sidebar-nav ul.metismenu li a .nav-label {
     position: absolute;
@@ -18101,7 +18098,7 @@ ol.breadcrumb {
 }
 
 .app-navbar .sidebar-nav ul.metismenu li.active ul li a {
-    /* background: 0 0 !important; */
+    background: 0 0 !important;
     color: #a2a5bd
 }
 
@@ -18158,7 +18155,7 @@ ol.breadcrumb {
 }
 
 .app-navbar .sidebar-nav ul.metismenu li ul {
-    background: #fff;
+    background: #2c2e3e
 }
 
 .app-navbar .sidebar-nav ul.metismenu li ul li a {
@@ -18169,7 +18166,7 @@ ol.breadcrumb {
 .app-navbar .sidebar-nav ul.metismenu li ul li a:focus,
 .app-navbar .sidebar-nav ul.metismenu li ul li a:hover {
     background: 0 0;
-    color: #1F212D;
+    color: #8e54e9
 }
 
 .app-navbar .sidebar-nav ul.metismenu li+li,
@@ -22514,9 +22511,9 @@ code {
     left: 0
 }
 
-/* .bg-img img {
+.bg-img img {
     border-radius: 50%
-} */
+}
 
 .bg-img .bg-img-status {
     position: absolute;
