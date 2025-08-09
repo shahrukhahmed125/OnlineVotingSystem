@@ -30,24 +30,6 @@ Route::get('/2fa/challenge', [TwoFactorController::class, 'show'])->name('2fa.ch
 Route::post('/2fa/verify/{id}', [TwoFactorController::class, 'verify'])->name('2fa.verify');
 
 
-// ------- VOTER ROUTES ------- //
-
-// Route::middleware('auth', 'role:voter')->group(function(){
-//     Route::prefix('voter-dashboard')->as('voter.')->group(function(){
-
-//         // ------- VOTER DASHBOARD ROUTES ------- //
-
-//         Route::controller(VoterController::class)->group(function(){
-//             Route::get('/', 'index')->name('dashboard'); // Renamed from 'home'
-//             Route::prefix('vote')->as('vote.')->group(function(){
-//                 Route::get('/', 'create')->name('create');
-//                 Route::post('/', 'store')->name('store');
-//             });
-//         });
-
-//     });
-// });
-
 // ------- CANDIDATE / VOTER ROUTES ------- //
 
 Route::middleware(['auth', 'role:candidate|voter'])->group(function () {
@@ -74,6 +56,9 @@ Route::middleware('auth', 'role:admin')->group(function(){
 
         Route::controller(AdminController::class)->group(function(){
             Route::get('/', 'index')->name('home');
+            Route::get('/votes', 'getVotes')->name('votes.index');
+            Route::delete('/votes/{id}', 'deleteVote')->name('votes.destroy');
+            Route::get('/top-candidates', 'topCandidates')->name('top_candidates');
         });
 
         // ------- USER ROUTES ------- //

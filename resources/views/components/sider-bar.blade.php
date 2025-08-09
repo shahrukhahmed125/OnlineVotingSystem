@@ -79,10 +79,18 @@
                     </a>
                 </li>
 
-                <li class="{{ request()->is('votes*') ? 'active' : '' }}">
-                    <a href="#" aria-expanded="false">
+                <li class="nav-static-title">Results</li>
+                <li class="{{ request()->routeIs('admin.votes.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.votes.index') }}" aria-expanded="false">
                         <i class="nav-icon ti ti-envelope"></i>
                         <span class="nav-title">Votes</span>
+                    </a>
+                </li>
+
+                <li class="{{ request()->routeIs('admin.top_candidates') ? 'active' : '' }}">
+                    <a href="{{ route('admin.top_candidates') }}" aria-expanded="false">
+                        <i class="nav-icon ti ti-bar-chart-alt"></i>
+                        <span class="nav-title">Top Candidates</span>
                     </a>
                 </li>
 

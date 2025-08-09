@@ -263,7 +263,7 @@
                         <h4 class="card-title">Live Top Candidates</h4>
                     </div>
                     <div class="dropdown">
-                        <a class="btn btn-round btn-inverse-primary btn-xs" href="#">View all </a>
+                        <a class="btn btn-round btn-inverse-primary btn-xs" href="{{route('admin.top_candidates')}}">View all </a>
                     </div>
                 </div>
                 <div class="card-body">

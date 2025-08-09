@@ -62,4 +62,48 @@ class AdminController extends Controller
             'TotalVotersPerAssembly'
         ));
     }
+
+    public function getVotes()
+    {
+        $votes = Vote::with(['voter', 'candidate', 'assembly', 'election'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.vote.index', compact('votes'));
+    }
+
+    public function deleteVote($id)
+    {
+        $vote = Vote::findOrFail($id);
+        $vote->delete();
+
+        return redirect()->back()->with('success', 'Vote deleted successfully.');
+    }
+
+    public function topCandidates()
+    {
+        $TopCandidates = Candidate::withCount('votes')
+        ->orderByDesc('votes_count')
+        ->with(['user', 'assemblies', 'politicalParty'])
+        ->get();
+
+        $TotalVotersPerAssembly = $TopCandidates->map(function ($candidate) {
+            $assemblyIds = $candidate->assemblies->pluck('id');
+
+            // Count users (voter or candidate) where either na_constituency_id or pa_constituency_id matches
+            $totalUsers = User::role(['voter', 'candidate'])
+                ->where(function ($query) use ($assemblyIds) {
+                    $query->whereIn('na_constituency_id', $assemblyIds)
+                        ->orWhereIn('pa_constituency_id', $assemblyIds);
+                })
+                ->count();
+
+            return [
+                'candidate' => $candidate,
+                'total_users' => $totalUsers,
+            ];
+        });
+
+        return view('admin.vote.top_candidates', compact('TopCandidates', 'TotalVotersPerAssembly'));
+    }
 }
