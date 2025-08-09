@@ -106,4 +106,16 @@ class AdminController extends Controller
 
         return view('admin.vote.top_candidates', compact('TopCandidates', 'TotalVotersPerAssembly'));
     }
+
+    public function getVotesByParty()
+    {
+        $votesByParty = DB::table('votes')
+            ->join('candidates', 'votes.candidate_id', '=', 'candidates.id')
+            ->join('political_parties', 'candidates.political_party_id', '=', 'political_parties.id')
+            ->select('candidates.political_party_id', 'political_parties.name', 'political_parties.abbreviation', DB::raw('COUNT(votes.id) as total_votes'))
+            ->groupBy('candidates.political_party_id', 'political_parties.name', 'political_parties.abbreviation')
+            ->get();
+
+        return view('admin.vote.top_parties', compact('votesByParty'));
+    }
 }

@@ -42,7 +42,7 @@
                     <a href="{{route('admin.political_parties.create')}}" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add New Political Party">
                         <i class="ti ti-agenda btn btn-icon text-cyan"></i>
                     </a>
-                    <a href="javascript:void(0);" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Votes Analytics">
+                    <a href="{{ route('admin.votes.index') }}" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Votes Analytics">
                         <i class="ti ti-envelope btn btn-icon text-danger"></i>
                     </a>
                 </div>

@@ -94,6 +94,13 @@
                     </a>
                 </li>
 
+                <li class="{{ request()->routeIs('admin.votes.by_party') ? 'active' : '' }}">
+                    <a href="{{ route('admin.votes.by_party') }}" aria-expanded="false">
+                        <i class="nav-icon ti ti-bar-chart-alt"></i>
+                        <span class="nav-title">Top Parties</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
         <!-- end sidebar-nav -->
