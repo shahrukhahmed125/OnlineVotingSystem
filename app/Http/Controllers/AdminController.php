@@ -108,7 +108,13 @@ class AdminController extends Controller
         return view('admin.vote.top_candidates', compact('TopCandidates', 'TotalVotersPerAssembly'));
     }
 
-    public function getVotesByParty()
+    public function viewVotesByParty()
+    {
+        $elections = Election::all();
+        return view('admin.vote.top_parties', compact('elections'));
+    }
+
+    public function getVotesByParty(Request $request)
     {
         $votesByParty = PoliticalParty::with('images')
             ->select(
@@ -119,9 +125,20 @@ class AdminController extends Controller
             )
             ->join('candidates', 'candidates.political_party_id', '=', 'political_parties.id')
             ->join('votes', 'votes.candidate_id', '=', 'candidates.id')
+            ->where('votes.election_id', $request->election_id) // filter by election
             ->groupBy('political_parties.id', 'political_parties.name', 'political_parties.abbreviation')
-            ->get();
+            ->get()
+            ->map(function($party) {
+                return [
+                    'name' => ucwords($party->name),
+                    'abbreviation' => strtoupper($party->abbreviation),
+                    'total_votes' => $party->total_votes,
+                    'image_url' => $party->images->isNotEmpty()
+                        ? asset('storage/' . $party->images->first()->image_path)
+                        : asset('static/avatars/male-avatar-defualt.png')
+                ];
+            });
 
-        return view('admin.vote.top_parties', compact('votesByParty'));
+        return response()->json($votesByParty);
     }
 }

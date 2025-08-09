@@ -80,27 +80,27 @@
                 </li>
 
                 <li class="nav-static-title">Results</li>
+                <li class="{{ request()->routeIs('admin.votes.*') ? 'active' : '' }}">
+                    <a class="has-arrow" href="javascript:void(0)" aria-expanded="{{ request()->routeIs('admin.votes.*') ? 'true' : 'false' }}">
+                        <i class="nav-icon ti ti-bar-chart-alt"></i>
+                        <span class="nav-title">Top Results</span>
+                    </a>
+                    <ul aria-expanded="{{ request()->routeIs('admin.votes.*') ? 'true' : 'false' }}">
+                        <li class="{{ request()->routeIs('admin.votes.top_candidates') ? 'active' : '' }}">
+                            <a href="{{ route('admin.votes.top_candidates') }}">Candidates</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.votes.by_party') ? 'active' : '' }}">
+                            <a href="{{ route('admin.votes.by_party') }}">Parties</a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li class="{{ request()->routeIs('admin.votes.index') ? 'active' : '' }}">
                     <a href="{{ route('admin.votes.index') }}" aria-expanded="false">
                         <i class="nav-icon ti ti-envelope"></i>
-                        <span class="nav-title">Votes</span>
+                        <span class="nav-title">All Votes</span>
                     </a>
                 </li>
-
-                <li class="{{ request()->routeIs('admin.top_candidates') ? 'active' : '' }}">
-                    <a href="{{ route('admin.top_candidates') }}" aria-expanded="false">
-                        <i class="nav-icon ti ti-bar-chart-alt"></i>
-                        <span class="nav-title">Top Candidates</span>
-                    </a>
-                </li>
-
-                <li class="{{ request()->routeIs('admin.votes.by_party') ? 'active' : '' }}">
-                    <a href="{{ route('admin.votes.by_party') }}" aria-expanded="false">
-                        <i class="nav-icon ti ti-bar-chart-alt"></i>
-                        <span class="nav-title">Top Parties</span>
-                    </a>
-                </li>
-
             </ul>
         </div>
         <!-- end sidebar-nav -->

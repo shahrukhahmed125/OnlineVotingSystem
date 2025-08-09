@@ -58,8 +58,9 @@ Route::middleware('auth', 'role:admin')->group(function(){
             Route::get('/', 'index')->name('home');
             Route::get('/votes', 'getVotes')->name('votes.index');
             Route::delete('/votes/{id}', 'deleteVote')->name('votes.destroy');
-            Route::get('/top-candidates', 'topCandidates')->name('top_candidates');
-            Route::get('/votes-by-party', 'getVotesByParty')->name('votes.by_party');
+            Route::get('/top-candidates', 'topCandidates')->name('votes.top_candidates');
+            Route::get('/votes-by-party', 'viewVotesByParty')->name('votes.by_party');
+            Route::post('/votes-by-party', 'getVotesByParty')->name('votes.by_party');
         });
 
         // ------- USER ROUTES ------- //
