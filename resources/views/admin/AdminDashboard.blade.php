@@ -1,7 +1,47 @@
 @extends('masterpage')
 @section('title', 'Admin Dashboard')
 @section('css')
-
+<style>
+    .dashboard-candidate {
+        padding: 10px 12px;
+        border-bottom: 1px solid #dddbdb;
+        background: #fff;
+    }
+    .dashboard-party-logo {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #4e73df, #1cc88a);
+        padding: 2px;
+    }
+    .dashboard-assembly {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #4e73df;
+        margin-bottom: 2px;
+    }
+    .dashboard-candidate-name {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    .dashboard-stats {
+        font-size: 0.75rem;
+        color: #555;
+    }
+    .progress {
+        height: 6px;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #f1f1f1;
+    }
+    .progress-bar {
+        background: linear-gradient(90deg, #4e73df, #1cc88a);
+    }
+</style>
 
 @stop
 
@@ -268,60 +308,52 @@
                 </div>
                 <div class="card-body">
                 @foreach ($TopCandidates as $candidate)
-                    <div class="row align-items-center active-task m-b-20">
+                    <div class="row align-items-center mb-3 dashboard-candidate">
                         <div class="col-auto">
-                            <div class="">
-                                <img src="{{ $candidate->politicalParty->images->isNotEmpty() ? asset('storage/' . $candidate->politicalParty->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}" alt="Party Symbol" style="width:40px; height:40px; object-fit:cover;">
-                            </div>
+                            <img src="{{ $candidate->user->images->isNotEmpty() 
+                                ? asset('storage/' . $candidate->user->images->first()->image_path) 
+                                : asset('static/avatars/male-avatar-defualt.png') }}" 
+                                alt="Party Symbol" class="dashboard-party-logo">
                         </div>
+                        
                         <div class="col">
                             @foreach ($candidate->assemblies as $assembly)
-                                <small class="d-block mb-1"><strong>{{ ucwords($assembly->name) }}</strong></small>
+                                <div class="dashboard-assembly">{{ ucwords($assembly->name) }}</div>
                             @endforeach
 
-                            <h5 class="mb-0">
-                                <a href="#">
-                                    {{ ucwords($candidate->user->name) }} 
-                                    {{ $candidate->politicalParty?->abbreviation ? '(' . ucwords($candidate->politicalParty->abbreviation) . ')' : '' }} 
-                                </a>
-                            </h5>
+                            <div class="dashboard-candidate-name text-dark">
+                                {{ ucwords($candidate->user->name) }}
+                                {{ $candidate->politicalParty?->abbreviation ? '(' . strtoupper($candidate->politicalParty->abbreviation) . ')' : '' }} 
+                            </div>
 
-                            <ul class="list-unstyled list-inline mb-1">
-                                <li class="list-inline-item">
-                                    @foreach ($TotalVotersPerAssembly as $data)
-                                    @php
-                                        $totalUsers = $data['total_users'];
-                                        $votePercentage = $totalUsers > 0 
+                            @foreach ($TotalVotersPerAssembly as $data)
+                                @php
+                                    $totalUsers = $data['total_users'];
+                                    $votePercentage = $totalUsers > 0 
                                         ? round(($candidate->votes_count / $totalUsers) * 100, 1)
                                         : 0;
 
-                                            // Determine progress bar color class based on percentage
-                                        $progressClass = 'bg-danger'; // Default
+                                    $progressClass = 'bg-danger';
+                                    if ($votePercentage >= 70) {
+                                        $progressClass = 'bg-success';
+                                    } elseif ($votePercentage >= 40) {
+                                        $progressClass = 'bg-warning';
+                                    }
+                                @endphp
+                            @endforeach
 
-                                        if ($votePercentage >= 70) {
-                                            $progressClass = 'bg-success';
-                                        } elseif ($votePercentage >= 40) {
-                                            $progressClass = 'bg-warning';
-                                        }
-                                    @endphp
-                                    <small><strong>Total Voter: {{ number_format($totalUsers) }}</strong></small>
-                                    @endforeach
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item">
-                                    <small><strong> Total Votes: {{ number_format($candidate->votes_count) }}</strong></small>
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item float-end"><small><strong>{{ $votePercentage. '%' }}</strong></small></li>
-                                <li>
-                                    <div class="progress my-2" style="height: 5px;">
-                                        <div class="progress-bar {{ $progressClass }}" role="progressbar" 
-                                            style="width: {{ $votePercentage }}%;" 
-                                            aria-valuenow="{{ $votePercentage }}" aria-valuemin="0" aria-valuemax="100">
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                            <div class="dashboard-stats">
+                                <strong>Voters:</strong> {{ number_format($totalUsers) }} |
+                                <strong>Votes:</strong> {{ number_format($candidate->votes_count) }} |
+                                <strong>{{ $votePercentage . '%' }}</strong>
+                            </div>
+
+                            <div class="progress mt-2">
+                                <div class="progress-bar {{ $progressClass }}" role="progressbar" 
+                                    style="width: {{ $votePercentage }}%;" 
+                                    aria-valuenow="{{ $votePercentage }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @endforeach

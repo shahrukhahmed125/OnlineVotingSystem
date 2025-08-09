@@ -1,7 +1,57 @@
 @extends('masterpage')
 @section('title', 'Live Top Candidates')
 @section('css')
-
+<style>
+    .candidate-card {
+        border-radius: 15px;
+        background: linear-gradient(180deg, #ffffff, #f9f9f9);
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .candidate-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    .party-logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #4e73df, #1cc88a);
+        padding: 3px;
+    }
+    .progress {
+        height: 6px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .progress-bar {
+        background: linear-gradient(90deg, #4e73df, #1cc88a);
+    }
+    .candidate-info ul.nav {
+        align-items: center;
+        margin-bottom: 4px;
+    }
+    .candidate-info .img-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #eef3ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4e73df;
+        margin-right: 6px;
+        font-size: 0.9rem;
+    }
+    .candidate-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+</style>
 
 @stop
 
@@ -41,17 +91,24 @@
             @if ($TopCandidates->isNotEmpty())
                 @foreach ($TopCandidates as $candidate)
                     <div class="col-xxl-3 col-xl-4 col-sm-6">
-                        <div class="card card-statistics contact-contant">
+                        <div class="card card-statistics contact-contant candidate-card">
                             <div class="card-body py-4">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-img">
-                                        <img src="{{ $candidate->politicalParty->images->isNotEmpty() ? asset('storage/' . $candidate->politicalParty->images->first()->image_path) : asset('static/avatars/male-avatar-defualt.png') }}" alt="" class="img-fluid">
+                                    <!-- Party Logo -->
+                                    <div>
+                                        <img src="{{ $candidate->user->images->isNotEmpty() 
+                                            ? asset('storage/' . $candidate->user->images->first()->image_path) 
+                                            : asset('static/avatars/male-avatar-defualt.png') }}" 
+                                            alt="party-logo" class="party-logo">
                                     </div>
+
+                                    <!-- Candidate Details -->
                                     <div class="ml-3">
                                         @foreach ($candidate->assemblies as $assembly)
-                                            <small class="d-block mb-1"><strong>{{ ucwords($assembly->name) }}</strong></small>
+                                            <small class="d-block text-primary font-weight-bold mb-1">{{ ucwords($assembly->name) }}</small>
                                         @endforeach
-                                        <h4 class="mb-0">{{ ucwords($candidate->user->name) }}</h4>
+                                        <div class="candidate-name text-dark">{{ ucwords($candidate->user->name) }}</div>
+
                                         @foreach ($TotalVotersPerAssembly as $data)
                                             @php
                                                 $totalUsers = $data['total_users'];
@@ -59,7 +116,6 @@
                                                     ? round(($candidate->votes_count / $totalUsers) * 100, 1)
                                                     : 0;
 
-                                                // Determine progress bar color class
                                                 $progressClass = 'bg-danger';
                                                 if ($votePercentage >= 70) {
                                                     $progressClass = 'bg-success';
@@ -70,29 +126,32 @@
                                         @endforeach
 
                                         <ul class="list-inline mb-1 mt-1">
-                                            <li class="list-inline-item"><small><strong>Total Voters: {{ number_format($totalUsers) }}</strong></small></li>
+                                            <li class="list-inline-item"><small><strong>Voters: {{ number_format($totalUsers) }}</strong></small></li>
                                             <li class="list-inline-item">|</li>
-                                            <li class="list-inline-item"><small><strong>Total Votes: {{ number_format($candidate->votes_count) }}</strong></small></li>
+                                            <li class="list-inline-item"><small><strong>Votes: {{ number_format($candidate->votes_count) }}</strong></small></li>
                                             <li class="list-inline-item">|</li>
                                             <li class="list-inline-item"><small><strong>{{ $votePercentage . '%' }}</strong></small></li>
                                         </ul>
 
-                                        <div class="progress my-2" style="height: 5px;">
-                                            <div class="progress-bar {{ $progressClass }}" role="progressbar" 
+                                        <div class="progress my-2">
+                                            <div class="progress-bar {{ $progressClass }}" 
+                                                role="progressbar" 
                                                 style="width: {{ $votePercentage }}%;" 
-                                                aria-valuenow="{{ $votePercentage }}" aria-valuemin="0" aria-valuemax="100">
+                                                aria-valuenow="{{ $votePercentage }}" 
+                                                aria-valuemin="0" aria-valuemax="100">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div>
+                                <!-- Extra Info -->
+                                <div class="candidate-info mt-3">
                                     <ul class="nav">
                                         <li class="nav-item">
                                             <div class="img-icon"><i class="ti ti-agenda"></i></div>
                                         </li>
                                         <li class="nav-item">
-                                            <p><small>{{ ucwords($candidate->politicalParty->name). ' ('.$candidate->politicalParty->abbreviation.')' }}</small></p>
+                                            <p class="mb-0"><small>{{ ucwords($candidate->politicalParty->name) . ' (' . $candidate->politicalParty->abbreviation . ')' }}</small></p>
                                         </li>
                                     </ul>
                                     <ul class="nav">
@@ -100,7 +159,7 @@
                                             <div class="img-icon"><i class="fa fa-address-card-o"></i></div>
                                         </li>
                                         <li class="nav-item">
-                                            <p><small>{{ $candidate->user->cnic }}</small></p>
+                                            <p class="mb-0"><small>{{ $candidate->user->cnic }}</small></p>
                                         </li>
                                     </ul>
                                     <ul class="nav">
@@ -108,7 +167,7 @@
                                             <div class="img-icon"><i class="fa fa-envelope-o"></i></div>
                                         </li>
                                         <li class="nav-item">
-                                            <p><small>{{ $candidate->user->email }}</small></p>
+                                            <p class="mb-0"><small>{{ $candidate->user->email }}</small></p>
                                         </li>
                                     </ul>
                                 </div>

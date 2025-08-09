@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Assembly;
 use App\Models\Candidate;
 use App\Models\Election;
+use App\Models\PoliticalParty;
 use App\Models\User;
 use App\Models\Vote;
 use Carbon\Carbon;
@@ -109,11 +110,16 @@ class AdminController extends Controller
 
     public function getVotesByParty()
     {
-        $votesByParty = DB::table('votes')
-            ->join('candidates', 'votes.candidate_id', '=', 'candidates.id')
-            ->join('political_parties', 'candidates.political_party_id', '=', 'political_parties.id')
-            ->select('candidates.political_party_id', 'political_parties.name', 'political_parties.abbreviation', DB::raw('COUNT(votes.id) as total_votes'))
-            ->groupBy('candidates.political_party_id', 'political_parties.name', 'political_parties.abbreviation')
+        $votesByParty = PoliticalParty::with('images')
+            ->select(
+                'political_parties.id',
+                'political_parties.name',
+                'political_parties.abbreviation',
+                DB::raw('COUNT(votes.id) as total_votes')
+            )
+            ->join('candidates', 'candidates.political_party_id', '=', 'political_parties.id')
+            ->join('votes', 'votes.candidate_id', '=', 'candidates.id')
+            ->groupBy('political_parties.id', 'political_parties.name', 'political_parties.abbreviation')
             ->get();
 
         return view('admin.vote.top_parties', compact('votesByParty'));
