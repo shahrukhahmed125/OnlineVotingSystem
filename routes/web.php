@@ -9,12 +9,13 @@ use App\Http\Controllers\ElectionController;
 use App\Http\Controllers\PoliticalPartyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoterController;
-use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 //-------- WELCOME ROUTE ------ //
 
-Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // ------- AUTH ROUTES ------- //
 
