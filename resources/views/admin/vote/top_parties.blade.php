@@ -161,6 +161,35 @@ function submitElectionReport(e, form) {
         container.innerHTML = '';
 
         if (data.length > 0) {
+            const electionStatus = data[0]?.election_status || null;
+
+            if (electionStatus === 'completed') {
+                // Find the party with the highest votes
+                const winner = data.reduce((prev, current) => 
+                    Number(current.total_votes) > Number(prev.total_votes) ? current : prev
+                );
+
+                container.innerHTML += `
+                    <div class="col-xl-6 col-sm-6 mb-4">
+                        <div class="card card-statistics h-100 shadow-sm border-0 hover-shadow">
+                            <div class="card-body p-4 text-center">
+                                <div class="vote-count mb-3">
+                                    <h2>${Number(winner.total_votes).toLocaleString()}</h2>
+                                    <small>Total Votes</small>
+                                </div>
+                                <div class="m-auto mb-3">
+                                    <img src="${winner.image_url}" class="party-logo border border-light" alt="party-img">
+                                </div>
+                                <h4 class="mt-3 mb-1 text-dark font-weight-bold">${winner.name}</h4>
+                                <h5 class="mb-0 text-muted">(${winner.abbreviation.toUpperCase()})</h5>
+                                <div class="mt-2 text-success fw-bold">Winner</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render all parties
             data.forEach(vote => {
                 container.innerHTML += `
                     <div class="col-xl-4 col-sm-6 mb-4">
@@ -173,10 +202,8 @@ function submitElectionReport(e, form) {
                                 <div class="m-auto mb-3">
                                     <img src="${vote.image_url}" class="party-logo border border-light" alt="party-img">
                                 </div>
-                                <div>
-                                    <h4 class="mt-3 mb-1 text-dark font-weight-bold">${vote.name}</h4>
-                                    <h5 class="mb-0 text-muted">(${vote.abbreviation.toUpperCase()})</h5>
-                                </div>
+                                <h4 class="mt-3 mb-1 text-dark font-weight-bold">${vote.name}</h4>
+                                <h5 class="mb-0 text-muted">(${vote.abbreviation.toUpperCase()})</h5>
                             </div>
                         </div>
                     </div>

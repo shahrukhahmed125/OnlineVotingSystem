@@ -15,6 +15,7 @@ class Election extends Model
         'description',
         'start_time',
         'end_time',
+        'status', // Ensure this is in your fillable if you're mass-assigning it
         'is_active',
         'type'
     ];

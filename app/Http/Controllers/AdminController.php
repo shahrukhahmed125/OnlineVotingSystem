@@ -121,12 +121,20 @@ class AdminController extends Controller
                 'political_parties.id',
                 'political_parties.name',
                 'political_parties.abbreviation',
+                'elections.status as election_status', // <-- select status
                 DB::raw('COUNT(votes.id) as total_votes')
             )
             ->join('candidates', 'candidates.political_party_id', '=', 'political_parties.id')
             ->join('votes', 'votes.candidate_id', '=', 'candidates.id')
+            ->join('elections', 'elections.id', '=', 'votes.election_id') // <-- join elections
             ->where('votes.election_id', $request->election_id) // filter by election
-            ->groupBy('political_parties.id', 'political_parties.name', 'political_parties.abbreviation')
+            ->groupBy(
+                'political_parties.id',
+                'political_parties.name',
+                'political_parties.abbreviation',
+                'elections.status' // <-- group by status
+            )
+            ->orderByDesc('total_votes') // <-- ensures winner is first
             ->get()
             ->map(function($party) {
                 return [
@@ -135,10 +143,11 @@ class AdminController extends Controller
                     'total_votes' => $party->total_votes,
                     'image_url' => $party->images->isNotEmpty()
                         ? asset('storage/' . $party->images->first()->image_path)
-                        : asset('static/avatars/male-avatar-defualt.png')
+                        : asset('assets/img/avtar/11.png'),
+                    'election_status' => $party->election_status // <-- include in output
                 ];
             });
 
         return response()->json($votesByParty);
-    }
+    }    
 }
