@@ -98,8 +98,8 @@ class UserSeeder extends Seeder
 
         // Create some regular voter users using the factory
         // The factory will assign 'voter' role and constituency IDs
-        User::factory()->count(20)->create()->each(function ($user) {
-            $user->assignRole('candidate');
-        });
+        // User::factory()->count(20)->create()->each(function ($user) {
+        //     $user->assignRole('candidate');
+        // });
     }
 }
