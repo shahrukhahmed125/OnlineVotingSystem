@@ -35,7 +35,7 @@
                                             <div class="form-group">
                                                 <label class="control-label">Code*</label>
                                                 <input type="text"
-                                                    class="form-control @error('code') is-invalid @enderror" name="code" />
+                                                    class="form-control inputmask @error('code') is-invalid @enderror" name="code" data-mask="999999" pattern="[0-9]{6}" title="Please enter a 6-digit code."/>
                                                 @error('code')
                                                     <p class="invalid-feedback">{{ '*' . $message }}</p>
                                                 @enderror

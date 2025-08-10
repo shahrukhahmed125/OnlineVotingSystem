@@ -1,5 +1,5 @@
     <!-- app favicon -->
-    <link rel="shortcut icon" href="{{asset('assets/img/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{asset('assets/img/emblem-of-the-election-commission-of-pakistan-logo-png_seeklogo-411520.png')}}">
     <!-- google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <!-- plugin stylesheets -->

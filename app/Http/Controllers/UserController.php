@@ -46,22 +46,22 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'fname' => 'required|string|max:255',
                 'lname' => 'required|string|max:255',
-                'cnic' => 'required|string|max:255|unique:users,cnic',
+                'cnic' => 'required|regex:/^\d{5}-\d{7}-\d{1}$/|unique:users,cnic',
                 'na_constituency_id' => 'nullable|exists:assemblies,id',
                 'pa_constituency_id' => 'nullable|exists:assemblies,id',
                 'user_id' => 'nullable|string|max:255|unique:users,user_id',
                 'email' => 'required|string|email|unique:users,email|max:255',
                 'role' => 'required',
-                'email_verified_at' => 'required',
-                // 'password' => 'required|min:8|confirmed',
+                'email_verified_at' => 'required|in:Yes,No',
                 'gender' => 'nullable|string|in:male,female,others',
                 'title' => 'nullable|string|max:255',
                 'department' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:255',
                 'city' => 'nullable|string|max:255',
-                'phone' => 'nullable',
-                'zip_code' => 'nullable',
+                'phone' => 'nullable|regex:/^\d{4}-\d{7}$/',
+                'zip_code' => 'nullable|regex:/^\d{5}$/',
                 'about' => 'nullable|string|max:255',
+                'img' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
             $validator->setAttributeNames([
@@ -166,21 +166,21 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'fname' => 'required|string|max:255',
                 'lname' => 'required|string|max:255',
-                'cnic'  => 'required|string|max:255|unique:users,cnic,' . $id,
+                'cnic'  => 'required|regex:/^\d{5}-\d{7}-\d{1}$/|unique:users,cnic,' . $id,
                 'na_constituency_id' => 'nullable|exists:assemblies,id',
                 'pa_constituency_id' => 'nullable|exists:assemblies,id',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
                 'role' => 'required',
-                'email_verified_at' => 'required',
-                // 'password' => 'required|min:8|confirmed',
+                'email_verified_at' => 'required|in:Yes,No',
                 'gender' => 'nullable|string|in:male,female,others',
                 'title' => 'nullable|string|max:255',
                 'department' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:255',
                 'city' => 'nullable|string|max:255',
-                'phone' => 'nullable',
-                'zip_code' => 'nullable',
+                'phone' => 'nullable|regex:/^\d{4}-\d{7}$/',
+                'zip_code' => 'nullable|regex:/^\d{5}$/',
                 'about' => 'nullable|string|max:255',
+                // 'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
             $validator->setAttributeNames([
@@ -246,11 +246,12 @@ class UserController extends Controller
 
             // if candidate, assign political party
             if ($request->role === 'candidate' && $request->has('political_party_id')) {
-                $data->candidate()->create([
-                    'user_id' => $data->id,
-                    'political_party_id' => $request->political_party_id,
-                ]);
-            }else{
+                // If candidate exists, update it. Otherwise, create.
+                $data->candidate()->updateOrCreate(
+                    ['user_id' => $data->id], // Match condition
+                    ['political_party_id' => $request->political_party_id] // Data to update/create
+                );
+            } else {
                 // If the user is not a candidate, ensure no candidate record exists
                 $data->candidate()->delete();
             }
@@ -271,6 +272,19 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        // 
+        try{
+            User::findOrFail($id)->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User deleted successfully',
+            ]);
+        }catch(Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

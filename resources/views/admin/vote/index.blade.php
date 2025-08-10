@@ -1,10 +1,10 @@
 @extends('masterpage')
-@section('title', 'Elections List')
-
+@section('title', 'Votes')
 @section('css')
 
 
 @stop
+
 @section('content')
 
     <div class="container-fluid">
@@ -14,7 +14,7 @@
                 <!-- begin page title -->
                 <div class="d-block d-sm-flex flex-nowrap align-items-center">
                     <div class="page-title mb-2 mb-sm-0">
-                        <h1>Elections List</h1>
+                        <h1>Cast Vote</h1>
                     </div>
                     <div class="ml-auto d-flex align-items-center">
                         <nav>
@@ -25,7 +25,7 @@
                                 <li class="breadcrumb-item">
                                     Dashboard
                                 </li>
-                                <li class="breadcrumb-item active text-primary" aria-current="page">Elections List</li>
+                                <li class="breadcrumb-item active text-primary" aria-current="page">Votes</li>
                             </ol>
                         </nav>
                     </div>
@@ -43,66 +43,46 @@
                             <table id="export-table" class="table mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Type</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Duration</th>
+                                        <th scope="col">Voter</th>
+                                        <th scope="col">Candidate Voted</th>
+                                        <th scope="col">Assembly NA/PA</th>
+                                        <th scope="col">Election</th>
+                                        <th scope="col">Time of Vote</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data as $item)
-                                        <tr id="election-row-{{ $item->id }}">
-                                            <td>{{ ucwords($item->election_id) }}</td>
-                                            <td>{{ ucwords($item->title) }}</td>
-                                            <td>{{ ucwords($item->type) }}</td>
-                                            <td>
-                                                @if ($item->is_active)
-                                                    <span
-                                                        class="mr-2 mb-2 mr-sm-0 mb-sm-0 badge badge-pill badge-success-inverse">Active</span>
-                                                @else
-                                                    <span
-                                                        class="mr-2 mb-2 mr-sm-0 mb-sm-0 badge badge-pill badge-danger-inverse">Inactive</span>
-                                                @endif
+                                    @foreach ($votes as $item)
+                                        <tr id="vote-row-{{ $item->id }}">
+                                            <td>{{ ucwords($item->voter->name ?? '') }}<br>
+                                                <span class="text-muted"><small>{{ $item->voter->cnic ?? '' }}</small></span>
                                             </td>
-                                            <td>
-                                                @if ($item->start_time && $item->end_time)
-                                                    {{ \Carbon\Carbon::parse($item->start_time)->format('d-M-y') }} to
-                                                    {{ \Carbon\Carbon::parse($item->end_time)->format('d-M-y') }}
-                                                @else
-                                                    null
-                                                @endif
+                                            <td>{{ ucwords($item->candidate->user->name ?? '') }}<br>
+                                                <span class="text-muted"><small>{{ $item->candidate->politicalParty->abbreviation ?? '' }}</small></span>
                                             </td>
+                                            <td>{{ ucwords($item->assembly->name ?? '') }}</td>
+                                            <td>{{'('.$item->election->election_id .') '.$item->election->title ?? 'N/A'  }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-M-y H:i') }}</td>
                                             <td>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown"
-                                                        aria-haspopup="true" aria-expanded="false">
-                                                        Actions
-                                                    </button>
-                                                    <div class="dropdown-menu"
-                                                        aria-labelledby="dropdownMenuButton{{ $item->id }}">
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('admin.elections.edit', $item->id) }}">Edit</a>
-                                                        <a class="dropdown-item text-danger" type="button"
-                                                            data-toggle="modal" 
-                                                            data-target="#deleteElectionModal{{ $item->id }}">Delete
-                                                        </a>
-                                                    </div>
-                                                </div>
+                                                <button class="btn btn-inverse-danger delete-vote-btn" type="button"
+                                                    data-id="{{ $item->id }}"
+                                                    data-url="{{ route('admin.votes.destroy', $item->id) }}"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteVoteModal{{ $item->id }}">
+                                                    Delete
+                                                </button>
                                             </td>
                                         </tr>
 
                                         <!-- Delete Election Modal -->
-                                        <div class="modal fade" id="deleteElectionModal{{ $item->id }}" tabindex="-1"
-                                            role="dialog" aria-labelledby="deleteElectionModalLabel{{ $item->id }}"
+                                        <div class="modal fade" id="deleteVoteModal{{ $item->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="deleteVoteModalLabel{{ $item->id }}"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content border-danger">
                                                     <div class="modal-header bg-danger text-white">
                                                         <h5 class="modal-title text-white"
-                                                            id="deleteElectionModalLabel{{ $item->id }}">
+                                                            id="deleteVoteModalLabel{{ $item->id }}">
                                                             Confirm Deletion
                                                         </h5>
                                                         <button type="button" class="close text-white" data-dismiss="modal"
@@ -113,7 +93,7 @@
                                                     <div class="modal-body text-center">
                                                         <i class="ti ti-alert text-danger" style="font-size: 3rem;"></i>
                                                         <br><br>
-                                                        Are you sure you want to delete this election?
+                                                        Are you sure you want to delete this vote?
                                                         <br>
                                                         <strong>This action cannot be undone.</strong>
                                                     </div>
@@ -121,9 +101,9 @@
                                                         <button type="button" class="btn btn-secondary"
                                                             data-dismiss="modal">Cancel</button>
 
-                                                        <button type="button" class="btn btn-danger delete-election-btn"
+                                                        <button type="button" class="btn btn-danger confirm-delete-vote"
                                                             data-id="{{ $item->id }}"
-                                                            data-url="{{ route('admin.elections.destroy', $item->id) }}">
+                                                            data-url="{{ route('admin.votes.destroy', $item->id) }}">
                                                             Yes, Delete
                                                         </button>
                                                     </div>
@@ -141,15 +121,16 @@
         <!-- end row -->
     </div>
 
+
 @endsection
 
 @section('js')
 
     <script>
-        $(document).on('click', '.delete-election-btn', function() {
+        $(document).on('click', '.confirm-delete-vote', function() {
             let button = $(this);
             let url = button.data('url');
-            let id = button.data('id'); // get the election ID
+            let id = button.data('id'); // get the vote ID
             let modal = button.closest('.modal');
 
             $.ajax({
@@ -168,8 +149,8 @@
                         // Close modal
                         modal.modal('hide');
 
-                        // Remove deleted election row/card from DOM
-                        $('#election-row-' + id).remove(); // or $('#election-card-' + id).remove();
+                        // Remove deleted vote row/card from DOM
+                        $('#vote-row-' + id).remove(); // or $('#vote-card-' + id).remove();
 
                     } else {
                         toastr.error(response.message, "Error", {

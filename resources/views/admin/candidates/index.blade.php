@@ -60,18 +60,31 @@
                                                         href="mailto:{{ $item->user->email }}">{{ $item->user->email }}</a></small>
                                             </td>
                                             <td>{{ ucwords($item->user->cnic) }}</td>
-                                            @foreach($item->elections as $election)
                                             @php
-                                                $assemblyId = $election->pivot->assembly_id;
-                                                $assembly = $assemblies->firstWhere('id', $assemblyId);
+                                                // Track if candidate has any assigned assembly
+                                                $hasAssembly = false;
                                             @endphp
-                                            <td>
-                                                {{ '('.$election->election_id .') '.$election->title ?? 'N/A' }}<br>
-                                                <small class="text-muted">
-                                                    (Assembly: {{ $assembly->name ?? 'N/A' }})
-                                                </small>
-                                            </td>
-                                            @endforeach
+
+                                            @if($item->elections->isNotEmpty())
+                                                @foreach($item->elections as $election)
+                                                    @php
+                                                        $assemblyId = $election->pivot->assembly_id;
+                                                        $assembly = $assemblyId ? $assemblies->firstWhere('id', $assemblyId) : null;
+                                                    @endphp
+
+                                                    @if ($assemblyId && $assembly)
+                                                        @php $hasAssembly = true; @endphp
+                                                        <td>
+                                                            {{ '(' . $election->election_id . ') ' . ($election->title ?? 'N/A') }}<br>
+                                                            <small class="text-muted">(Assembly: {{ $assembly->name }})</small>
+                                                        </td>
+                                                    @else
+                                                        <td>Not Assign</td>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <td>Not Assign</td>
+                                            @endif
                                             <td>
                                                 @if ($item->politicalParty && $item->politicalParty->name)
                                                     {{ ucwords($item->politicalParty->name) }}
@@ -119,7 +132,7 @@
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
-                                                    <form id="assign-form" method="POST"
+                                                    <form id="assign-form-{{ $item->id }}" method="POST"
                                                         action="{{ route('admin.candidates.assign', $item->id) }}">
                                                         @csrf
                                                         <div class="modal-body">
@@ -159,7 +172,7 @@
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger"
                                                                 data-dismiss="modal">Close</button>
-                                                            <button type="submit" id="assign-form-submit"
+                                                            <button type="submit" id="assign-form-submit-{{ $item->id }}"
                                                                 class="btn btn-success">Assign</button>
                                                         </div>
                                                     </form>
@@ -181,21 +194,24 @@
 
 @section('js')
 
-    {{-- <script>
+    <script>
         $(document).ready(function() {
-            $("#assign-form").submit(function(e) {
+            $(document).on("submit", "form[id^='assign-form-']", function(e) {
                 e.preventDefault();
-                $(".invalid-feedback").remove();
-                $("input").removeClass("is-invalid");
+                var $form = $(this);
+                var submitBtn = $form.find("button[type='submit']");
 
-                var formData = $(this).serialize();
+                $form.find(".invalid-feedback").remove();
+                $form.find("input, select").removeClass("is-invalid");
 
-                $('#assign-form-submit').prop("disabled", true).html(
+                var formData = $form.serialize();
+
+                submitBtn.prop("disabled", true).html(
                     '<span class="spinner-border spinner-border-sm"></span> Processing...'
                 );
 
                 $.ajax({
-                    url: $(this).attr("action"),
+                    url: $form.attr("action"),
                     type: "POST",
                     data: formData,
                     dataType: "json",
@@ -204,8 +220,9 @@
                             toastr.success(response.message, "Success", {
                                 positionClass: "toast-top-right"
                             });
-
-                            $("#candidate-form")[0].reset();
+                            $form[0].reset();
+                            $form.closest(".modal").modal("hide");
+                            location.reload();
                         } else if (response.status === "error") {
                             toastr.error(response.message, "Error", {
                                 positionClass: "toast-top-right"
@@ -215,12 +232,10 @@
                     error: function(xhr) {
                         if (xhr.status === 422) {
                             var errors = xhr.responseJSON.errors;
-
                             $.each(errors, function(key, value) {
-                                var inputField = $("input[name='" + key + "']");
-                                inputField.addClass("is-invalid");
-                                inputField.after('<p class="invalid-feedback">' + value[
-                                    0] + '</p>');
+                                var field = $form.find("[name='" + key + "']");
+                                field.addClass("is-invalid");
+                                field.after('<p class="invalid-feedback">' + value[0] + '</p>');
                             });
                         } else {
                             toastr.error("Something went wrong!", "Error", {
@@ -229,11 +244,12 @@
                         }
                     },
                     complete: function() {
-                        $('#candidate-form-btn').prop("disabled", false).html('Submit');
+                        submitBtn.prop("disabled", false).html("Assign");
                     }
                 });
             });
         });
-    </script> --}}
+    </script>
+
 
 @stop

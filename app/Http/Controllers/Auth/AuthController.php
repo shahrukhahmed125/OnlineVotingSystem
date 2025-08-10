@@ -28,7 +28,7 @@ class AuthController extends Controller
     public function login_auth(Request $request)
     {
         $request->validate([
-            'cnic' => 'required|string|max:255',
+            'cnic' => 'required|regex:/^\d{5}-\d{7}-\d{1}$/',
             'password' => 'required|min:8|string',
         ]);
 

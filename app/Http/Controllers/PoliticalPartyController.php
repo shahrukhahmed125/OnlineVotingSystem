@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PoliticalParty;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class PoliticalPartyController extends Controller
@@ -30,6 +31,7 @@ class PoliticalPartyController extends Controller
                 'leader_name' => 'required|string|max:255',
                 'founded_at' => 'nullable',
                 'head_office' => 'nullable|string|max:255',
+                'details' => 'nullable|string|max:1000',
             ]);
 
             if ($validator->fails()) {
@@ -45,6 +47,7 @@ class PoliticalPartyController extends Controller
             $data->leader_name = $request->leader_name;
             $data->founded_at = $request->founded_at;
             $data->head_office = $request->head_office;
+            $data->details = $request->details; 
             $data->save();
 
             // image save
@@ -80,12 +83,13 @@ class PoliticalPartyController extends Controller
     {
         try{
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255',
-                'abbreviation' => 'required|string|max:50',
-                'symbol' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // image or icon
+                'name' => 'required|string|max:255|unique:political_parties,name,' . $id,
+                'abbreviation' => 'required|string|max:50|unique:political_parties,abbreviation,' . $id,
+                'img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // image or icon
                 'leader_name' => 'required|string|max:255',
-                'founded_year' => 'required|integer|min:1900|max:' . date('Y'),
+                'founded_at' => 'nullable',
                 'head_office' => 'nullable|string|max:255',
+                'details' => 'nullable|string|max:1000',
             ]);
 
             if ($validator->fails()) {
@@ -96,7 +100,35 @@ class PoliticalPartyController extends Controller
             }
 
             $politicalParty = PoliticalParty::findOrFail($id);
-            $politicalParty->update($request->all());
+            $politicalParty->name = $request->name;
+            $politicalParty->abbreviation = $request->abbreviation;
+            $politicalParty->leader_name = $request->leader_name;
+            $politicalParty->founded_at = $request->founded_at;
+            $politicalParty->head_office = $request->head_office;
+            $politicalParty->details = $request->details;
+            $politicalParty->save();
+
+            // image update
+            if ($request->hasFile('img')) {
+                // Delete the old image if necessary
+                if ($politicalParty->images->isNotEmpty()) {
+                    $oldImage = $politicalParty->images->first();
+                    // Delete the old image file from storage
+                    Storage::disk('public')->delete($oldImage->image_path);
+                    // Optionally, delete the image record from the database
+                    $oldImage->delete();
+                }
+
+                // Save the new image
+                $filename = time() . '_' . $request->file('img')->getClientOriginalName();
+                $path = $request->file('img')->storeAs('dist/img/symbol', $filename, 'public');
+
+                // Create a new image record for the user
+                $politicalParty->images()->create([
+                    'image_path' => $path,
+                    'type' => 'symbol',  // Optional: Specify the image type
+                ]);
+            }
 
             return response()->json([
                 'status' => 'success',

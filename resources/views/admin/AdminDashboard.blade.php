@@ -1,7 +1,47 @@
 @extends('masterpage')
 @section('title', 'Admin Dashboard')
 @section('css')
-
+<style>
+    .dashboard-candidate {
+        padding: 10px 12px;
+        border-bottom: 1px solid #dddbdb;
+        background: #fff;
+    }
+    .dashboard-party-logo {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #4e73df, #1cc88a);
+        padding: 2px;
+    }
+    .dashboard-assembly {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #4e73df;
+        margin-bottom: 2px;
+    }
+    .dashboard-candidate-name {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    .dashboard-stats {
+        font-size: 0.75rem;
+        color: #555;
+    }
+    .progress {
+        height: 6px;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #f1f1f1;
+    }
+    .progress-bar {
+        background: linear-gradient(90deg, #4e73df, #1cc88a);
+    }
+</style>
 
 @stop
 
@@ -20,7 +60,7 @@
                     <nav>
                         <ol class="breadcrumb p-0 m-b-0">
                             <li class="breadcrumb-item">
-                                <a href="index.html"><i class="ti ti-home"></i></a>
+                                <a href="{{route('admin.home')}}"><i class="ti ti-home"></i></a>
                             </li>
                             <li class="breadcrumb-item">
                                 Dashboard
@@ -30,36 +70,24 @@
                     </nav>
                 </div>
                 <div class="ml-auto d-flex align-items-center secondary-menu text-center">
-                    <a href="javascript:void(0);" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Todo list">
-                        <i class="fe fe-edit btn btn-icon text-primary"></i>
+                    <a href="{{ route('admin.users.create') }}" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add New User">
+                        <i class="ti ti-user btn btn-icon text-primary"></i>
                     </a>
-                    <a href="javascript:void(0);" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Projects">
-                        <i class="fa fa-lightbulb-o btn btn-icon text-success"></i>
+                    <a href="{{ route('admin.elections.create') }}" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add New Election">
+                        <i class="ti ti-archive btn btn-icon text-success"></i>
                     </a>
-                    <a href="javascript:void(0);" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Task">
-                        <i class="fa fa-check btn btn-icon text-warning"></i>
+                    <a href="{{ route('admin.assembly.create') }}" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add New Assembly">
+                        <i class="ti ti-trello btn btn-icon text-warning"></i>
                     </a>
-                    <a href="javascript:void(0);" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Calendar">
-                        <i class="fa fa-calendar-o btn btn-icon text-cyan"></i>
+                    <a href="{{route('admin.political_parties.create')}}" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add New Political Party">
+                        <i class="ti ti-agenda btn btn-icon text-cyan"></i>
                     </a>
-                    <a href="javascript:void(0);" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Analytics">
-                        <i class="fa fa-bar-chart-o btn btn-icon text-danger"></i>
+                    <a href="{{ route('admin.votes.index') }}" class="tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Votes Analytics">
+                        <i class="ti ti-envelope btn btn-icon text-danger"></i>
                     </a>
                 </div>
             </div>
             <!-- end page title -->
-        </div>
-    </div>
-    <!-- Notification -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert border-0 alert-primary bg-gradient m-b-30 alert-dismissible fade show border-radius-none" role="alert">
-                <strong>Holy guacamole!</strong> You should check in on some of those
-                fields below.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <i class="ti ti-close"></i>
-                </button>
-            </div>
         </div>
     </div>
     <!-- end row -->
@@ -71,16 +99,14 @@
                     <div class="col-xxl-3 col-lg-6">
                         <div class="p-20 border-lg-right border-bottom border-xxl-bottom-0">
                             <div class="d-flex m-b-10">
-                                <p class="mb-0 font-regular text-muted font-weight-bold">Total Visits</p>
-                                <a class="mb-0 ml-auto font-weight-bold" href="#"><i class="ti ti-more-alt"></i> </a>
+                                <p class="mb-0 font-regular text-muted font-weight-bold">Total Voters</p>
                             </div>
                             <div class="d-block d-sm-flex h-100 align-items-center">
                                 <div class="apexchart-wrapper">
                                     <div id="analytics7"></div>
                                 </div>
                                 <div class="statistics mt-3 mt-sm-0 ml-sm-auto text-center text-sm-right">
-                                    <h3 class="mb-0"><i class="icon-arrow-up-circle"></i> 15,640</h3>
-                                    <p>Monthly visitor</p>
+                                    <h3 class="mb-0"><i class="icon-arrow-up-circle"></i>{{ $TotalVoters }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -88,16 +114,14 @@
                     <div class="col-xxl-3 col-lg-6">
                         <div class="p-20 border-xxl-right border-bottom border-xxl-bottom-0">
                             <div class="d-flex m-b-10">
-                                <p class="mb-0 font-regular text-muted font-weight-bold">Total Cost</p>
-                                <a class="mb-0 ml-auto font-weight-bold" href="#"><i class="ti ti-more-alt"></i> </a>
+                                <p class="mb-0 font-regular text-muted font-weight-bold">Total Candidates</p>
                             </div>
                             <div class="d-block d-sm-flex h-100 align-items-center">
                                 <div class="apexchart-wrapper">
                                     <div id="analytics8"></div>
                                 </div>
                                 <div class="statistics mt-3 mt-sm-0 ml-sm-auto text-center text-sm-right">
-                                    <h3 class="mb-0"><i class="icon-arrow-up-circle"></i> 16,656</h3>
-                                    <p>This month</p>
+                                    <h3 class="mb-0"><i class="icon-arrow-up-circle"></i>{{ $TotalCandidates }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -105,16 +129,14 @@
                     <div class="col-xxl-3 col-lg-6">
                         <div class="p-20 border-lg-right border-bottom border-lg-bottom-0">
                             <div class="d-flex m-b-10">
-                                <p class="mb-0 font-regular text-muted font-weight-bold">Total Sales</p>
-                                <a class="mb-0 ml-auto font-weight-bold" href="#"><i class="ti ti-more-alt"></i> </a>
+                                <p class="mb-0 font-regular text-muted font-weight-bold">Total Assemblies</p>
                             </div>
                             <div class="d-block d-sm-flex h-100 align-items-center">
                                 <div class="apexchart-wrapper">
                                     <div id="analytics9"></div>
                                 </div>
                                 <div class="statistics mt-3 mt-sm-0 ml-sm-auto text-center text-sm-right">
-                                    <h3 class="mb-0"><i class="icon-arrow-up-circle"></i>569</h3>
-                                    <p>Avg. Sales per day</p>
+                                    <h3 class="mb-0"><i class="icon-arrow-up-circle"></i>{{ $TotalAssemblies }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -278,113 +300,63 @@
             <div class="card card-statistics h-100 mb-0">
                 <div class="card-header d-flex justify-content-between">
                     <div class="card-heading">
-                        <h4 class="card-title">Support Ticket</h4>
+                        <h4 class="card-title">Live Top Candidates</h4>
                     </div>
                     <div class="dropdown">
-                        <a class="btn btn-round btn-inverse-primary btn-xs" href="#">View all </a>
+                        <a class="btn btn-round btn-inverse-primary btn-xs" href="{{route('admin.votes.top_candidates')}}">View all </a>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row active-task m-b-20">
-                        <div class="col-xs-1">
-                            <div class="bg-type mb-1 mb-xs-0 mt-1">
-                                <span>PP</span>
+                @foreach ($TopCandidates as $candidate)
+                    <div class="row align-items-center mb-3 dashboard-candidate">
+                        <div class="col-auto">
+                            <img src="{{ $candidate->user->images->isNotEmpty() 
+                                ? asset('storage/' . $candidate->user->images->first()->image_path) 
+                                : asset('assets/img/avtar/11.png') }}" 
+                                alt="Party Symbol" class="dashboard-party-logo">
+                        </div>
+                        
+                        <div class="col">
+                            @foreach ($candidate->assemblies as $assembly)
+                                <div class="dashboard-assembly">{{ ucwords($assembly->name) }}</div>
+                            @endforeach
+
+                            <div class="dashboard-candidate-name text-dark">
+                                {{ ucwords($candidate->user->name) }}
+                                {{ $candidate->politicalParty?->abbreviation ? '(' . strtoupper($candidate->politicalParty->abbreviation) . ')' : '' }} 
+                            </div>
+
+                            @foreach ($TotalVotersPerAssembly as $data)
+                                @php
+                                    $totalUsers = $data['total_users'];
+                                    $votePercentage = $totalUsers > 0 
+                                        ? round(($candidate->votes_count / $totalUsers) * 100, 1)
+                                        : 0;
+
+                                    $progressClass = 'bg-danger';
+                                    if ($votePercentage >= 70) {
+                                        $progressClass = 'bg-success';
+                                    } elseif ($votePercentage >= 40) {
+                                        $progressClass = 'bg-warning';
+                                    }
+                                @endphp
+                            @endforeach
+
+                            <div class="dashboard-stats">
+                                <strong>Voters:</strong> {{ number_format($totalUsers) }} |
+                                <strong>Votes:</strong> {{ number_format($candidate->votes_count) }} |
+                                <strong>{{ $votePercentage . '%' }}</strong>
+                            </div>
+
+                            <div class="progress mt-2">
+                                <div class="progress-bar {{ $progressClass }}" role="progressbar" 
+                                    style="width: {{ $votePercentage }}%;" 
+                                    aria-valuenow="{{ $votePercentage }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-11">
-                            <small class="d-block mb-1">Car dealer</small>
-                            <h5 class="mb-0"><a href="#">Unread utf-8 in more quick overview</a></h5>
-                            <ul class="list-unstyled list-inline">
-                                <li class="list-inline-item">
-                                    <small> Created by Lizzy Halfman</small>
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item">
-                                    <small>Saturday, March 17 2019</small>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
-                    <div class="row active-task m-b-20">
-                        <div class="col-xs-1">
-                            <div class="bg-type bg-pink mb-1 mb-xs-0 mt-1">
-                                <span>SL</span>
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <small class="d-block mb-1">Webster HTML5 </small>
-                            <h5 class="mb-0"><a href="#">I get an error "No Direct Access Allowed!" when I enter purchase</a></h5>
-                            <ul class="list-unstyled list-inline">
-                                <li class="list-inline-item">
-                                    <small> Created by Samuel Woods</small>
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item">
-                                    <small>Sunday, March 19 2019</small>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row active-task m-b-20">
-                        <div class="col-xs-1">
-                            <div class="bg-type bg-success mb-1 mb-xs-0 mt-1">
-                                <span>MP</span>
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <small class="d-block mb-1">The corps</small>
-                            <h5 class="mb-0"><a href="#">OAuth Credentials not generating the key</a></h5>
-                            <ul class="list-unstyled list-inline">
-                                <li class="list-inline-item">
-                                    <small> Created by Andrew nico</small>
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item">
-                                    <small>Monday, March 21 2019</small>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row active-task m-b-20">
-                        <div class="col-xs-1">
-                            <div class="bg-type bg-orange mb-1 mb-xs-0 mt-1">
-                                <span>SP</span>
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <small class="d-block mb-1">Sam martin vCard</small>
-                            <h5 class="mb-0"><a href="#">Pre-Buy Questions : For bakery Shop (Mentor Android Application)</a></h5>
-                            <ul class="list-unstyled list-inline">
-                                <li class="list-inline-item">
-                                    <small> Created by Jimmy Falicon</small>
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item">
-                                    <small>Friday, March 22 2019</small>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row active-task m-b-20">
-                        <div class="col-xs-1">
-                            <div class="bg-type bg-info mb-1 mb-xs-0 mt-1">
-                                <span>AP</span>
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <small class="d-block mb-1">Mentor admin </small>
-                            <h5 class="mb-0"><a href="#">I need a payment option, for each seller per item</a></h5>
-                            <ul class="list-unstyled list-inline">
-                                <li class="list-inline-item">
-                                    <small> Created by Brian Joedon</small>
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item">
-                                    <small>Saturday, March 17 2019</small>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                @endforeach
                 </div>
             </div>
         </div>
@@ -633,47 +605,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card card-statistics">
-                <div class="card-header">
-                    <div class="card-heading">
-                        <h4 class="card-title">Event Calendar</h4>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            <div id='external-events'>
-                                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#eventModal">Add New Event</button>
-                                <p class="mt-3">
-                                    Drag and drop your event or click in the calendar.
-                                </p>
-                                <div class='fc-event fc-event-primary' data-color="fc-event-primary"><span></span> Family
-                                    Vacation</div>
-                                <div class='fc-event fc-event-warning' data-color="fc-event-warning"><span></span> Meeting In
-                                    Office</div>
-                                <div class='fc-event fc-event-danger' data-color="fc-event-danger"><span></span> Client Call</div>
-                                <div class='fc-event fc-event-success' data-color="fc-event-success"><span></span> Interview</div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        Remove After Drop
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-9">
-                            <div class="event-calendar">
-                                <div id="event-calendar"></div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>

@@ -87,9 +87,8 @@
                                                                 <div class="mb-3">
                                                                     <label class="form-label">National ID (CNIC)*</label>
                                                                     <input type="cnic"
-                                                                        class="form-control @error('cnic') is-invalid @enderror"
-                                                                        placeholder="CINC" name="cnic"
-                                                                        value="{{ old('cnic') }}" required>
+                                                                        class="form-control @error('cnic') is-invalid @enderror inputmask"
+                                                                        data-mask="99999-9999999-9" placeholder="xxxxx-xxxxxxx-x" pattern="\d{5}-\d{7}-\d{1}"  title="Enter CNIC in format 12345-1234567-1" name="cnic" id="cnic" required/>
                                                                     @error('cnic')
                                                                         <p class="invalid-feedback">{{ '*' . $message }}</p>
                                                                     @enderror
@@ -101,7 +100,7 @@
                                                                         Address*</label>
                                                                     <input type="email"
                                                                         class="form-control @error('email') is-invalid @enderror"
-                                                                        placeholder="Email" name="email"
+                                                                        placeholder="Enter your email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Enter a valid email address"  name="email"
                                                                         value="{{ old('email') }}" required>
                                                                     @error('email')
                                                                         <p class="invalid-feedback">{{ '*' . $message }}</p>
@@ -240,7 +239,7 @@
                                                                     class="form-control d-none @error('img') is-invalid @enderror"
                                                                     name="img" value="{{ old('img') }}"
                                                                     type="file" id="formFile" onchange="preview()"
-                                                                    accept="image/jpeg, image/png" />
+                                                                    accept="image/jpeg, image/png"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -306,8 +305,8 @@
                                                             <div class="col-6">
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Postal Code </label>
-                                                                    <input type="test" class="form-control"
-                                                                        placeholder="ZIP Code" name="postal_code"
+                                                                    <input type="text" class="form-control inputmask @error('postal_code') is-invalid @enderror"
+                                                                        placeholder="xxxxx" data-mask="99999" name="postal_code" pattern="\d{5}" title="Enter postal code in format 12345"
                                                                         value="{{ old('postal_code') }}">
                                                                 </div>
                                                             </div>
@@ -315,7 +314,7 @@
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Phone</label>
                                                                     <input type="tel" name="phone"
-                                                                        class="form-control" placeholder="000-000000-00"
+                                                                        class="form-control inputmask @error('phone') is-invalid @enderror" data-mask="0399-9999999" placeholder="xxx-xxxxxxx" pattern="\d{4}-\d{7}" title="Enter phone number in format 0399-1234567"
                                                                         value="{{ old('phone') }}" />
                                                                 </div>
                                                             </div>

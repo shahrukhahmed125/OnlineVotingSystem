@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
+            $table->enum('status', ['upcoming', 'started', 'completed', 'cancelled'])->default('upcoming');
             $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
