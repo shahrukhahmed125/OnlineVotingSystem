@@ -12,6 +12,8 @@ use App\Http\Controllers\VoterController;
 use App\Models\Vote;
 use Illuminate\Support\Facades\Route;
 
+//-------- WELCOME ROUTE ------ //
+
 Route::get('/', function () {
     return view('welcome');
 });
