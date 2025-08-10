@@ -49,7 +49,7 @@
         }
 
         .card-statistics {
-            border-radius: 15px;
+            border-radius: 10px;
             background: linear-gradient(180deg, #ffffff, #f9f9f9);
         }
     </style>

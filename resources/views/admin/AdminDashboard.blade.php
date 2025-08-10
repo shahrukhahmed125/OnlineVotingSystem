@@ -303,7 +303,7 @@
                         <h4 class="card-title">Live Top Candidates</h4>
                     </div>
                     <div class="dropdown">
-                        <a class="btn btn-round btn-inverse-primary btn-xs" href="{{route('admin.top_candidates')}}">View all </a>
+                        <a class="btn btn-round btn-inverse-primary btn-xs" href="{{route('admin.votes.top_candidates')}}">View all </a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -312,7 +312,7 @@
                         <div class="col-auto">
                             <img src="{{ $candidate->user->images->isNotEmpty() 
                                 ? asset('storage/' . $candidate->user->images->first()->image_path) 
-                                : asset('static/avatars/male-avatar-defualt.png') }}" 
+                                : asset('assets/img/avtar/11.png') }}" 
                                 alt="Party Symbol" class="dashboard-party-logo">
                         </div>
                         

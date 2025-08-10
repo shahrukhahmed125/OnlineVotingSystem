@@ -3,7 +3,7 @@
 @section('css')
 <style>
     .candidate-card {
-        border-radius: 15px;
+        border-radius: 10px;
         background: linear-gradient(180deg, #ffffff, #f9f9f9);
         transition: all 0.3s ease-in-out;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -98,7 +98,7 @@
                                     <div>
                                         <img src="{{ $candidate->user->images->isNotEmpty() 
                                             ? asset('storage/' . $candidate->user->images->first()->image_path) 
-                                            : asset('static/avatars/male-avatar-defualt.png') }}" 
+                                            : asset('assets/img/avtar/11.png') }}" 
                                             alt="party-logo" class="party-logo">
                                     </div>
 
