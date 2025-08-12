@@ -15,6 +15,11 @@
                 <div class="d-block d-sm-flex flex-nowrap align-items-center">
                     <div class="page-title mb-2 mb-sm-0">
                         <h1>Elections List</h1>
+                        <form method="post" action="{{ route('admin.elections.import') }}" enctype="multipart/form-data">
+                            @csrf
+                            <input type="file" name="csv_file" class="form-control"/>
+                            <button class="btn btn-primary" type="submit">Upload<button/>
+                        </form>
                     </div>
                     <div class="ml-auto d-flex align-items-center">
                         <nav>
