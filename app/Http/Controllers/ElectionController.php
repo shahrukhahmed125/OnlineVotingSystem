@@ -136,12 +136,31 @@ class ElectionController extends Controller
 
     public function import(Request $request)
     {
-        $request->validate([
-            'csv_file' => 'nullable|mimes:csv,txt',
-        ]);
+        try{
+            $validator = Validator::make($request->all(),[
+                'csv_file' => 'nullable|mimes:csv,txt',
+            ]);
 
-        Excel::import(new ElectionImport, $request->file('csv_file'));
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'validation_error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+    
+            Excel::import(new ElectionImport, $request->file('csv_file'));
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Import CSV successfully!'
+            ]);
 
-        return back()->with('success', 'Import Successfull');
+        }catch(Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     } 
 }
