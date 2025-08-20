@@ -8,7 +8,7 @@
     <x-css/>
     @yield('css')
 </head>
-<body class="light-sidebar">
+<body>
     <!-- begin app -->
     <div class="app">
         <!-- begin app-wrap -->
