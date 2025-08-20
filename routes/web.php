@@ -126,6 +126,8 @@ Route::middleware('auth', 'role:admin')->group(function(){
                 Route::get('/edit/{id}', 'edit')->name('edit');
                 Route::post('/update/{id}', 'update')->name('update');
                 Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+
+                Route::post('/import', 'import')->name('import');
             });
         });
 

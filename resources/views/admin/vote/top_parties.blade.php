@@ -94,7 +94,8 @@
                     <div class="card-body">
                         <div class="col-lg-12">
                             <div class="container">
-                                <form onsubmit="submitElectionReport(event,this)" id="electionreportformsubmit" method="post">
+                                <form onsubmit="submitElectionReport(event,this)" id="electionreportformsubmit"
+                                    method="post">
                                     @csrf
                                     <div class="row">
                                         <div class="col-sm-10">
@@ -111,20 +112,20 @@
                                                 </select>
                                             </div>
                                         </div>
-            
+
                                         <div class="col-sm-2 ">
                                             <button class="w-100 btn btn-primary mt-4" type="submit"
                                                 id="electionreportformsubmit-btn">Submit</button>
                                         </div>
                                     </div>
-                                </form>        
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row mt-10" id="election_report">
-                     {{-- Cards will load here after AJAX call --}}
+                    {{-- Cards will load here after AJAX call --}}
                 </div>
             </div>
         </div>
@@ -136,7 +137,9 @@
 
 @section('js')
 
-{{-- JS for AJAX Submission --}}
+    {{-- JS for AJAX Submission --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 function submitElectionReport(e, form) {
     e.preventDefault();
@@ -164,32 +167,102 @@ function submitElectionReport(e, form) {
             const electionStatus = data[0]?.election_status || null;
 
             if (electionStatus === 'completed') {
-                // Find the party with the highest votes
-                const winner = data.reduce((prev, current) => 
+                const winner = data.reduce((prev, current) =>
                     Number(current.total_votes) > Number(prev.total_votes) ? current : prev
                 );
 
+                // Parent card for Winner + Donut
                 container.innerHTML += `
-                    <div class="col-xl-6 col-sm-6 mb-4">
-                        <div class="card card-statistics h-100 shadow-sm border-0 hover-shadow">
-                            <div class="card-body p-4 text-center">
-                                <div class="vote-count mb-3">
-                                    <h2>${Number(winner.total_votes).toLocaleString()}</h2>
-                                    <small>Total Votes</small>
+                    <div class="col-12 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-gradient-primary text-white text-center py-3">
+                                <h4 class="mb-0"><i class="fa fa-trophy me-2"></i> Election Winner & Vote Distribution</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <!-- Winner Section -->
+                                    <div class="col-lg-8 text-center border-end">
+                                        <div class="p-4 bg-light rounded-3 shadow-sm position-relative overflow-hidden" 
+                                            style="background: linear-gradient(145deg, #ffffff, #f4f6f9); border-radius: 15px; border: 1px solid #e0e0e0;">
+
+                                            <!-- Watermark -->
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg); 
+                                                        font-size: 9rem; font-weight: 900; color: rgba(202, 196, 179, 0.15); 
+                                                        white-space: nowrap; pointer-events: none; z-index: 0;">
+                                                <i class="fa fa-trophy me-1"></i> WINNER
+                                            </div>
+
+                                            <!-- Trophy Badge -->
+                                            <div class="text-right">
+                                                <h4><span class="badge badge-warning badge-pill px-3 py-2"><i class="fa fa-trophy me-1"></i> WINNER</span></h4>
+                                            </div>
+
+                                            <!-- Votes -->
+                                            <div class="vote-count mb-4 mt-4" style="position: relative; z-index: 1;">
+                                                <h1 class="fw-bold mb-1" style="font-size: 2.8rem;">${Number(winner.total_votes).toLocaleString()}</h1>
+                                                <small class="text-muted" style="font-size: 0.9rem;">Total Votes</small>
+                                            </div>
+
+                                            <!-- Party Logo -->
+                                            <div class="m-auto mb-3" style="position: relative; z-index: 1;">
+                                                <img src="${winner.image_url}" 
+                                                    class="party-logo mb-3 rounded-circle border border-4 shadow-sm" 
+                                                    alt="party-img" 
+                                                    style="width: 130px; height: 130px; object-fit: cover; border-color: #ffc107;">
+                                            </div>
+
+                                            <!-- Party Name -->
+                                            <div style="position: relative; z-index: 1;">
+                                                <h3 class="fw-bold text-dark mb-1" style="font-size: 1.5rem;">${winner.name}</h3>
+                                                <h5 class="text-muted mb-0" style="font-size: 1.1rem;">(${winner.abbreviation.toUpperCase()})</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Donut Chart Section -->
+                                    <div class="col-lg-4 text-center">
+                                        <h5 class="mb-3 mt-3">Vote Distribution</h5>
+                                        <canvas id="votesDonutChart" height="220"></canvas>
+                                    </div>
                                 </div>
-                                <div class="m-auto mb-3">
-                                    <img src="${winner.image_url}" class="party-logo border border-light" alt="party-img">
-                                </div>
-                                <h4 class="mt-3 mb-1 text-dark font-weight-bold">${winner.name}</h4>
-                                <h5 class="mb-0 text-muted">(${winner.abbreviation.toUpperCase()})</h5>
-                                <div class="mt-2 text-success fw-bold">Winner</div>
                             </div>
                         </div>
                     </div>
                 `;
+
+                // Chart.js Donut Chart
+                setTimeout(() => {
+                    const ctx = document.getElementById('votesDonutChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.map(v => v.abbreviation.toUpperCase()),
+                            datasets: [{
+                                data: data.map(v => Number(v.total_votes)),
+                                backgroundColor: [
+                                    '#4e73df',
+                                    '#1cc88a',
+                                    '#36b9cc',
+                                    '#f6c23e',
+                                    '#e74a3b',
+                                    '#858796'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }, 100);
             }
 
-            // Render all parties
+            // Render All Other Parties
             data.forEach(vote => {
                 container.innerHTML += `
                     <div class="col-xl-4 col-sm-6 mb-4">

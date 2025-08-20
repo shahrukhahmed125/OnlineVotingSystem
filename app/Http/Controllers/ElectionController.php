@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ElectionImport;
 use App\Models\Election;
 use App\Models\Assembly; // Added Assembly model
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ElectionController extends Controller
 {
@@ -131,4 +133,34 @@ class ElectionController extends Controller
             ], 500);
         }
     }
+
+    public function import(Request $request)
+    {
+        try{
+            $validator = Validator::make($request->all(),[
+                'csv_file' => 'nullable|mimes:csv,txt',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'validation_error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+    
+            Excel::import(new ElectionImport, $request->file('csv_file'));
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Import CSV successfully!'
+            ]);
+
+        }catch(Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    } 
 }

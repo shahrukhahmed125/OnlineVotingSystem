@@ -12,24 +12,26 @@
         <div class="row">
             <div class="col-md-12 m-b-30">
                 <!-- begin page title -->
-                <div class="d-block d-sm-flex flex-nowrap align-items-center">
+                <div class="d-block d-sm-flex flex-nowrap align-items-center justify-content-between">
+                    <!-- Page Title -->
                     <div class="page-title mb-2 mb-sm-0">
-                        <h1>Elections List</h1>
+                        <h1 class="mb-3">Elections List</h1>
                     </div>
-                    <div class="ml-auto d-flex align-items-center">
+
+                    <!-- Breadcrumb -->
+                    <div class="d-flex align-items-center">
                         <nav>
-                            <ol class="breadcrumb p-0 m-b-0">
+                            <ol class="breadcrumb p-0 mb-0">
                                 <li class="breadcrumb-item">
                                     <a href="{{ route('admin.home') }}"><i class="ti ti-home"></i></a>
                                 </li>
-                                <li class="breadcrumb-item">
-                                    Dashboard
-                                </li>
+                                <li class="breadcrumb-item">Dashboard</li>
                                 <li class="breadcrumb-item active text-primary" aria-current="page">Elections List</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
+
                 <!-- end page title -->
             </div>
         </div>
@@ -41,6 +43,10 @@
                     <div class="card-body">
                         <div class="export-table-wrapper datatable-wrapper table-responsive">
                             <table id="export-table" class="table mb-0">
+                                <caption class="btn-toolbar tableexport-caption" style="caption-side: top;">
+                                    <button type="button" class="btn btn-primary csv" data-toggle="modal"
+                                        data-target="#ImportModal">Import from CSV</button>
+                                </caption>
                                 <thead class="thead-light">
                                     <tr>
                                         <th scope="col">ID</th>
@@ -86,7 +92,7 @@
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.elections.edit', $item->id) }}">Edit</a>
                                                         <a class="dropdown-item text-danger" type="button"
-                                                            data-toggle="modal" 
+                                                            data-toggle="modal"
                                                             data-target="#deleteElectionModal{{ $item->id }}">Delete
                                                         </a>
                                                     </div>
@@ -139,6 +145,38 @@
             </div>
         </div>
         <!-- end row -->
+
+        <!-- Import csv Election Modal -->
+        <div class="modal fade" id="ImportModal" tabindex="-1" role="dialog"
+            aria-labelledby="ImportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border-primary">
+                    <form action="{{route('admin.elections.import')}}" method="post" enctype="multipart/form-data" id="import-election-form">
+                        @csrf
+                        <div class="modal-header text-white">
+                            <h5 class="modal-title" id="ImportLabel">
+                                Import
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3 mt-3">
+                                <label for="" class="form-label">Upload CSV File*</label>
+                                <input type="file" name="csv_file" class="form-control" accept=".csv" required/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="import-election-btn">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection
@@ -182,6 +220,61 @@
                         positionClass: "toast-top-right"
                     });
                 }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#import-election-btn").on("click", function () {
+                $(".invalid-feedback").remove();
+                $("input").removeClass("is-invalid");
+
+                let form = $("#import-election-form")[0];
+                let formData = new FormData(form);
+
+                $('#import-election-btn').prop("disabled", true).html(
+                    '<span class="spinner-border spinner-border-sm"></span> Processing...'
+                );
+
+                $.ajax({
+                    url: $("#import-election-form").attr("action"),
+                    type: "POST",
+                    data: formData,
+                    processData: false, // Important for file upload
+                    contentType: false, // Important for file upload
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status === "success") {
+                            toastr.success(response.message, "Success", {
+                                positionClass: "toast-top-right"
+                            });
+                            $("#import-election-form")[0].reset();
+                            $("#ImportModal").modal("hide");
+                        } else if (response.status === "error") {
+                            toastr.error(response.message, "Error", {
+                                positionClass: "toast-top-right"
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function (key, value) {
+                                var inputField = $("input[name='" + key + "']");
+                                inputField.addClass("is-invalid");
+                                inputField.after('<p class="invalid-feedback">' + value[0] + '</p>');
+                            });
+                        } else {
+                            toastr.error("Something went wrong!", "Error", {
+                                positionClass: "toast-top-right"
+                            });
+                        }
+                    },
+                    complete: function () {
+                        $('#import-election-btn').prop("disabled", false).html('Submit');
+                    }
+                });
             });
         });
     </script>
